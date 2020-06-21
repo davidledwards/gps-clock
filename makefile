@@ -15,10 +15,14 @@ LIBS = \
 
 CORE = $(BOARD_CORE)@1.8.3
 
-options :
-	echo $(BUILD_FILES_PREFIX)
+SRCS = $(wildcard *.ino *.h *.cpp)
 
-compile :
+PROG = $(BUILD_FILES_PREFIX).hex
+
+compile : $(PROG)
+	@echo "compiling..."
+
+$(PROG) : $(SRCS)
 	arduino-cli compile \
 		--build-path $(BUILD_PATH) \
 		--build-cache-path $(BUILD_PATH) \
