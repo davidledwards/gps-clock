@@ -13,10 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "config.h"
+#ifndef __GPS_CONFIG_H
+#define __GPS_CONFIG_H
 
-void setup() {
-}
-
-void loop() {
-}
+#endif
