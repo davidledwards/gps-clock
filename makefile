@@ -39,6 +39,7 @@ clean :
 	rm -f $(CURDIR)/$(BUILD_FILES_PREFIX).*
 
 install-libs :
+	arduino-cli lib update-index
 	arduino-cli lib install $(LIBS)
 
 install-core :
