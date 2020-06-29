@@ -16,13 +16,17 @@
 #include "gpsconfig.h"
 #include "gpsunit.h"
 #include "gpsdisplay.h"
+#include "clockdisplay.h"
 
-gps_unit *gps;
-gps_display *display;
+gps_unit* gps;
+gps_display* display;
+clock_display* clock;
 
 void setup() {
   gps = new gps_unit(GPS_TX_PIN, GPS_RX_PIN, GPS_SYNC_MILLIS);
-  display = new gps_display(GPS_DISPLAY_ADDR);
+  display = new gps_display(GPS_I2C_ADDR);
+  display->search();
+  clock = new clock_display(CLOCK_TIME_I2C_ADDR, CLOCK_MDAY_I2C_ADDR, CLOCK_YEAR_I2C_ADDR);
 }
 
 void loop() {

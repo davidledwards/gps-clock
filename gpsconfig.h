@@ -20,6 +20,10 @@ const uint8_t GPS_RX_PIN = 7;
 const uint8_t GPS_TX_PIN = 8;
 const uint32_t GPS_SYNC_MILLIS = 5000;
 
-const uint8_t GPS_DISPLAY_ADDR = 0x73;
+const uint8_t GPS_I2C_ADDR = 0x73;
+
+const uint8_t CLOCK_TIME_I2C_ADDR = 0x70;
+const uint8_t CLOCK_MDAY_I2C_ADDR = 0x71;
+const uint8_t CLOCK_YEAR_I2C_ADDR = 0x72;
 
 #endif
