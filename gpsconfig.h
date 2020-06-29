@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef __GPS_CONFIG_H
-#define __GPS_CONFIG_H
+#ifndef __GPSCONFIG_H
+#define __GPSCONFIG_H
 
 const uint8_t GPS_RX_PIN = 7;
 const uint8_t GPS_TX_PIN = 8;

@@ -1,5 +1,5 @@
-#ifndef __GPS_DISPLAY_H
-#define __GPS_DISPLAY_H
+#ifndef __GPSDISPLAY_H
+#define __GPSDISPLAY_H
 
 #include <Arduino.h>
 #include <Adafruit_LiquidCrystal.h>
