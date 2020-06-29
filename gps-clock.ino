@@ -25,8 +25,7 @@ clock_display* clock;
 void setup() {
   gps = new gps_unit(GPS_TX_PIN, GPS_RX_PIN, GPS_SYNC_MILLIS);
   display = new gps_display(GPS_I2C_ADDR);
-  display->search();
-  clock = new clock_display(CLOCK_TIME_I2C_ADDR, CLOCK_MDAY_I2C_ADDR, CLOCK_YEAR_I2C_ADDR);
+  clock = new clock_display(TIME_I2C_ADDR, MDAY_I2C_ADDR, YEAR_I2C_ADDR);
 }
 
 void loop() {
@@ -35,9 +34,11 @@ void loop() {
 
   switch (gps->read(info, time)) {
     case gps_available:
-      display->refresh(info, time);
+      display->show_info(info, time);
+      clock->show_now(time);
       break;
     case gps_searching:
-      display->search();
+      display->show_searching();
+      clock->show_searching();
   }
 }

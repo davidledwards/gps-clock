@@ -20,13 +20,13 @@ static const uint8_t LCD_ROWS = 4;
 
 gps_display::gps_display(uint8_t i2c_addr)
   : lcd(i2c_addr - 0x70),
-    searching(true) {
+    searching(false) {
   lcd.begin(LCD_COLS, LCD_ROWS);
   lcd.clear();
   lcd.setBacklight(HIGH);
 }
 
-void gps_display::refresh(const gps_info& info, const gps_time& time) {
+void gps_display::show_info(const gps_info& info, const gps_time& time) {
   if (searching) {
     lcd.clear();
     searching = false;
@@ -63,9 +63,10 @@ void gps_display::refresh(const gps_info& info, const gps_time& time) {
   lcd.print(lon_dir);
 }
 
-void gps_display::search() {
+void gps_display::show_searching() {
   if (!searching) {
     lcd.clear();
+    lcd.setCursor(0, 0);
     lcd.print("Searching...");
     searching = true;
   }

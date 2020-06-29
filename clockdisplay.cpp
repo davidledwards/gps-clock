@@ -23,10 +23,23 @@ clock_display::clock_display(uint8_t time_i2c_addr, uint8_t mday_i2c_addr, uint8
   init_led(year_led, year_i2c_addr);
 }
 
+void clock_display::show_searching() {
+  show_dashes(time_led);
+  show_dashes(mday_led);
+  show_dashes(year_led);
+}
+
+void clock_display::show_now(const gps_time& time) {
+  show_year(time);
+  show_mday(time);
+  show_time(time);
+}
+
 void clock_display::init_led(const Adafruit_7segment& led, uint8_t i2c_addr) {
   led.begin(i2c_addr);
   led.setBrightness(0);
-  show_dashes(led);
+  led.clear();
+  led.writeDisplay();
 }
 
 void clock_display::show_dashes(const Adafruit_7segment& led) {
@@ -36,4 +49,29 @@ void clock_display::show_dashes(const Adafruit_7segment& led) {
   led.writeDigitRaw(3, DASH_BITMASK);
   led.writeDigitRaw(4, DASH_BITMASK);
   led.writeDisplay();
+}
+
+void clock_display::show_year(const gps_time& time) {
+  year_led.writeDigitNum(0, 2);
+  year_led.writeDigitNum(1, 0);
+  year_led.writeDigitNum(3, time.year / 10 % 10);
+  year_led.writeDigitNum(4, time.year % 10, true);
+  year_led.writeDisplay();
+}
+
+void clock_display::show_mday(const gps_time& time) {
+  mday_led.writeDigitNum(0, time.month / 10 % 10);
+  mday_led.writeDigitNum(1, time.month % 10, true);
+  mday_led.writeDigitNum(3, time.day / 10 % 10);
+  mday_led.writeDigitNum(4, time.day % 10);
+  mday_led.writeDisplay();
+}
+
+void clock_display::show_time(const gps_time& time) {
+  time_led.writeDigitNum(0, time.hour / 10 % 10);
+  time_led.writeDigitNum(1, time.hour % 10);
+  time_led.drawColon(true);
+  time_led.writeDigitNum(3, time.minute / 10 % 10);
+  time_led.writeDigitNum(4, time.minute % 10);
+  time_led.writeDisplay();
 }
