@@ -16,4 +16,10 @@
 #ifndef __GPS_CONFIG_H
 #define __GPS_CONFIG_H
 
+const uint8_t GPS_RX_PIN = 7;
+const uint8_t GPS_TX_PIN = 8;
+const uint32_t GPS_SYNC_MILLIS = 5000;
+
+const uint8_t GPS_DISPLAY_ADDR = 0x73;
+
 #endif
