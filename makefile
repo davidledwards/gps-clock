@@ -11,7 +11,8 @@ BUILD_FILES_PREFIX = $(SKETCH).$(subst :,.,$(BOARD_NAME))
 LIBS = \
 	"Adafruit LED Backpack Library"@1.1.7 \
 	"Adafruit LiquidCrystal"@1.0.1 \
-	"Adafruit GPS Library"@1.5.1
+	"Adafruit GPS Library"@1.5.1 \
+	"SimpleRotary"@1.1.2
 
 CORE = $(BOARD_CORE)@1.8.3
 
@@ -38,6 +39,7 @@ clean :
 	rm -f $(CURDIR)/$(BUILD_FILES_PREFIX).*
 
 install-libs :
+	arduino-cli lib update-index
 	arduino-cli lib install $(LIBS)
 
 install-core :
