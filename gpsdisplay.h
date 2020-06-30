@@ -25,10 +25,18 @@ public:
   gps_display(uint8_t i2c_addr);
   void show_info(const gps_info& info, const gps_time& time);
   void show_searching();
+  void set_tz(long tz_adjust);
 
 private:
   const Adafruit_LiquidCrystal lcd;
   bool searching;
+  long tz_adjust;
+
+  void write_lat(const gps_info& info);
+  void write_lon(const gps_info& info);
+  void write_satellites(const gps_info& info);
+  void write_utc(const gps_time& time);
+  void write_tz();
 };
 
 #endif
