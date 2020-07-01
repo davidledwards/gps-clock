@@ -13,31 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef __GPSDISPLAY_H
-#define __GPSDISPLAY_H
+#ifndef __TZSELECTOR_H
+#define __TZSELECTOR_H
 
 #include <Arduino.h>
-#include <Adafruit_LiquidCrystal.h>
-#include "gpsunit.h"
+#include <SimpleRotary.h>
 
-class gps_display {
+enum tz_action {
+  tz_idle,
+  tz_propose,
+  tz_confirm
+};
+
+class tz_selector {
 public:
-  gps_display(uint8_t i2c_addr);
-  void show_info(const gps_info& info, const gps_time& time);
-  void show_searching();
-  void show_tz(long tz_adjust);
+  tz_selector(uint8_t a_pin, uint8_t b_pin, uint8_t button_pin);
+  tz_action read();
+  long get_tz();
 
 private:
-  const Adafruit_LiquidCrystal lcd;
-  bool searching;
-
-  void write_lat(const gps_info& info);
-  void write_lon(const gps_info& info);
-  void write_satellites(const gps_info& info);
-  void write_utc(const gps_time& time);
-  void write_tz(long tz_adjust);
-  void clear_gps();
-  void clear_row(uint8_t row);
+  const SimpleRotary encoder;
+  long tz_confirmed;
+  long tz_proposed;
+  uint32_t last_action;
 };
 
 #endif

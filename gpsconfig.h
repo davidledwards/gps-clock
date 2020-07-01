@@ -26,4 +26,8 @@ const uint8_t TIME_I2C_ADDR = 0x70;
 const uint8_t MDAY_I2C_ADDR = 0x71;
 const uint8_t YEAR_I2C_ADDR = 0x72;
 
+const uint8_t TZ_A_PIN = 9;
+const uint8_t TZ_B_PIN = 10;
+const uint8_t TZ_BUTTON_PIN = 11;
+
 #endif

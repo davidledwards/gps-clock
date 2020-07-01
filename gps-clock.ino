@@ -18,32 +18,45 @@
 #include "gpsdisplay.h"
 #include "localclock.h"
 #include "clockdisplay.h"
+#include "tzselector.h"
 
 gps_unit* gps;
-gps_display* gps_disp;
 local_clock* clock;
+tz_selector* tz_sel;
+gps_display* gps_disp;
 clock_display* clock_disp;
 
 void setup() {
   gps = new gps_unit(GPS_TX_PIN, GPS_RX_PIN, GPS_SYNC_MILLIS);
-  gps_disp = new gps_display(GPS_I2C_ADDR);
   clock = new local_clock();
-  clock->set_tz(-18000);
+  tz_sel = new tz_selector(TZ_A_PIN, TZ_B_PIN, TZ_BUTTON_PIN);
+
+  gps_disp = new gps_display(GPS_I2C_ADDR);
+  gps_disp->show_tz(tz_sel->get_tz());
+
   clock_disp = new clock_display(TIME_I2C_ADDR, MDAY_I2C_ADDR, YEAR_I2C_ADDR);
+  clock_disp->show_unset();
 }
 
 void loop() {
+  tz_action action = tz_sel->read();
+  if (action == tz_confirm)
+    clock->set_tz(tz_sel->get_tz());
+
   gps_info info;
   gps_time time;
-
   switch (gps->read(info, time)) {
     case gps_available:
-      gps_disp->show_info(info, time, clock->get_tz());
+      gps_disp->show_info(info, time);
       clock->sync(time);
       break;
     case gps_searching:
       gps_disp->show_searching();
+      break;
   }
+
+  if (action != tz_idle)
+    gps_disp->show_tz(tz_sel->get_tz());
 
   if (clock->tick())
     clock_disp->show_now(clock->now());

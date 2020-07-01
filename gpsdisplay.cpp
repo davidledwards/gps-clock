@@ -30,6 +30,8 @@ static const uint8_t CHAR_DEGREES_BITMAP[] = {
   0b00000000
 };
 
+static const char BLANK_LINE[] = "                    ";
+
 gps_display::gps_display(uint8_t i2c_addr)
   : lcd(i2c_addr - 0x70),
     searching(false) {
@@ -39,9 +41,9 @@ gps_display::gps_display(uint8_t i2c_addr)
   lcd.createChar(CHAR_DEGREES, CHAR_DEGREES_BITMAP);
 }
 
-void gps_display::show_info(const gps_info& info, const gps_time& time, long tz_adjust) {
+void gps_display::show_info(const gps_info& info, const gps_time& time) {
   if (searching) {
-    lcd.clear();
+    clear_gps();
     searching = false;
   }
 
@@ -49,16 +51,19 @@ void gps_display::show_info(const gps_info& info, const gps_time& time, long tz_
   write_lon(info);
   write_satellites(info);
   write_utc(time);
-  write_tz(tz_adjust);
 }
 
 void gps_display::show_searching() {
   if (!searching) {
-    lcd.clear();
+    clear_gps();
     lcd.setCursor(0, 0);
     lcd.print("searching...");
     searching = true;
   }
+}
+
+void gps_display::show_tz(long tz_adjust) {
+  write_tz(tz_adjust);
 }
 
 void gps_display::write_lat(const gps_info& info) {
@@ -147,4 +152,15 @@ void gps_display::write_tz(long tz_adjust) {
   if (minutes < 10)
     lcd.print('0');
   lcd.print(minutes);
+}
+
+void gps_display::clear_gps() {
+  clear_row(0);
+  clear_row(1);
+  clear_row(2);
+}
+
+void gps_display::clear_row(uint8_t row) {
+  lcd.setCursor(0, row);
+  lcd.print(BLANK_LINE);
 }

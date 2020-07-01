@@ -15,12 +15,15 @@
  */
 #include "clockdisplay.h"
 
-const uint8_t DASH_BITMASK = 0b01000000;
+static const uint8_t DASH_BITMASK = 0b01000000;
 
 clock_display::clock_display(uint8_t time_i2c_addr, uint8_t mday_i2c_addr, uint8_t year_i2c_addr) {
   init_led(time_led, time_i2c_addr);
   init_led(mday_led, mday_i2c_addr);
   init_led(year_led, year_i2c_addr);
+}
+
+void clock_display::show_unset() {
   show_dashes(time_led);
   show_dashes(mday_led);
   show_dashes(year_led);

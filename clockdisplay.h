@@ -24,6 +24,7 @@
 class clock_display {
 public:
   clock_display(uint8_t time_i2c_addr, uint8_t mday_i2c_addr, uint8_t year_i2c_addr);
+  void show_unset();
   void show_now(const local_time& time);
 
 private:

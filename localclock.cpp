@@ -47,9 +47,12 @@ local_time local_clock::now() {
 }
 
 void local_clock::set_tz(long tz_adjust) {
+  if (timeStatus() != timeNotSet) {
+    // Underlying time library performs a relative time adjustment so the value is actually the difference
+    // between the current and new offsets.
+    adjustTime(tz_adjust - this->tz_adjust);
+  }
   this->tz_adjust = tz_adjust;
-  if (timeStatus() != timeNotSet)
-    adjustTime(tz_adjust);
 }
 
 long local_clock::get_tz() {
@@ -57,6 +60,7 @@ long local_clock::get_tz() {
 }
 
 void local_clock::sync(const gps_time& time) {
+  // Resetting the time also resets the timezone adjustment.
   setTime(time.hour, time.minute, time.second, time.day, time.month, 2000 + time.year);
   adjustTime(tz_adjust);
 }
