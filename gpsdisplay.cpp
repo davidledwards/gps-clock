@@ -32,15 +32,14 @@ static const uint8_t CHAR_DEGREES_BITMAP[] = {
 
 gps_display::gps_display(uint8_t i2c_addr)
   : lcd(i2c_addr - 0x70),
-    searching(false),
-    tz_adjust(0) {
+    searching(false) {
   lcd.begin(LCD_COLS, LCD_ROWS);
   lcd.clear();
   lcd.setBacklight(HIGH);
   lcd.createChar(CHAR_DEGREES, CHAR_DEGREES_BITMAP);
 }
 
-void gps_display::show_info(const gps_info& info, const gps_time& time) {
+void gps_display::show_info(const gps_info& info, const gps_time& time, long tz_adjust) {
   if (searching) {
     lcd.clear();
     searching = false;
@@ -50,7 +49,7 @@ void gps_display::show_info(const gps_info& info, const gps_time& time) {
   write_lon(info);
   write_satellites(info);
   write_utc(time);
-  write_tz();
+  write_tz(tz_adjust);
 }
 
 void gps_display::show_searching() {
@@ -60,10 +59,6 @@ void gps_display::show_searching() {
     lcd.print("searching...");
     searching = true;
   }
-}
-
-void gps_display::set_tz(long tz_adjust) {
-  this->tz_adjust = tz_adjust;
 }
 
 void gps_display::write_lat(const gps_info& info) {
@@ -138,7 +133,7 @@ void gps_display::write_utc(const gps_time& time) {
   lcd.print(" UTC");
 }
 
-void gps_display::write_tz() {
+void gps_display::write_tz(long tz_adjust) {
   long tz_adjust_abs = tz_adjust < 0 ? -tz_adjust : tz_adjust;
   long hours = tz_adjust_abs / 3600;
   long minutes = (tz_adjust_abs % 3600) / 60;

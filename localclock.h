@@ -13,28 +13,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef __GPSDISPLAY_H
-#define __GPSDISPLAY_H
+#ifndef __LOCALCLOCK_H
+#define __LOCALCLOCK_H
 
 #include <Arduino.h>
-#include <Adafruit_LiquidCrystal.h>
+#include <TimeLib.h>
 #include "gpsunit.h"
 
-class gps_display {
+class local_time {
 public:
-  gps_display(uint8_t i2c_addr);
-  void show_info(const gps_info& info, const gps_time& time, long tz_adjust);
-  void show_searching();
+  uint16_t year;
+  uint8_t month;
+  uint8_t day;
+  uint8_t hour;
+  uint8_t minute;
 
 private:
-  const Adafruit_LiquidCrystal lcd;
-  bool searching;
+  local_time(time_t t);
+  friend class local_clock;
+};
 
-  void write_lat(const gps_info& info);
-  void write_lon(const gps_info& info);
-  void write_satellites(const gps_info& info);
-  void write_utc(const gps_time& time);
-  void write_tz(long tz_adjust);
+class local_clock {
+public:
+  local_clock();
+  bool tick();
+  local_time now();
+  void set_tz(long tz_adjust);
+  long get_tz();
+  void sync(const gps_time& time);
+
+private:
+  time_t last_time;
+  long tz_adjust;
 };
 
 #endif

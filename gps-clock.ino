@@ -16,16 +16,20 @@
 #include "gpsconfig.h"
 #include "gpsunit.h"
 #include "gpsdisplay.h"
+#include "localclock.h"
 #include "clockdisplay.h"
 
 gps_unit* gps;
-gps_display* display;
-clock_display* clock;
+gps_display* gps_disp;
+local_clock* clock;
+clock_display* clock_disp;
 
 void setup() {
   gps = new gps_unit(GPS_TX_PIN, GPS_RX_PIN, GPS_SYNC_MILLIS);
-  display = new gps_display(GPS_I2C_ADDR);
-  clock = new clock_display(TIME_I2C_ADDR, MDAY_I2C_ADDR, YEAR_I2C_ADDR);
+  gps_disp = new gps_display(GPS_I2C_ADDR);
+  clock = new local_clock();
+  clock->set_tz(-18000);
+  clock_disp = new clock_display(TIME_I2C_ADDR, MDAY_I2C_ADDR, YEAR_I2C_ADDR);
 }
 
 void loop() {
@@ -34,11 +38,13 @@ void loop() {
 
   switch (gps->read(info, time)) {
     case gps_available:
-      display->show_info(info, time);
-      clock->show_now(time);
+      gps_disp->show_info(info, time, clock->get_tz());
+      clock->sync(time);
       break;
     case gps_searching:
-      display->show_searching();
-      clock->show_searching();
+      gps_disp->show_searching();
   }
+
+  if (clock->tick())
+    clock_disp->show_now(clock->now());
 }

@@ -19,12 +19,12 @@
 #include <Arduino.h>
 #include <Adafruit_LEDBackpack.h>
 #include "gpsunit.h"
+#include "localclock.h"
 
 class clock_display {
 public:
   clock_display(uint8_t time_i2c_addr, uint8_t mday_i2c_addr, uint8_t year_i2c_addr);
-  void show_searching();
-  void show_now(const gps_time& time);
+  void show_now(const local_time& time);
 
 private:
   const Adafruit_7segment time_led;
@@ -33,9 +33,9 @@ private:
 
   void init_led(const Adafruit_7segment& led, uint8_t i2c_addr);
   void show_dashes(const Adafruit_7segment& led);
-  void show_year(const gps_time& time);
-  void show_mday(const gps_time& time);
-  void show_time(const gps_time& time);
+  void show_year(const local_time& time);
+  void show_mday(const local_time& time);
+  void show_time(const local_time& time);
 };
 
 #endif
