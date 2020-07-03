@@ -21,7 +21,37 @@ Bear with me if you happen to be a long-time Arduino hacker and developer, as th
 
 ## Building
 
-The [Arduino CLI](https://arduino.cc/pro/cli) is used for both compilation of source code and uploading of the binary to the actual board.
+The [Arduino CLI](https://arduino.cc/pro/cli) is used for both compilation of source code and uploading of the binary to the actual board. I found this CLI preferrable over the [Arduino IDE](https://www.arduino.cc/en/main/software) because it allows the build and upload process to be fully described through the makefile. Simplicity of the development environment was essential. That said, if you prefer an IDE experience, I found the [Arduino for Visual Studio Code](https://marketplace.visualstudio.com/items?itemName=vsciot-vscode.vscode-arduino) extension to be much nicer than Arduino IDE.
+
+Installs the Arduino core and dependent external libraries. This is an idempotent operation that first updates the library index and then ensures that all versioned dependencies are downloaded.
+
+```sh
+make install
+```
+
+Builds the sketch and its associated C++ files. The output directory of the build cannot be a subdirectory of the project, a restriction imposed by the Arduino compilation process, so it is placed under `$TMPDIR`. However, the final program artifacts are written to the project directory.
+
+```sh
+make build
+```
+
+Uploads the program to the Arduino board. Make sure PORT is defined by the environment or provided as an argument to `make`. PORT is the serial port to which the Arduino board is attached.
+
+```sh
+make upload
+```
+
+Removes transient build files.
+
+```sh
+make clean
+```
+
+Performs an installation of libraries followed by a build and upload of the final program to the Arduino board.
+
+```sh
+make all
+```
 
 ## License
 
