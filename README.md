@@ -35,9 +35,18 @@ Builds the sketch and its associated C++ files. The output directory of the buil
 make build
 ```
 
-Uploads the program to the Arduino board. Make sure PORT is defined by the environment or provided as an argument to `make`. PORT is the serial port to which the Arduino board is attached.
+Uploads the program to the Arduino board. Make sure PORT is defined by the environment or provided as an argument to `make`. PORT is the serial port to which the Arduino board is attached. If PORT is undefined, it defaults to `/dev/null`, which will cause the upload to fail.
 
 ```sh
+make upload
+```
+
+```sh
+make upload PORT=/dev/tty.usbmodem14401
+```
+
+```sh
+export PORT=/dev/tty.usbmodem14401
 make upload
 ```
 
