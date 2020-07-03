@@ -22,11 +22,11 @@
 
 class gps_info {
 public:
+  gps_info();
+
   float lat;
   float lon;
   uint8_t satellites;
-
-  gps_info();
 
 private:
   gps_info(const Adafruit_GPS& gps);
@@ -35,6 +35,8 @@ private:
 
 class gps_time {
 public:
+  gps_time();
+
   uint8_t year;
   uint8_t month;
   uint8_t day;
@@ -42,8 +44,6 @@ public:
   uint8_t minute;
   uint8_t second;
   uint16_t msecond;
-
-  gps_time();
 
 private:
   gps_time(const Adafruit_GPS& gps);

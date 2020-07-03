@@ -66,10 +66,16 @@ gps_unit::gps_unit(uint8_t tx_pin, uint8_t rx_pin, uint32_t sync_ms)
 }
 
 gps_state gps_unit::read(gps_info& info, gps_time& time) {
+  // Reading the GPS must be done continuously in lieu of using interrupts, which may or may not
+  // result in any action.
   gps.read();
-  if (gps.newNMEAreceived() && !gps.parse(gps.lastNMEA()))
+  if (gps.newNMEAreceived() && !gps.parse(gps.lastNMEA())) {
+    // Indicates that new sentence was received, but could not be parsed, so just ignore until
+    // the next sentence comes along.
     return gps_ignore;
-  else {
+  } else {
+    // Only consider sampling the GPS every so often, the period of which is defined by the
+    // synchronization period specified in the constructor.
     uint32_t now = millis();
     if (now - last_sync > sync_ms) {
       last_sync = now;
