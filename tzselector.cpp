@@ -38,11 +38,15 @@ tz_selector::tz_selector(uint8_t a_pin, uint8_t b_pin, uint8_t button_pin)
 
 tz_action tz_selector::read() {
   if (encoder.push() == 1) {
+    // Prioritize button pushes over rotation since rotation can often occur as a side effect of pressing
+    // the button. This ensures that the current selection is confirmed.
     tz_confirmed = tz_proposed;
     return tz_confirm;
   } else {
     switch (encoder.rotate()) {
       case 0:
+        // Nothing to report by the encoder, but make sure if an unconfirmed change has been idle for
+        // a period of time, then it gets automatically reset.
         if (millis() - last_action > IDLE_RESET_MS) {
           tz_proposed = tz_confirmed;
           last_action = millis();
@@ -50,19 +54,17 @@ tz_action tz_selector::read() {
         } else
           return tz_idle;
       case 1:
+        // Clockwise rotation.
         last_action = millis();
-        if (tz_proposed < TZ_CEILING) {
+        if (tz_proposed < TZ_CEILING)
           tz_proposed += TZ_INCREMENT;
-          return tz_propose;
-        } else
-          return tz_idle;
+        return tz_propose;
       case 2:
+        // Counter-clockwise rotation.
         last_action = millis();
-        if (tz_propose > TZ_FLOOR) {
+        if (tz_propose > TZ_FLOOR)
           tz_proposed -= TZ_INCREMENT;
-          return tz_propose;
-        } else
-          return tz_idle;
+        return tz_propose;
     }
   }
 }
