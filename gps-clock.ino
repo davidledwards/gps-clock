@@ -20,11 +20,11 @@
 #include "clockdisplay.h"
 #include "tzselector.h"
 
-gps_unit* gps;
-local_clock* clock;
-tz_selector* tz_sel;
-gps_display* gps_disp;
-clock_display* clock_disp;
+static gps_unit* gps;
+static local_clock* clock;
+static tz_selector* tz_sel;
+static gps_display* gps_disp;
+static clock_display* clock_disp;
 
 void setup() {
   gps = new gps_unit(GPS_TX_PIN, GPS_RX_PIN, GPS_SYNC_MILLIS);
@@ -39,25 +39,36 @@ void setup() {
 }
 
 void loop() {
+  // Read the TZ selector before making updates to the displays since it might result in a change
+  // to the timezone.
   tz_action action = tz_sel->read();
   if (action == tz_confirm)
     clock->set_tz(tz_sel->get_tz());
 
+  // Read the GPS module, which will almost always return `gps_ignore` once a satellite fix has
+  // been established.
   gps_info info;
   gps_time time;
   switch (gps->read(info, time)) {
     case gps_available:
+      // Under normal circumstances in which a fix has been established, this only happens roughly
+      // every GPS_SYNC_MILLIS. This is a good time to synchronize the clock.
       gps_disp->show_info(info, time);
       clock->sync(time);
       break;
     case gps_searching:
+      // Indicates that a satellite fix has not been established by the GPS module.
       gps_disp->show_searching();
       break;
   }
 
+  // Any activity from the TZ selector is reflected on the display, e.g. rotation of the encoder
+  // will be reflected in an unconfirmed change in the TZ offset, whereas a push of the encoder
+  // commits the change.
   if (action != tz_idle)
     gps_disp->show_tz(tz_sel->get_tz());
 
+  // If the local clock has changed since the last tick, then update the display.
   if (clock->tick())
     clock_disp->show_now(clock->now());
 }
