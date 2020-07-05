@@ -2,6 +2,17 @@
 
 A GPS-synchronized digital clock based on the open-source [Arduino](https://arduino.cc) hardware platform.
 
+* [Overview](#Overview)
+* [Hardware](#Hardware)
+* [Assembly](#Assembly)
+  * [LED Displays](#LED Displays)
+  * [LCD Display](#LCD Display)
+  * [Rotary Encoder](#Rotary Encoder)
+  * [GPS Module](#GPS Module)
+  * [Connected Components](#Connected Components)
+* [Software](#Software)
+* [License](#License)
+
 ## Overview
 
 The COVID-19 lockdown rekindled a decades-long interest of mine in learning a bit more about electronics. Even though I was fascinated with the subject at a very early age, my interests gravitated towards software, and 40 years later, here I am clearing the cobwebs and delving into the study of electronics.
@@ -80,6 +91,8 @@ This is a view of the back side of the PCB. Similar to other components, pin hea
 ### GPS Module
 
 The GPS module conveniently mounts directly on top of the Arduino Uno board. A set of pin headers need to be soldered to the GPS board, but once completed, both PCBs slide together nicely.
+
+<img src="images/arduino-gps-module.jpg" alt="Arduino Uno and GPS module" style="zoom:25%;" />
 
 This is a view of the GPS module mounted to the Arduino. Notice the additional pin headers I soldered to the GPS board. These are the pins needed to connect the LEDs, LCD and rotary encoder.
 
