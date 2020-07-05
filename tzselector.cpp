@@ -62,7 +62,7 @@ tz_action tz_selector::read() {
       case 2:
         // Counter-clockwise rotation.
         last_action = millis();
-        if (tz_propose > TZ_FLOOR)
+        if (tz_proposed > TZ_FLOOR)
           tz_proposed -= TZ_INCREMENT;
         return tz_propose;
     }
