@@ -2,16 +2,16 @@
 
 A GPS-synchronized digital clock based on the open-source [Arduino](https://arduino.cc) hardware platform.
 
-* [Overview](#Overview)
-* [Hardware](#Hardware)
-* [Assembly](#Assembly)
- * [LED Displays](#LED Displays)
- * [LCD Display](#LCD Display)
- * [Rotary Encoder](#Rotary Encoder)
- * [GPS Module](#GPS Module)
- * [Connected Components](#Connected Components)
-* [Software](#Software)
-* [License](#License)
+* [Overview](#overview)
+* [Hardware](#hardware)
+* [Assembly](#assembly)
+  * [LED Displays](#led-displays)
+  * [LCD Display](#lcd-display)
+  * [Rotary Encoder](#rotary-encoder)
+  * [GPS Module](#gps-module)
+  * [Connected Components](#connected-components)
+* [Software](#software)
+* [License](#license)
 
 ## Overview
 
