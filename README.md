@@ -2,8 +2,6 @@
 
 A GPS-synchronized digital clock based on the open-source [Arduino](https://arduino.cc) hardware platform.
 
-[toc]
-
 ## Overview
 
 The COVID-19 lockdown rekindled a decades-long interest of mine in learning a bit more about electronics. Even though I was fascinated with the subject at a very early age, my interests gravitated towards software, and 40 years later, here I am clearing the cobwebs and delving into the study of electronics.
