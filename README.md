@@ -18,7 +18,8 @@ Bear with me if you happen to be a long-time Arduino hacker and developer, as th
 * [Adafruit Standard LCD 20x4](https://www.amazon.com/gp/product/B00SK69BZ6) (1)
 * [Adafruit I2C LCD Backpack](https://www.amazon.com/gp/product/B00OKCON84) (1)
 * [Adafruit Rotary Encoder](https://www.amazon.com/gp/product/B00SK8KK5Y) (1)
-* [ElectroCookie Solderable PCB](https://www.amazon.com/gp/product/B07YBYZCTN) (1)
+* [ElectroCookie Large Solderable PCB](https://www.amazon.com/gp/product/B07YBYZCTN) (1)
+* [ElectroCookie Mini Solderable PCB](https://www.amazon.com/gp/product/B081MSKJJX) (1)
 
 ## Assembly
 
@@ -52,6 +53,55 @@ Finally, this is the back of the PCB. Note that pin headers for power (+/-) and 
 
 <img src="images/led-pcb-back.jpg" alt="Back side of PCB" style="zoom:25%;" />
 
+### LCD Display
+
+A single 20-column, 4-row LCD display is used to show GPS information and the currently selected timezone. The I2C backpack for the LCD was sold separately, but as mentioned above, is very convenient in reducing pin consumption on the Arduino board. The pins on the LED display simply connect to the LCD display.
+
+This is a view of the front side of the LCD attached to the backpack.
+
+<img src="images/lcd-front.jpg" alt="Front side of LCD" style="zoom:25%;" />
+
+And, this is a view of the back side of the LCD. Notice that I used the screw headers instead of pin headers. In retrospect, I would have soldered pin headers but did not want the hassle of removing the backpack and resoldering. Since the LCD display is operating on the same I2C pins, it requires an address that does not conflict with the LED displays (`0x70`, `0x71`, `0x72`). If you look closely, the `A0` and `A1` jumpers on the lower left of the backpack are soldered together, making the address of the LCD `0x73`.
+
+<img src="images/lcd-back.jpg" alt="Back side of LCD" style="zoom:25%;" />
+
+### Rotary Encoder
+
+The rotary encoder used in this project rotates infinitely in both directions with a nice mechanical pulse as it moves around. It also has a push button action. The encoder is used to select the timezone in 30-minute increments. For a variety of reasons, I kept the hardware and software simple with respect to timezone. Indeed, there are web services that will convert latitude/longitude to timezone, but this clock was designed to be self-contained and not rely on the presence of a wifi endpoint. The timezone offset is selected by rotating the encoder in either direction, but the selection is not committed until the encoder is pressed. Once committed, the local time shown in the LED display is modified accordingly. If a timezone is not selected, local time is always equivalent to UTC.
+
+As seen in this photo, the rotary encoder is mounted on a small PCB. It could also be mounted to a face plate.
+
+<img src="images/rotary-front.jpg" alt="Front side of rotary encoder" style="zoom:25%;" />
+
+This is a view of the back side of the PCB. Similar to other components, pin headers are used for making connections to the encoder.
+
+<img src="images/rotary-back.jpg" alt="Back side of rotary encoder" style="zoom:25%;" />
+
+### GPS Module
+
+The GPS module conveniently mounts directly on top of the Arduino Uno board. A set of pin headers need to be soldered to the GPS board, but once completed, both PCBs slide together nicely.
+
+This is a view of the GPS module mounted to the Arduino. Notice the additional pin headers I soldered to the GPS board. These are the pins needed to connect the LEDs, LCD and rotary encoder.
+
+<img src="images/gps-module.jpg" alt="GPS module" style="zoom:25%;" />
+
+This is a side view of the GPS mounted to the Arduino. You can see the pin headers for power and those used for the I2C serial bus (`A4`, `A5`).
+
+<img src="images/gps-module-pins-analog.jpg" alt="Side view of GPS mounted to Arduino" style="zoom:25%;" />
+
+This is the other side of the GPS. The visible pin headers (`9`, `10`, `11`) connect to the rotary encoder.
+
+<img src="images/gps-module-pins-digital.jpg" alt="Side view of GPS mounted to Arduino" style="zoom:25%;" />
+
+### Connected Components
+
+This is a view of all components connected together, though obviously not boxed into a final product. The use of pin headers made it very convenient to delay the majority of decisions about the layout of components in a box or similar structure.
+
+(photo here)
+
+This is an operating view of the clock with realtime GPS information displayed on the LCD. Once a satellite fix has been established, the LCD shows the latitude and longitude in decimal degrees format. It also displays the number of satellites for which a fix has been established and the UTC time. The selected timezone is also shown, but this is governed by the rotary encoder, not a data point from the GPS module.
+
+(photo here)
 
 
 ## Software
