@@ -78,7 +78,7 @@ And, this is a view of the back side of the LCD. Notice that I used the screw he
 
 ### Rotary Encoder
 
-The rotary encoder used in this project rotates infinitely in both directions with a nice mechanical pulse as it moves around. It also has a push button action. The encoder is used to select the timezone in 30-minute increments. For a variety of reasons, I kept the hardware and software simple with respect to timezone. Indeed, there are web services that will convert latitude/longitude to timezone, but this clock was designed to be self-contained and not rely on the presence of a wifi endpoint. The timezone offset is selected by rotating the encoder in either direction, but the selection is not committed until the encoder is pressed. Once committed, the local time shown in the LED display is modified accordingly. If a timezone is not selected, local time is always equivalent to UTC.
+The rotary encoder used in this project rotates infinitely in both directions with a nice mechanical pulse as it moves around. It also has a push button action. The encoder is used to select the timezone in 30-minute increments. For a variety of reasons, I kept the hardware and software simple with respect to timezone. Indeed, there are web services that will convert latitude/longitude to timezone, but this clock was designed to be self-contained and not rely on the presence of a wifi endpoint. The timezone offset is selected by rotating the encoder in either direction, but the selection is not committed until the encoder is pressed. Once committed, the local time shown in the LED display is modified accordingly. If a timezone is not selected, local time is always equivalent to UTC. The timezone is also stored in EEPROM so it can be recovered if the power source is interrupted.
 
 As seen in this photo, the rotary encoder is mounted on a small PCB. It could also be mounted to a face plate.
 
@@ -108,13 +108,17 @@ This is the other side of the GPS. The visible pin headers (`9`, `10`, `11`) con
 
 ### Connected Components
 
-This is a view of all components connected together, though obviously not boxed into a final product. The use of pin headers made it very convenient to delay the majority of decisions about the layout of components in a box or similar structure.
+This is a view of all components connected together and arranged into a final product. The use of pin headers made it very convenient to delay the majority of decisions about the layout of components in a box or similar structure. However, during the final assembly process, I had to eliminate some of the headers since they were obstructing other components. Also, notice how the rotary encoder is stacked on top of the GPS module.
 
-(photo here)
+<img src="images/final-front.jpg" alt="Front view of final assembly" style="zoom:25%;" />
+
+<img src="images/final-top.jpg" alt="Top view of final assembly" style="zoom:25%;" />
+
+<img src="images/final-back.jpg" alt="Back view of final assembly" style="zoom:25%;" />
 
 This is an operating view of the clock with realtime GPS information displayed on the LCD. Once a satellite fix has been established, the LCD shows the latitude and longitude in decimal degrees format. It also displays the number of satellites for which a fix has been established and the UTC time. The selected timezone is also shown, but this is governed by the rotary encoder, not a data point from the GPS module.
 
-(photo here)
+<img src="images/final-operating.jpg" alt="Operating view of final assembly" style="zoom:25%;" />
 
 
 ## Software
