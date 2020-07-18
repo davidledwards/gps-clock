@@ -13,31 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef __TZSELECTOR_H
-#define __TZSELECTOR_H
+#ifndef __LOCALSTORAGE_H
+#define __LOCALSTORAGE_H
 
 #include <Arduino.h>
-#include <SimpleRotary.h>
 
-enum tz_action {
-  tz_idle,
-  tz_propose,
-  tz_confirm
-};
-
-class tz_selector {
+class local_state {
 public:
-  tz_selector(uint8_t a_pin, uint8_t b_pin, uint8_t button_pin, long tz_default = 0);
-  tz_action read();
-  long get_tz();
+  long tz_adjust;
 
 private:
-  const SimpleRotary encoder;
-  long tz_confirmed;
-  long tz_proposed;
-  uint32_t last_action;
+  local_state(long tz_adjust);
+  friend class local_storage;
+};
 
-  static long sanitize_tz(long offset);
+class local_storage {
+public:
+  local_storage();
+  local_state read();
+  void write_tz(long tz_adjust);
 };
 
 #endif

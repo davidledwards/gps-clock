@@ -19,7 +19,9 @@
 #include "localclock.h"
 #include "clockdisplay.h"
 #include "tzselector.h"
+#include "localstorage.h"
 
+static local_storage* storage;
 static gps_unit* gps;
 static local_clock* clock;
 static tz_selector* tz_sel;
@@ -27,9 +29,12 @@ static gps_display* gps_disp;
 static clock_display* clock_disp;
 
 void setup() {
+  storage = new local_storage();
+  local_state state = storage->read();
+
   gps = new gps_unit(GPS_TX_PIN, GPS_RX_PIN, GPS_SYNC_MILLIS);
   clock = new local_clock();
-  tz_sel = new tz_selector(TZ_A_PIN, TZ_B_PIN, TZ_BUTTON_PIN);
+  tz_sel = new tz_selector(TZ_A_PIN, TZ_B_PIN, TZ_BUTTON_PIN, state.tz_adjust);
 
   gps_disp = new gps_display(GPS_I2C_ADDR);
   gps_disp->show_tz(tz_sel->get_tz());
@@ -42,8 +47,11 @@ void loop() {
   // Read the TZ selector before making updates to the displays since it might result in a change
   // to the timezone.
   tz_action action = tz_sel->read();
-  if (action == tz_confirm)
-    clock->set_tz(tz_sel->get_tz());
+  if (action == tz_confirm) {
+    long tz_adjust = tz_sel->get_tz();
+    clock->set_tz(tz_adjust);
+    storage->write_tz(tz_adjust);
+  }
 
   // Read the GPS module, which will almost always return `gps_ignore` once a satellite fix has
   // been established.

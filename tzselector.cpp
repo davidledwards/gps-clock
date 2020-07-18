@@ -28,12 +28,16 @@ static const long TZ_INCREMENT = 1800;
 // adjustment.
 static const uint32_t IDLE_RESET_MS = 10000;
 
-tz_selector::tz_selector(uint8_t a_pin, uint8_t b_pin, uint8_t button_pin)
+// Period of time before the encoder reports the next event, which is designed to remove noise from the
+// electrical component.
+static const uint32_t ENCODER_DELAY_MS = 200;
+
+tz_selector::tz_selector(uint8_t a_pin, uint8_t b_pin, uint8_t button_pin, long tz_default)
   : encoder(a_pin, b_pin, button_pin),
-    tz_confirmed(0),
-    tz_proposed(0),
+    tz_confirmed(sanitize_tz(tz_default)),
+    tz_proposed(tz_confirmed),
     last_action(0) {
-  encoder.setErrorDelay(200);
+  encoder.setErrorDelay(ENCODER_DELAY_MS);
 }
 
 tz_action tz_selector::read() {
@@ -71,4 +75,14 @@ tz_action tz_selector::read() {
 
 long tz_selector::get_tz() {
   return tz_proposed;
+}
+
+long tz_selector::sanitize_tz(long offset) {
+  offset = offset / TZ_INCREMENT * TZ_INCREMENT;
+  if (offset < TZ_FLOOR)
+    return TZ_FLOOR;
+  else if (offset > TZ_CEILING)
+    return TZ_CEILING;
+  else
+    return offset;
 }
