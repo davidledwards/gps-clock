@@ -29,16 +29,25 @@ static gps_display* gps_disp;
 static clock_display* clock_disp;
 
 void setup() {
+  // Fetch state from persistent storage.
   storage = new local_storage();
   local_state state = storage->read();
 
+  // Initialize GPS module.
   gps = new gps_unit(GPS_TX_PIN, GPS_RX_PIN, GPS_SYNC_MILLIS);
+
+  // Initialize local clock with persisted timezone.
   clock = new local_clock();
+  clock->set_tz(state.tz_adjust);
+
+  // Initialize timezone selector componnent.
   tz_sel = new tz_selector(TZ_A_PIN, TZ_B_PIN, TZ_BUTTON_PIN, state.tz_adjust);
 
+  // Initialize GPS display.
   gps_disp = new gps_display(GPS_I2C_ADDR);
   gps_disp->show_tz(tz_sel->get_tz());
 
+  // Initialize localized clock display.
   clock_disp = new clock_display(TIME_I2C_ADDR, MDAY_I2C_ADDR, YEAR_I2C_ADDR);
   clock_disp->show_unset();
 }
