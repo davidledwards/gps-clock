@@ -17,7 +17,13 @@
 #define __GPSDISPLAY_H
 
 #include <Arduino.h>
+
+#if defined(USE_PCF8574T) || defined(USE_PCF8574AT)
+#include <LiquidCrystal_I2C.h>
+#elif defined(USE_MCP23008)
 #include <Adafruit_LiquidCrystal.h>
+#endif
+
 #include "gpsunit.h"
 
 class gps_display {
@@ -28,7 +34,12 @@ public:
   void show_tz(long tz_adjust);
 
 private:
+#if defined(USE_PCF8574T) || defined(USE_PCF8574AT)
+  const LiquidCrystal_I2C lcd;
+#elif defined(USE_MCP23008)
   const Adafruit_LiquidCrystal lcd;
+#endif
+
   bool searching;
 
   void write_lat(const gps_info& info);

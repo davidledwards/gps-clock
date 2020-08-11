@@ -33,9 +33,17 @@ static const uint8_t CHAR_DEGREES_BITMAP[] = {
 static const char BLANK_LINE[] = "                    ";
 
 gps_display::gps_display(uint8_t i2c_addr)
+#if defined(USE_PCF8574T) || defined(USE_PCF8574AT)
+  : lcd(i2c_addr, LCD_COLS, LCD_ROWS),
+#elif defined(USE_MCP23008)
   : lcd(i2c_addr - 0x70),
+#endif
     searching(false) {
+#if defined(USE_PCF8574T) || defined(USE_PCF8574AT)
+  lcd.init();
+#elif defined(USE_MCP23008)
   lcd.begin(LCD_COLS, LCD_ROWS);
+#endif
   lcd.clear();
   lcd.setBacklight(HIGH);
   lcd.createChar(CHAR_DEGREES, CHAR_DEGREES_BITMAP);

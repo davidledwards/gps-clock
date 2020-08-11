@@ -23,10 +23,18 @@ const uint8_t GPS_TX_PIN = 8;
 // Number of milliseconds before reading the GPS.
 const uint32_t GPS_SYNC_MILLIS = 2000;
 
-// i2c address of the 20x4 LCD display used to show GPS information.
+// I2C address of the 20x4 LCD display used to show GPS information.
+#if defined(USE_PCF8574T)
+const uint8_t GPS_I2C_ADDR = 0x27;
+#elif defined(USE_PCF8574AT)
+const uint8_t GPS_I2C_ADDR = 0x3F;
+#elif defined(USE_MCP23008)
 const uint8_t GPS_I2C_ADDR = 0x73;
+#else
+#error define one of: USE_PCF8574T, USE_PCF8574AT, USE_MCP23008
+#endif
 
-// i2c addresses of the various 4-digit LED displays used to show local time.
+// I2C addresses of the various 4-digit LED displays used to show local time.
 const uint8_t TIME_I2C_ADDR = 0x70;
 const uint8_t MDAY_I2C_ADDR = 0x71;
 const uint8_t YEAR_I2C_ADDR = 0x72;

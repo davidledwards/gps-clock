@@ -21,6 +21,15 @@ BOARD_NAME = $(BOARD_CORE):uno
 # the environment, otherwise the value defaults to /dev/null.
 PORT ?= /dev/null
 
+# This variable specifies the I/O expander used by the LCD display I2C interface, which is used to
+# determine the I2C address as well as the library.
+#
+# Recognized options:
+# USE_PCF8574T (default)
+# USE_PCF8574AT
+# USE_MCP23008
+IO_EXPANDER ?= USE_PCF8574T
+
 # A convenient technique for deterministically placing the build directoy somewhere other than the
 # project directory since this is not allowed.
 BUILD_ROOT = $(abspath $(TMPDIR)/build)
@@ -30,8 +39,9 @@ BUILD_FILES_PREFIX = $(SKETCH).$(subst :,.,$(BOARD_NAME))
 # Library dependencies.
 LIBS = \
 	"Adafruit LED Backpack Library"@1.1.7 \
+	"LiquidCrystal I2C"@1.1.2 \
 	"Adafruit LiquidCrystal"@1.1.0 \
-	"Adafruit GPS Library"@1.5.1 \
+	"Adafruit GPS Library"@1.5.2 \
 	"SimpleRotary"@1.1.2 \
 	"Time"@1.6.0
 
@@ -48,6 +58,10 @@ help :
 	@echo "  build     build sketch"
 	@echo "  upload    upload program to board"
 	@echo "  clean     remove all transient build files"
+	@echo ""
+	@echo "environment:"
+	@echo "  PORT=$(PORT)"
+	@echo "  IO_EXPANDER=$(IO_EXPANDER)"
 
 all : clean install build upload
 
@@ -58,6 +72,7 @@ $(PROG) : $(SRCS)
 	arduino-cli compile \
 		--build-path $(BUILD_PATH) \
 		--build-cache-path $(BUILD_PATH) \
+		--build-properties build.extra_flags=-D$(IO_EXPANDER) \
 		-b $(BOARD_NAME)
 
 build : $(PROG)
