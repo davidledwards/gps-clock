@@ -20,6 +20,7 @@
 #include "clockdisplay.h"
 #include "tzselector.h"
 #include "localstorage.h"
+#include "lightmonitor.h"
 
 static local_storage* storage;
 static gps_unit* gps;
@@ -27,6 +28,7 @@ static local_clock* clock;
 static tz_selector* tz_sel;
 static gps_display* gps_disp;
 static clock_display* clock_disp;
+static light_monitor* light_mon;
 
 void setup() {
   // Fetch state from persistent storage.
@@ -47,8 +49,11 @@ void setup() {
   gps_disp = new gps_display(GPS_I2C_ADDR);
   gps_disp->show_tz(tz_sel->get_tz());
 
+  // Initialize photoresistor-based light monitor.
+  light_mon = new light_monitor(PHOTORESISTOR_PIN);
+
   // Initialize localized clock display.
-  clock_disp = new clock_display(TIME_I2C_ADDR, MDAY_I2C_ADDR, YEAR_I2C_ADDR);
+  clock_disp = new clock_display(TIME_I2C_ADDR, MDAY_I2C_ADDR, YEAR_I2C_ADDR, light_mon->get_brightness());
   clock_disp->show_unset();
 }
 
@@ -88,4 +93,9 @@ void loop() {
   // If the local clock has changed since the last tick, then update the display.
   if (clock->tick())
     clock_disp->show_now(clock->now());
+
+  // Change brightness level of the clock. In most cases, this results in a no-op since the light
+  // monitor samples on a periodic basis and the clock will only adjust brightness if the level
+  // actually changed.
+  clock_disp->set_brightness(light_mon->get_brightness());
 }

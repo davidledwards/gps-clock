@@ -17,7 +17,8 @@
 
 static const uint8_t DASH_BITMASK = 0b01000000;
 
-clock_display::clock_display(uint8_t time_i2c_addr, uint8_t mday_i2c_addr, uint8_t year_i2c_addr) {
+clock_display::clock_display(uint8_t time_i2c_addr, uint8_t mday_i2c_addr, uint8_t year_i2c_addr, uint8_t brightness)
+  : cur_brightness(brightness) {
   init_led(time_led, time_i2c_addr);
   init_led(mday_led, mday_i2c_addr);
   init_led(year_led, year_i2c_addr);
@@ -35,9 +36,18 @@ void clock_display::show_now(const local_time& time) {
   show_time(time);
 }
 
+void clock_display::set_brightness(uint8_t brightness) {
+  if (brightness != cur_brightness) {
+    time_led.setBrightness(brightness);
+    mday_led.setBrightness(brightness);
+    year_led.setBrightness(brightness);
+    cur_brightness = brightness;
+  }
+}
+
 void clock_display::init_led(const Adafruit_7segment& led, uint8_t i2c_addr) {
   led.begin(i2c_addr);
-  led.setBrightness(0);
+  led.setBrightness(cur_brightness);
   led.clear();
   led.writeDisplay();
 }

@@ -23,14 +23,16 @@
 
 class clock_display {
 public:
-  clock_display(uint8_t time_i2c_addr, uint8_t mday_i2c_addr, uint8_t year_i2c_addr);
+  clock_display(uint8_t time_i2c_addr, uint8_t mday_i2c_addr, uint8_t year_i2c_addr, uint8_t brightness);
   void show_unset();
   void show_now(const local_time& time);
+  void set_brightness(uint8_t brightness);
 
 private:
   const Adafruit_7segment time_led;
   const Adafruit_7segment mday_led;
   const Adafruit_7segment year_led;
+  uint8_t cur_brightness;
 
   void init_led(const Adafruit_7segment& led, uint8_t i2c_addr);
   void show_dashes(const Adafruit_7segment& led);
