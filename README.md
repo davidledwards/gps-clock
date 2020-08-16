@@ -5,11 +5,6 @@ A GPS-synchronized digital clock based on the open-source [Arduino](https://ardu
 * [Overview](#overview)
 * [Hardware](#hardware)
 * [Assembly](#assembly)
-  * [LED Displays](#led-displays)
-  * [LCD Display](#lcd-display)
-  * [Rotary Encoder](#rotary-encoder)
-  * [GPS Module](#gps-module)
-  * [Connected Components](#connected-components)
 * [Software](#software)
 * [License](#license)
 
@@ -23,6 +18,8 @@ Bear with me if you happen to be a long-time Arduino hacker and developer, as th
 
 ## Hardware
 
+### Generation 1
+
 * [Elegoo Uno R3](https://www.amazon.com/gp/product/B01EWOE0UU) (1)
 * [Adafruit Ultimate GPS Logger Shield](https://www.amazon.com/gp/product/B00E4WEX76) (1)
 * [Adafruit 0.56" 4-Digit 7-Segment Display with I2C Backpack](https://www.amazon.com/gp/product/B00XW2L6SS) (3)
@@ -31,6 +28,27 @@ Bear with me if you happen to be a long-time Arduino hacker and developer, as th
 * [Adafruit Rotary Encoder](https://www.amazon.com/gp/product/B00SK8KK5Y) (1)
 * [ElectroCookie Large Solderable PCB](https://www.amazon.com/gp/product/B07YBYZCTN) (1)
 * [ElectroCookie Mini Solderable PCB](https://www.amazon.com/gp/product/B081MSKJJX) (1)
+
+### Generation 2
+
+This generation of the clock included several refinements and improvements.
+
+The time segment of the LED display was changed to green to create a visual distinction with the year/month/day LEDs, which turned out to be a nice usability improvement.
+
+I decided to experiment with a photoresistor that is used to detect the ambient light level and adjust the brightness of the LED displays.
+
+The mini PCB from generation 1 was eliminated since the rotary encoder was mounted directly on the GPS logger shield. There was also ample space on the GPS board to solder the photoresistor and pulldown resistor.
+
+* [Elegoo Uno R3](https://www.amazon.com/gp/product/B01EWOE0UU) (1)
+* [Adafruit Ultimate GPS Logger Shield](https://www.amazon.com/gp/product/B00E4WEX76) (1)
+* [Adafruit 0.56" 4-Digit 7-Segment Display with I2C Backpack (white)](https://www.adafruit.com/product/1002) (2)
+* [Adafruit 0.56" 4-Digit 7-Segment Display with I2C Backpack (green)](https://www.adafruit.com/product/880) (1)
+* [JANSANE 20x4 LCD Display](https://www.amazon.com/gp/product/B07D7ZQVDR) (1)
+* [Adafruit Rotary Encoder](https://www.amazon.com/gp/product/B00SK8KK5Y) (1)
+* [ElectroCookie Large Solderable PCB](https://www.amazon.com/gp/product/B07YBYZCTN) (1)
+* [Photoresistor](https://www.amazon.com/Photoresistor/s?k=Photoresistor)
+* [10K Ohm Resistor](https://www.amazon.com/10k-ohm-resistor/s?k=10k+ohm+resistor)
+* [220 Ohm Resistor](https://www.amazon.com/slp/220-ohm-resistor/pwc2jfx3cwoh9sf)
 
 ## Assembly
 
@@ -76,6 +94,16 @@ And, this is a view of the back side of the LCD. Notice that I used the screw he
 
 <img src="images/lcd-back.jpg" alt="Back side of LCD" style="zoom:25%;" />
 
+#### Generation 2
+
+I decided to purchase a two-pack of the JANSANE 20x4 LCD displays instead of the Adafruit variant used in generation 1. It turns out that this introduced some complications in the source code because the JANSANE and Adafruit displays use different types of I/O expander chips.
+
+The JANSANE uses a PCF8574T and the Adafruit uses a MCP23008. In short, this meant that the library needed to change as well as the I2C address. To further complicate, there are two variants of the JANSANE I/O expander, PCF8574T and PCF8574AT. The former defaults to the I2C address of `0x27` and the latter to `0x3F`. Because the PCF* chips use I2C addresses that do not conflict with the other Adafruit components, there was no need to solder jumpers on the backpack. The source code was modified to support conditional compilation depending on the type of I/O expander, which must be specified in the environment.
+
+The JANSANE backpack attached to the LCD requires a jumper to enable the backlight. Rather than just close the circuit, I decided to use a 220 ohm resistor, which turned out to soften the display a bit.
+
+<img src="images/lcd-jansane-back.jpg" alt="Back side of JANSANE LCD" style="zoom:25%;" />
+
 ### Rotary Encoder
 
 The rotary encoder used in this project rotates infinitely in both directions with a nice mechanical pulse as it moves around. It also has a push button action. The encoder is used to select the timezone in 30-minute increments. For a variety of reasons, I kept the hardware and software simple with respect to timezone. Indeed, there are web services that will convert latitude/longitude to timezone, but this clock was designed to be self-contained and not rely on the presence of a wifi endpoint. The timezone offset is selected by rotating the encoder in either direction, but the selection is not committed until the encoder is pressed. Once committed, the local time shown in the LED display is modified accordingly. If a timezone is not selected, local time is always equivalent to UTC. The timezone is also stored in EEPROM so it can be recovered if the power source is interrupted.
@@ -87,6 +115,10 @@ As seen in this photo, the rotary encoder is mounted on a small PCB. It could al
 This is a view of the back side of the PCB. Similar to other components, pin headers are used for making connections to the encoder.
 
 <img src="images/rotary-back.jpg" alt="Back side of rotary encoder" style="zoom:25%;" />
+
+#### Generation 2
+
+The rotary encoder was mounted directly on the GPS board, which eliminated the need for a separate mini PCB.
 
 ### GPS Module
 
@@ -106,6 +138,16 @@ This is the other side of the GPS. The visible pin headers (`9`, `10`, `11`) con
 
 <img src="images/gps-module-pins-digital.jpg" alt="Side view of GPS mounted to Arduino" style="zoom:25%;" />
 
+#### Generation 2
+
+The GPS board radically changed in this generation for two reasons. First, the rotary encoder was mounted directly on the GPS board. Second, the newly introduced photoresistor and its corresponding 10K ohm pulldown resistor were also soldered to the board. This simplified wiring and eliminated the mini PCB. It was also more aesthetically pleasing because the encoder was further recessed and less prominent when compared to generation 1.
+
+The photoresistor is nearly invisible because of its size. It sits adjacent to the GPS receiver near its top-left corner. The pulldown resistor is located just below the photoresistor.
+
+<img src="images/gps-module-front.jpg" alt="Front of GPS module" style="zoom:25%;" />
+
+<img src="images/gps-module-back.jpg" alt="Back of GPS module" style="zoom:25%;" />
+
 ### Connected Components
 
 This is a view of all components connected together and arranged into a final product. The use of pin headers made it very convenient to delay the majority of decisions about the layout of components in a box or similar structure. However, during the final assembly process, I had to eliminate some of the headers since they were obstructing other components. Also, notice how the rotary encoder is stacked on top of the GPS module.
@@ -119,6 +161,18 @@ This is a view of all components connected together and arranged into a final pr
 This is an operating view of the clock with realtime GPS information displayed on the LCD. Once a satellite fix has been established, the LCD shows the latitude and longitude in decimal degrees format. It also displays the number of satellites for which a fix has been established and the UTC time. The selected timezone is also shown, but this is governed by the rotary encoder, not a data point from the GPS module.
 
 <img src="images/final-operating.jpg" alt="Operating view of final assembly" style="zoom:25%;" />
+
+### Generation 2
+
+The second generation turned out to be a slightly nicer design in the final assembly, primarily because the mini PCB was eliminated.
+
+<img src="images/final-2-right.jpg" alt="Right view of final assembly" style="zoom:25%;" />
+
+<img src="images/final-2-left.jpg" alt="Left view of final assembly" style="zoom:25%;" />
+
+<img src="images/final-2-back.jpg" alt="Back view of final assembly" style="zoom:25%;" />
+
+<img src="images/final-2-operating.jpg" alt="Operating view of final assembly" style="zoom:25%;" />
 
 
 ## Software
@@ -135,6 +189,26 @@ Builds the sketch and its associated C++ files. The output directory of the buil
 
 ```sh
 make build
+```
+
+Make sure `IO_EXPANDER` is defined in the environment based on the type of I2C backpack attached to the LCD display, as this affects the build. The makefile defaults to `PCF8574T`.
+
+For Adafruit LCD display:
+
+```sh
+export IO_EXPANDER=USE_MCP23008
+```
+
+For JANSANE LCD display (two types, so verify which chip is attached to the backpack):
+
+```sh
+export IO_EXPANDER=USE_PCF8574T
+```
+
+or
+
+```sh
+export IO_EXPANDER=USE_PCF8574AT
 ```
 
 Uploads the program to the Arduino board. Make sure `PORT` is defined by the environment or provided as an argument to `make`. `PORT` is the serial port to which the Arduino board is attached. If undefined, it defaults to `/dev/null` and will cause an upload attempt to fail.
