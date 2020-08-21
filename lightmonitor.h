@@ -27,7 +27,9 @@ private:
   uint8_t pin;
   uint16_t cur_reading;
   uint8_t cur_brightness;
-  uint32_t last_sample;
+  uint32_t last_reading_time;
+  uint16_t last_reading;
+  uint32_t waiting_start;
 
   static uint8_t to_brightness(uint16_t reading);
 };
