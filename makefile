@@ -31,7 +31,7 @@ BUILD_FILES_PREFIX = $(SKETCH).$(subst :,.,$(BOARD_NAME))
 LIBS = \
 	"Adafruit LED Backpack Library"@1.1.7 \
 	"Adafruit LiquidCrystal"@1.1.0 \
-	"Adafruit GPS Library"@1.5.1 \
+	"Adafruit GPS Library"@1.5.2 \
 	"SimpleRotary"@1.1.2 \
 	"Time"@1.6.0
 
@@ -48,6 +48,9 @@ help :
 	@echo "  build     build sketch"
 	@echo "  upload    upload program to board"
 	@echo "  clean     remove all transient build files"
+	@echo ""
+	@echo "environment:"
+	@echo "  PORT=$(PORT)"
 
 all : clean install build upload
 
