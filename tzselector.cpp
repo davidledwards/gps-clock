@@ -30,7 +30,7 @@ static const uint32_t IDLE_RESET_MS = 10000;
 
 // Period of time before the encoder reports the next event, which is designed to remove noise from the
 // electrical component.
-static const uint32_t ENCODER_DELAY_MS = 200;
+static const uint32_t ENCODER_DELAY_MS = 5;
 
 tz_selector::tz_selector(uint8_t a_pin, uint8_t b_pin, uint8_t button_pin, long tz_default)
   : encoder(a_pin, b_pin, button_pin),
