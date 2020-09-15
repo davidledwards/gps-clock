@@ -47,8 +47,9 @@ void clock_display::set_brightness(uint8_t brightness) {
   }
 }
 
-void clock_display::set_mode(clock_mode mode) {
-  this->mode = mode;
+clock_mode clock_display::toggle_mode() {
+  mode = mode == clock_12 ? clock_24 : clock_12;
+  return mode;
 }
 
 void clock_display::init_led(const Adafruit_7segment& led, uint8_t i2c_addr) {

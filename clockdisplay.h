@@ -33,7 +33,7 @@ public:
   void show_unset();
   void show_now(const local_time& time);
   void set_brightness(uint8_t brightness);
-  void set_mode(clock_mode mode);
+  clock_mode toggle_mode();
 
 private:
   const Adafruit_7segment time_led;
