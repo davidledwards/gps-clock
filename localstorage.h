@@ -17,13 +17,15 @@
 #define __LOCALSTORAGE_H
 
 #include <Arduino.h>
+#include "clockdisplay.h"
 
 class local_state {
 public:
   long tz_adjust;
+  clock_mode mode;
 
 private:
-  local_state(long tz_adjust);
+  local_state(long tz_adjust, clock_mode mode);
   friend class local_storage;
 };
 
@@ -32,6 +34,7 @@ public:
   local_storage();
   local_state read();
   void write_tz(long tz_adjust);
+  void write_mode(clock_mode mode);
 };
 
 #endif

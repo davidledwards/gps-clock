@@ -17,8 +17,10 @@
 
 static const uint8_t DASH_BITMASK = 0b01000000;
 
-clock_display::clock_display(uint8_t time_i2c_addr, uint8_t mday_i2c_addr, uint8_t year_i2c_addr, uint8_t brightness)
-  : cur_brightness(brightness) {
+clock_display::clock_display(uint8_t time_i2c_addr, uint8_t mday_i2c_addr, uint8_t year_i2c_addr,
+  uint8_t brightness, clock_mode mode)
+  : cur_brightness(brightness),
+    mode(mode) {
   init_led(time_led, time_i2c_addr);
   init_led(mday_led, mday_i2c_addr);
   init_led(year_led, year_i2c_addr);
@@ -43,6 +45,10 @@ void clock_display::set_brightness(uint8_t brightness) {
     year_led.setBrightness(brightness);
     cur_brightness = brightness;
   }
+}
+
+void clock_display::set_mode(clock_mode mode) {
+  this->mode = mode;
 }
 
 void clock_display::init_led(const Adafruit_7segment& led, uint8_t i2c_addr) {
@@ -78,10 +84,21 @@ void clock_display::show_mday(const local_time& time) {
 }
 
 void clock_display::show_time(const local_time& time) {
-  time_led.writeDigitNum(0, time.hour / 10 % 10);
-  time_led.writeDigitNum(1, time.hour % 10);
+  if (mode == clock_12) {
+    uint8_t hour = time.hour % 12;
+    if (hour == 0)
+      hour = 12;
+    if (hour < 10)
+      time_led.writeDigitRaw(0, 0x00);
+    else
+      time_led.writeDigitNum(0, hour / 10 % 10);
+    time_led.writeDigitNum(1, hour % 10);
+  } else {
+    time_led.writeDigitNum(0, time.hour / 10 % 10);
+    time_led.writeDigitNum(1, time.hour % 10);
+  }
   time_led.drawColon(true);
   time_led.writeDigitNum(3, time.minute / 10 % 10);
-  time_led.writeDigitNum(4, time.minute % 10);
+  time_led.writeDigitNum(4, time.minute % 10, mode == clock_12);
   time_led.writeDisplay();
 }
