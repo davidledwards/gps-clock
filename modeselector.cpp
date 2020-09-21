@@ -20,7 +20,7 @@ static const uint32_t DEBOUNCE_MS = 50;
 
 mode_selector::mode_selector(uint8_t pin)
   : button(pin) {
-  button.setDebounceTime(50);
+  button.setDebounceTime(DEBOUNCE_MS);
 }
 
 bool mode_selector::toggled() {
