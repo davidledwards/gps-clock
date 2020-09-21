@@ -78,6 +78,10 @@ The format is also stored in EEPROM, which means the clock will remember the las
 
 ## Assembly
 
+### Circuit Diagram
+
+<img src="images/gps-clock.png" alt="Circuit diagram"/>
+
 ### LED Displays
 
 Three 4-digit LED displays are used to show the local time in YYYY.MM.DD HH:MM format. The I2C backpacks are packaged unattached to the LED displays, which means they requiring soldering as part of the assembly process. The I2C backpacks are very convenient because they essentially need only two (2) pins on the Aurduino board for sending commands to the display. Furthermore, since I2C is a serial protocol that acts like a bus, multiple I2C-aware components can be attached to the same pins. However, they do require unique addresses, which will be discussed shortly.
