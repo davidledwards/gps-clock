@@ -43,7 +43,8 @@ LIBS = \
 	"Adafruit LiquidCrystal"@1.1.0 \
 	"Adafruit GPS Library"@1.5.2 \
 	"SimpleRotary"@1.1.2 \
-	"Time"@1.6.0
+	"Time"@1.6.0 \
+	"ezButton"@1.0.3
 
 # Arduino core library dependency.
 CORE = $(BOARD_CORE)@1.8.3

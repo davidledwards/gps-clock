@@ -13,28 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef __LOCALSTORAGE_H
-#define __LOCALSTORAGE_H
+#ifndef __MODESELECTOR_H
+#define __MODESELECTOR_H
 
 #include <Arduino.h>
-#include "clockdisplay.h"
+#include <ezButton.h>
 
-class local_state {
+class mode_selector {
 public:
-  long tz_adjust;
-  clock_mode mode;
+  mode_selector(uint8_t pin);
+  bool toggled();
 
 private:
-  local_state(long tz_adjust, clock_mode mode);
-  friend class local_storage;
-};
-
-class local_storage {
-public:
-  local_storage();
-  local_state read();
-  void write_tz(long tz_adjust);
-  void write_mode(clock_mode mode);
+  ezButton button;
 };
 
 #endif

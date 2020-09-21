@@ -19,6 +19,7 @@
 #include "localclock.h"
 #include "clockdisplay.h"
 #include "tzselector.h"
+#include "modeselector.h"
 #include "localstorage.h"
 #include "lightmonitor.h"
 
@@ -26,6 +27,7 @@ static local_storage* storage;
 static gps_unit* gps;
 static local_clock* clock;
 static tz_selector* tz_sel;
+static mode_selector* mode_sel;
 static gps_display* gps_disp;
 static clock_display* clock_disp;
 static light_monitor* light_mon;
@@ -45,6 +47,9 @@ void setup() {
   // Initialize timezone selector componnent.
   tz_sel = new tz_selector(TZ_A_PIN, TZ_B_PIN, TZ_BUTTON_PIN, state.tz_adjust);
 
+  // Initialize 12/24 time selector.
+  mode_sel = new mode_selector(MODE_PIN);
+
   // Initialize GPS display.
   gps_disp = new gps_display(GPS_I2C_ADDR);
   gps_disp->show_tz(tz_sel->get_tz());
@@ -53,7 +58,7 @@ void setup() {
   light_mon = new light_monitor(PHOTORESISTOR_PIN);
 
   // Initialize localized clock display.
-  clock_disp = new clock_display(TIME_I2C_ADDR, MDAY_I2C_ADDR, YEAR_I2C_ADDR, light_mon->get_brightness());
+  clock_disp = new clock_display(TIME_I2C_ADDR, MDAY_I2C_ADDR, YEAR_I2C_ADDR, light_mon->get_brightness(), state.mode);
   clock_disp->show_unset();
 }
 
@@ -65,6 +70,14 @@ void loop() {
     long tz_adjust = tz_sel->get_tz();
     clock->set_tz(tz_adjust);
     storage->write_tz(tz_adjust);
+  }
+
+  // Read the 12/24 selector and toggle the current mode if activated, which also requires an
+  // immediate refresh of the display so as not to wait until the next tick.
+  if (mode_sel->toggled()) {
+    clock_mode mode = clock_disp->toggle_mode();
+    clock_disp->show_now(clock->now());
+    storage->write_mode(mode);
   }
 
   // Read the GPS module, which will almost always return `gps_ignore` once a satellite fix has

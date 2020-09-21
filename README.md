@@ -20,7 +20,9 @@ Bear with me if you happen to be a long-time Arduino hacker and developer, as th
 
 ### Generation 1
 
-There are the components of the original clock design.
+https://github.com/davidledwards/gps-clock/tree/release-1
+
+These are the components of the original clock design.
 
 * [Elegoo Uno R3](https://www.amazon.com/gp/product/B01EWOE0UU) (1)
 * [Adafruit Ultimate GPS Logger Shield](https://www.amazon.com/gp/product/B00E4WEX76) (1)
@@ -32,6 +34,8 @@ There are the components of the original clock design.
 * [ElectroCookie Mini Solderable PCB](https://www.amazon.com/gp/product/B081MSKJJX) (1)
 
 ### Generation 2
+
+https://github.com/davidledwards/gps-clock/tree/release-2
 
 This generation of the clock included several refinements and improvements.
 
@@ -52,7 +56,31 @@ The mini PCB from generation 1 was eliminated since the rotary encoder was mount
 * [10K Ohm Resistor](https://www.amazon.com/10k-ohm-resistor/s?k=10k+ohm+resistor) (1)
 * [220 Ohm Resistor](https://www.amazon.com/slp/220-ohm-resistor/pwc2jfx3cwoh9sf) (1)
 
+### Generation 3
+
+https://github.com/davidledwards/gps-clock/tree/release-3
+
+This generation adds a push button to toggle between 12- and 24-hour formats. In 12-hour format, the LED display illuminates a dot on the lower-right edge of the time component. Additionally, it does not zero-pad the hour as seen in the 24-hour format. The goal was to make the format visually obvious to the observer without introducing any additional components.
+
+The format is also stored in EEPROM, which means the clock will remember the last choice should it lose power.
+
+* [Elegoo Uno R3](https://www.amazon.com/gp/product/B01EWOE0UU) (1)
+* [Adafruit Ultimate GPS Logger Shield](https://www.amazon.com/gp/product/B00E4WEX76) (1)
+* [Adafruit 0.56" 4-Digit 7-Segment Display with I2C Backpack (green)](https://www.adafruit.com/product/880) (2)
+* [Adafruit 0.56" 4-Digit 7-Segment Display with I2C Backpack (blue)](https://www.adafruit.com/product/881) (1)
+* [JANSANE 20x4 LCD Display](https://www.amazon.com/gp/product/B07D7ZQVDR) (1)
+* [Adafruit Rotary Encoder](https://www.amazon.com/gp/product/B00SK8KK5Y) (1)
+* [ElectroCookie Large Solderable PCB](https://www.amazon.com/gp/product/B07YBYZCTN) (1)
+* [Photoresistor](https://www.amazon.com/Photoresistor/s?k=Photoresistor) (1)
+* [10K Ohm Resistor](https://www.amazon.com/10k-ohm-resistor/s?k=10k+ohm+resistor) (1)
+* [220 Ohm Resistor](https://www.amazon.com/slp/220-ohm-resistor/pwc2jfx3cwoh9sf) (1)
+* [Tactile Button](https://www.adafruit.com/product/367) (1)
+
 ## Assembly
+
+### Circuit Diagram
+
+<img src="images/gps-clock.png" alt="Circuit diagram"/>
 
 ### LED Displays
 
@@ -150,6 +178,14 @@ The photoresistor is nearly invisible because of its size. It sits adjacent to t
 
 <img src="images/gps-module-back.jpg" alt="Back of GPS module" style="zoom:25%;" />
 
+#### Generation 3
+
+The top of the GPS board was cleaned up in this generation by moving all wiring to the underside. The rotary encoder has been moved closer to the edge of the PCB to make room for the tactile button, which is used to toggle between 12- and 24-hour format.
+
+<img src="images/gps-3-front.jpg" alt="Front of GPS module" style="zoom:25%;" />
+
+<img src="images/gps-3-back.jpg" alt="Back of GPS module" style="zoom:25%;" />
+
 ### Connected Components
 
 This is a view of all components connected together and arranged into a final product. The use of pin headers made it very convenient to delay the majority of decisions about the layout of components in a box or similar structure. However, during the final assembly process, I had to eliminate some of the headers since they were obstructing other components. Also, notice how the rotary encoder is stacked on top of the GPS module.
@@ -175,6 +211,20 @@ The second generation turned out to be a slightly nicer design in the final asse
 <img src="images/final-2-back.jpg" alt="Back view of final assembly" style="zoom:25%;" />
 
 <img src="images/final-2-operating.jpg" alt="Operating view of final assembly" style="zoom:25%;" />
+
+#### Generation 3
+
+Very little changed in comparison to generation 2 except for moving wires to the underside of PCBs. This is also evident on the face of the clock in which prior generations had wires soldered on the front side.
+
+The colors of the LEDs were also changed to green (year/month) and blue (time), but this was mainly due to personal taste.
+
+The operating view below shows 12-hour format enabled.
+
+<img src="images/final-3-front.jpg" alt="Front view of final assembly" style="zoom:25%;" />
+
+<img src="images/final-3-back.jpg" alt="Back view of final assembly" style="zoom:25%;" />
+
+<img src="images/final-3-operating.jpg" alt="Operating view of final assembly" style="zoom:25%;" />
 
 
 ## Software

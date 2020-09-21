@@ -47,4 +47,7 @@ const uint8_t TZ_BUTTON_PIN = 11;
 // Analog pin connected to photoresistor for light monitor.
 const uint8_t PHOTORESISTOR_PIN = 0;
 
+// Digital pin connected to 12/24 time selector button.
+const uint8_t MODE_PIN = 2;
+
 #endif
