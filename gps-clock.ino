@@ -48,7 +48,7 @@ void setup() {
   gps_disp->show_tz(tz_sel->get_tz());
 
   // Initialize localized clock display.
-  clock_disp = new clock_display(TIME_I2C_ADDR, MDAY_I2C_ADDR, YEAR_I2C_ADDR);
+  clock_disp = new clock_display(TIME_I2C_ADDR, MDAY_I2C_ADDR, YEAR_I2C_ADDR, 0, clock_12);
   clock_disp->show_unset();
 }
 
