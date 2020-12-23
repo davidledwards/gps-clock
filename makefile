@@ -31,7 +31,7 @@ BUILD_FILES_PREFIX = $(SKETCH).$(subst :,.,$(BOARD_NAME))
 LIBS = \
 	"Adafruit LED Backpack Library"@1.1.7 \
 	"Adafruit LiquidCrystal"@1.1.0 \
-	"Adafruit GPS Library"@1.5.2 \
+	"Adafruit GPS Library"@1.5.3 \
 	"SimpleRotary"@1.1.2 \
 	"Time"@1.6.0
 
@@ -68,6 +68,7 @@ build : $(PROG)
 upload : build
 	@echo "uploading to ${PORT}..."
 	arduino-cli upload \
+	  --input-dir $(BUILD_PATH) \
 		-b $(BOARD_NAME) \
 		-p $(PORT)
 
