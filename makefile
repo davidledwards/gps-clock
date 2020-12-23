@@ -41,7 +41,7 @@ LIBS = \
 	"Adafruit LED Backpack Library"@1.1.7 \
 	"LiquidCrystal I2C"@1.1.2 \
 	"Adafruit LiquidCrystal"@1.1.0 \
-	"Adafruit GPS Library"@1.5.2 \
+	"Adafruit GPS Library"@1.5.3 \
 	"SimpleRotary"@1.1.2 \
 	"Time"@1.6.0 \
 	"ezButton"@1.0.3
@@ -73,7 +73,7 @@ $(PROG) : $(SRCS)
 	arduino-cli compile \
 		--build-path $(BUILD_PATH) \
 		--build-cache-path $(BUILD_PATH) \
-		--build-properties build.extra_flags=-D$(IO_EXPANDER) \
+		--build-property build.extra_flags=-D$(IO_EXPANDER) \
 		-b $(BOARD_NAME)
 
 build : $(PROG)
@@ -81,6 +81,7 @@ build : $(PROG)
 upload : build
 	@echo "uploading to ${PORT}..."
 	arduino-cli upload \
+	  --input-dir $(BUILD_PATH) \
 		-b $(BOARD_NAME) \
 		-p $(PORT)
 
