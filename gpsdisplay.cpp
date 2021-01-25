@@ -74,6 +74,10 @@ void gps_display::show_tz(long tz_adjust) {
   write_tz(tz_adjust);
 }
 
+void gps_display::show_backlight(bool on) {
+  lcd.setBacklight(on ? HIGH : LOW);
+}
+
 void gps_display::write_lat(const gps_info& info) {
   float lat;
   char lat_dir;
