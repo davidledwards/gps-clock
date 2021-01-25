@@ -30,7 +30,7 @@ static const uint32_t IDLE_RESET_MS = 10000;
 
 // Period of time before the encoder reports the next event, which is designed to remove noise from the
 // electrical component.
-static const uint32_t ENCODER_DELAY_MS = 5;
+static const uint32_t ENCODER_DELAY_MS = 20;
 
 tz_selector::tz_selector(uint8_t a_pin, uint8_t b_pin, uint8_t button_pin, long tz_default)
   : encoder(a_pin, b_pin, button_pin),
@@ -45,15 +45,16 @@ tz_action tz_selector::read() {
     // Prioritize button pushes over rotation since rotation can often occur as a side effect of pressing
     // the button. This ensures that the current selection is confirmed.
     tz_confirmed = tz_proposed;
+    last_action = 0;
     return tz_confirm;
   } else {
     switch (encoder.rotate()) {
       case 0:
         // Nothing to report by the encoder, but make sure if an unconfirmed change has been idle for
         // a period of time, then it gets automatically reset.
-        if (millis() - last_action > IDLE_RESET_MS) {
+        if (last_action > 0 && millis() - last_action > IDLE_RESET_MS) {
           tz_proposed = tz_confirmed;
-          last_action = millis();
+          last_action = 0;
           return tz_propose;
         } else
           return tz_idle;
