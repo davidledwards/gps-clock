@@ -26,6 +26,7 @@ public:
   void show_info(const gps_info& info, const gps_time& time);
   void show_searching();
   void show_tz(long tz_adjust);
+  void show_backlight(bool on);
 
 private:
   const Adafruit_LiquidCrystal lcd;

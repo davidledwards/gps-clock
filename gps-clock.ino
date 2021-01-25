@@ -28,6 +28,9 @@ static tz_selector* tz_sel;
 static gps_display* gps_disp;
 static clock_display* clock_disp;
 
+// Time of last TZ selector movement or 0 if LCD display is turned off.
+static uint32_t last_movement;
+
 void setup() {
   // Fetch state from persistent storage.
   storage = new local_storage();
@@ -50,12 +53,29 @@ void setup() {
   // Initialize localized clock display.
   clock_disp = new clock_display(TIME_I2C_ADDR, MDAY_I2C_ADDR, YEAR_I2C_ADDR, 0, clock_12);
   clock_disp->show_unset();
+
+  // Keep LCD backlight initially on when clock is restarted.
+  last_movement = millis();
 }
 
 void loop() {
   // Read the TZ selector before making updates to the displays since it might result in a change
   // to the timezone.
   tz_action action = tz_sel->read();
+
+  // Intelligently turn LCD backlight on/off.
+  if (action == tz_idle) {
+    if (last_movement > 0 && millis() - last_movement > AUTO_OFF_MILLIS) {
+      gps_disp->show_backlight(false);
+      last_movement = 0;
+    }
+  } else {
+    if (last_movement == 0)
+      gps_disp->show_backlight(true);
+    last_movement = millis();
+  }
+
+  // Possibly update timezone.
   if (action == tz_confirm) {
     long tz_adjust = tz_sel->get_tz();
     clock->set_tz(tz_adjust);
