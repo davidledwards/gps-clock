@@ -23,6 +23,10 @@ const uint8_t GPS_TX_PIN = 8;
 // Number of milliseconds before reading the GPS.
 const uint32_t GPS_SYNC_MILLIS = 2000;
 
+// Number of milliseconds before LCD backlight is turned off after no movement
+// of TZ selector.
+const uint32_t AUTO_OFF_MILLIS = 30000;
+
 // I2C address of the 20x4 LCD display used to show GPS information.
 #if defined(USE_PCF8574T)
 const uint8_t GPS_I2C_ADDR = 0x27;

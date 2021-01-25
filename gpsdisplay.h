@@ -32,6 +32,7 @@ public:
   void show_info(const gps_info& info, const gps_time& time);
   void show_searching();
   void show_tz(long tz_adjust);
+  void show_backlight(bool on);
 
 private:
 #if defined(USE_PCF8574T) || defined(USE_PCF8574AT)
