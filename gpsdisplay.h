@@ -17,6 +17,7 @@
 #define __GPSDISPLAY_H
 
 #include <Arduino.h>
+#include "gpsconfig.h"
 
 #if defined(USE_PCF8574T) || defined(USE_PCF8574AT)
 #include <LiquidCrystal_I2C.h>
