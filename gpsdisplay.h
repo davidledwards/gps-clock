@@ -29,6 +29,7 @@
 class gps_display {
 public:
   gps_display(uint8_t i2c_addr);
+
   void show_info(const gps_info& info, const gps_time& time);
   void show_searching();
   void show_tz(const tz_info* tz);

@@ -15,6 +15,8 @@
  */
 #include "tzdatabase.h"
 
+// Array of predefined timezones where first entry must always be "UTC", thus array size is
+// guaranteed to be greater than zero. It should be safe to always reference first element.
 static const tz_info TZ_TABLE[] = {
   tz_info {
     "UTC",
@@ -45,6 +47,7 @@ static const tz_info TZ_TABLE[] = {
   }
 };
 
+// Number of timezones.
 static const size_t TZ_TABLE_SIZE = sizeof(TZ_TABLE) / sizeof(tz_info);
 
 tz_database::tz_database() {

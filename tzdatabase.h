@@ -28,11 +28,12 @@ struct tz_info {
 
 class tz_database {
 public:
-    tz_database();
-    size_t size();
-    const tz_info* const find(const char* name);
-    size_t find_index(const char* name);
-    const tz_info* const get(size_t index);
+  tz_database();
+
+  size_t size();
+  const tz_info* const find(const char* name);
+  size_t find_index(const char* name);
+  const tz_info* const get(size_t index);
 };
 
 #endif

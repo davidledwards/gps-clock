@@ -15,7 +15,7 @@
  */
 #include "tzselector.h"
 
-// Proposed time adjustments not selected within given time frame are reverted to the previously confirmed
+// Proposed timezone not selected within given time frame is reverted to the previously confirmed
 // adjustment.
 static const uint32_t IDLE_RESET_MS = 10000;
 
@@ -23,7 +23,8 @@ static const uint32_t IDLE_RESET_MS = 10000;
 // electrical component.
 static const uint32_t ENCODER_DELAY_MS = 20;
 
-tz_selector::tz_selector(uint8_t a_pin, uint8_t b_pin, uint8_t button_pin, const tz_database* tz_db, const tz_info* tz)
+tz_selector::tz_selector(uint8_t a_pin, uint8_t b_pin, uint8_t button_pin,
+  const tz_database* tz_db, const tz_info* tz)
   : encoder(a_pin, b_pin, button_pin),
     tz_db(tz_db),
     tz_confirmed(tz_db->find_index(tz->name)),

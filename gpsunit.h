@@ -59,6 +59,7 @@ enum gps_state {
 class gps_unit {
 public:
   gps_unit(uint8_t tx_pin, uint8_t rx_pin, uint32_t sync_ms);
+
   gps_state read(gps_info& info, gps_time& time);
 
 private:

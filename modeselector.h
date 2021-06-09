@@ -22,6 +22,7 @@
 class mode_selector {
 public:
   mode_selector(uint8_t pin);
+
   bool toggled();
 
 private:

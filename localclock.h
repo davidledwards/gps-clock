@@ -37,6 +37,7 @@ private:
 class local_clock {
 public:
   local_clock(const tz_info* tz);
+
   bool tick();
   local_time now();
   void set_tz(const tz_info* tz);
