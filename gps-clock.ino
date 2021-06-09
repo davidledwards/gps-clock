@@ -79,15 +79,18 @@ void loop() {
   // to the timezone.
   tz_action action = tz_sel->read();
 
-  // Intelligently turn LCD backlight on/off.
+  // Intelligently turn LCD backlight on/off. Note that when the backlight is turned on due to a
+  // non-idle event from the TZ selector, the event is quietly suppressed.
   if (action == tz_idle) {
     if (last_movement > 0 && millis() - last_movement > AUTO_OFF_MILLIS) {
       gps_disp->show_backlight(false);
       last_movement = 0;
     }
   } else {
-    if (last_movement == 0)
+    if (last_movement == 0) {
       gps_disp->show_backlight(true);
+      action = tz_idle;
+    }
     last_movement = millis();
   }
 
