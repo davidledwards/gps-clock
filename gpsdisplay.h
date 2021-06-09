@@ -17,7 +17,8 @@
 #define __GPSDISPLAY_H
 
 #include <Arduino.h>
-#include "gpsconfig.h"
+#include "gpsunit.h"
+#include "tzdatabase.h"
 
 #if defined(USE_PCF8574T) || defined(USE_PCF8574AT)
 #include <LiquidCrystal_I2C.h>
@@ -25,14 +26,12 @@
 #include <Adafruit_LiquidCrystal.h>
 #endif
 
-#include "gpsunit.h"
-
 class gps_display {
 public:
   gps_display(uint8_t i2c_addr);
   void show_info(const gps_info& info, const gps_time& time);
   void show_searching();
-  void show_tz(long tz_adjust);
+  void show_tz(const tz_info* tz);
   void show_backlight(bool on);
 
 private:
@@ -48,7 +47,7 @@ private:
   void write_lon(const gps_info& info);
   void write_satellites(const gps_info& info);
   void write_utc(const gps_time& time);
-  void write_tz(long tz_adjust);
+  void write_tz(const tz_info* tz);
   void clear_gps();
   void clear_row(uint8_t row);
 };

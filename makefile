@@ -44,6 +44,7 @@ LIBS = \
 	"Adafruit GPS Library"@1.5.4 \
 	"SimpleRotary"@1.1.2 \
 	"Time"@1.6.0 \
+	"Timezone"@1.2.4 \
 	"ezButton"@1.0.3
 
 # Arduino core library dependency.

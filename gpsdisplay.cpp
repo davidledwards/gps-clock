@@ -70,8 +70,8 @@ void gps_display::show_searching() {
   }
 }
 
-void gps_display::show_tz(long tz_adjust) {
-  write_tz(tz_adjust);
+void gps_display::show_tz(const tz_info* tz) {
+  write_tz(tz);
 }
 
 void gps_display::show_backlight(bool on) {
@@ -150,20 +150,12 @@ void gps_display::write_utc(const gps_time& time) {
   lcd.print(" UTC");
 }
 
-void gps_display::write_tz(long tz_adjust) {
-  long tz_adjust_abs = tz_adjust < 0 ? -tz_adjust : tz_adjust;
-  long hours = tz_adjust_abs / 3600;
-  long minutes = (tz_adjust_abs % 3600) / 60;
+void gps_display::write_tz(const tz_info* tz) {
   lcd.setCursor(0, 3);
-  lcd.print("timezone: UTC");
-  lcd.print(tz_adjust < 0 ? '-' : '+');
-  if (hours < 10)
-    lcd.print('0');
-  lcd.print(hours);
-  lcd.print(':');
-  if (minutes < 10)
-    lcd.print('0');
-  lcd.print(minutes);
+  lcd.print("tz: ");
+  size_t n = lcd.print(tz->name);
+  while (n++ < 16)
+    lcd.print(" ");
 }
 
 void gps_display::clear_gps() {

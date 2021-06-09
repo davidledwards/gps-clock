@@ -18,14 +18,15 @@
 
 #include <Arduino.h>
 #include "clockdisplay.h"
+#include "tzdatabase.h"
 
 class local_state {
 public:
-  long tz_adjust;
+  const char tz_name[TZ_NAME_SIZE + 1];
   clock_mode mode;
 
 private:
-  local_state(long tz_adjust, clock_mode mode);
+  local_state(const char* tz_name, clock_mode mode);
   friend class local_storage;
 };
 
@@ -33,7 +34,7 @@ class local_storage {
 public:
   local_storage();
   local_state read();
-  void write_tz(long tz_adjust);
+  void write_tz(const char* tz_name);
   void write_mode(clock_mode mode);
 };
 

@@ -19,6 +19,7 @@
 #include <Arduino.h>
 #include <TimeLib.h>
 #include "gpsunit.h"
+#include "tzdatabase.h"
 
 class local_time {
 public:
@@ -35,16 +36,15 @@ private:
 
 class local_clock {
 public:
-  local_clock();
+  local_clock(const tz_info* tz);
   bool tick();
   local_time now();
-  void set_tz(long tz_adjust);
-  long get_tz();
+  void set_tz(const tz_info* tz);
   void sync(const gps_time& time);
 
 private:
   time_t last_time;
-  long tz_adjust;
+  const tz_info* tz;
 };
 
 #endif

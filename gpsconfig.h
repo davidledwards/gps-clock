@@ -16,6 +16,8 @@
 #ifndef __GPSCONFIG_H
 #define __GPSCONFIG_H
 
+#include <stdint.h>
+
 // Pins attached to the GPS module.
 const uint8_t GPS_RX_PIN = 7;
 const uint8_t GPS_TX_PIN = 8;

@@ -13,11 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include <Arduino.h>
 #include "gpsconfig.h"
 #include "gpsunit.h"
 #include "gpsdisplay.h"
 #include "localclock.h"
 #include "clockdisplay.h"
+#include "tzdatabase.h"
 #include "tzselector.h"
 #include "modeselector.h"
 #include "localstorage.h"
@@ -25,6 +27,7 @@
 
 static local_storage* storage;
 static gps_unit* gps;
+static tz_database* tz_db;
 static local_clock* clock;
 static tz_selector* tz_sel;
 static mode_selector* mode_sel;
@@ -43,12 +46,15 @@ void setup() {
   // Initialize GPS module.
   gps = new gps_unit(GPS_TX_PIN, GPS_RX_PIN, GPS_SYNC_MILLIS);
 
+  // Determine local timezone.
+  tz_db = new tz_database();
+  const tz_info* tz = tz_db->find(state.tz_name);
+
   // Initialize local clock with persisted timezone.
-  clock = new local_clock();
-  clock->set_tz(state.tz_adjust);
+  clock = new local_clock(tz);
 
   // Initialize timezone selector componnent.
-  tz_sel = new tz_selector(TZ_A_PIN, TZ_B_PIN, TZ_BUTTON_PIN, state.tz_adjust);
+  tz_sel = new tz_selector(TZ_A_PIN, TZ_B_PIN, TZ_BUTTON_PIN, tz_db, tz);
 
   // Initialize 12/24 time selector.
   mode_sel = new mode_selector(MODE_PIN);
@@ -87,9 +93,9 @@ void loop() {
 
   // Possibly update timezone.
   if (action == tz_confirm) {
-    long tz_adjust = tz_sel->get_tz();
-    clock->set_tz(tz_adjust);
-    storage->write_tz(tz_adjust);
+    const tz_info* tz = tz_sel->get_tz();
+    clock->set_tz(tz);
+    storage->write_tz(tz->name);
   }
 
   // Read the 12/24 selector and toggle the current mode if activated, which also requires an

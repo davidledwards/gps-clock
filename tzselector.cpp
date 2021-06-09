@@ -15,15 +15,6 @@
  */
 #include "tzselector.h"
 
-// UTC-12:00
-static const long TZ_FLOOR = -43200;
-
-// UTC+14:00
-static const long TZ_CEILING = 50400;
-
-// Adjust by 30-minute increments to provide finer-grained control.
-static const long TZ_INCREMENT = 1800;
-
 // Proposed time adjustments not selected within given time frame are reverted to the previously confirmed
 // adjustment.
 static const uint32_t IDLE_RESET_MS = 10000;
@@ -32,9 +23,10 @@ static const uint32_t IDLE_RESET_MS = 10000;
 // electrical component.
 static const uint32_t ENCODER_DELAY_MS = 20;
 
-tz_selector::tz_selector(uint8_t a_pin, uint8_t b_pin, uint8_t button_pin, long tz_default)
+tz_selector::tz_selector(uint8_t a_pin, uint8_t b_pin, uint8_t button_pin, const tz_database* tz_db, const tz_info* tz)
   : encoder(a_pin, b_pin, button_pin),
-    tz_confirmed(sanitize_tz(tz_default)),
+    tz_db(tz_db),
+    tz_confirmed(tz_db->find_index(tz->name)),
     tz_proposed(tz_confirmed),
     last_action(0) {
   encoder.setErrorDelay(ENCODER_DELAY_MS);
@@ -61,29 +53,18 @@ tz_action tz_selector::read() {
       case 1:
         // Clockwise rotation.
         last_action = millis();
-        if (tz_proposed < TZ_CEILING)
-          tz_proposed += TZ_INCREMENT;
+        if (++tz_proposed == tz_db->size())
+          tz_proposed = 0;
         return tz_propose;
       case 2:
         // Counter-clockwise rotation.
         last_action = millis();
-        if (tz_proposed > TZ_FLOOR)
-          tz_proposed -= TZ_INCREMENT;
+        tz_proposed = tz_proposed > 0 ? tz_proposed - 1 : tz_db->size() - 1;
         return tz_propose;
     }
   }
 }
 
-long tz_selector::get_tz() {
-  return tz_proposed;
-}
-
-long tz_selector::sanitize_tz(long offset) {
-  offset = offset / TZ_INCREMENT * TZ_INCREMENT;
-  if (offset < TZ_FLOOR)
-    return TZ_FLOOR;
-  else if (offset > TZ_CEILING)
-    return TZ_CEILING;
-  else
-    return offset;
+const tz_info* const tz_selector::get_tz() {
+  return tz_db->get(tz_proposed);
 }

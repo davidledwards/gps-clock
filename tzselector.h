@@ -18,6 +18,7 @@
 
 #include <Arduino.h>
 #include <SimpleRotary.h>
+#include "tzdatabase.h"
 
 enum tz_action {
   tz_idle,
@@ -27,17 +28,16 @@ enum tz_action {
 
 class tz_selector {
 public:
-  tz_selector(uint8_t a_pin, uint8_t b_pin, uint8_t button_pin, long tz_default = 0);
+  tz_selector(uint8_t a_pin, uint8_t b_pin, uint8_t button_pin, const tz_database* tz_db, const tz_info* tz);
   tz_action read();
-  long get_tz();
+  const tz_info* const get_tz();
 
 private:
   const SimpleRotary encoder;
-  long tz_confirmed;
-  long tz_proposed;
+  const tz_database* tz_db;
+  size_t tz_confirmed;
+  size_t tz_proposed;
   uint32_t last_action;
-
-  static long sanitize_tz(long offset);
 };
 
 #endif

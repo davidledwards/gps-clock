@@ -23,8 +23,8 @@ local_time::local_time(time_t t)
     minute(::minute(t)) {
 }
 
-local_clock::local_clock()
-  : tz_adjust(0),
+local_clock::local_clock(const tz_info* tz)
+  : tz(tz),
     last_time(0) {
 }
 
@@ -32,7 +32,7 @@ bool local_clock::tick() {
   if (timeStatus() == timeNotSet)
     return false;
   else {
-    time_t cur_time = ::now();
+    time_t cur_time = tz->tz.toLocal(::now());
     if (cur_time == last_time)
       return false;
     else {
@@ -46,21 +46,10 @@ local_time local_clock::now() {
   return local_time(last_time);
 }
 
-void local_clock::set_tz(long tz_adjust) {
-  if (timeStatus() != timeNotSet) {
-    // Underlying time library performs a relative time adjustment so the value is actually the difference
-    // between the current and new offsets.
-    adjustTime(tz_adjust - this->tz_adjust);
-  }
-  this->tz_adjust = tz_adjust;
-}
-
-long local_clock::get_tz() {
-  return tz_adjust;
+void local_clock::set_tz(const tz_info* tz) {
+  this->tz = tz;
 }
 
 void local_clock::sync(const gps_time& time) {
-  // Resetting the time also resets the timezone adjustment.
   setTime(time.hour, time.minute, time.second, time.day, time.month, 2000 + time.year);
-  adjustTime(tz_adjust);
 }
