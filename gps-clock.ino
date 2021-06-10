@@ -61,7 +61,7 @@ void setup() {
 
   // Initialize GPS display.
   gps_disp = new gps_display(GPS_I2C_ADDR);
-  gps_disp->show_tz(tz_sel->get_tz());
+  gps_disp->show_tz(tz_sel->get_tz(), false);
 
   // Initialize photoresistor-based light monitor.
   light_mon = new light_monitor(PHOTORESISTOR_PIN);
@@ -86,9 +86,10 @@ void loop() {
       gps_disp->show_backlight(false);
       last_movement = 0;
     }
-  } else {
+  } else if (action != tz_reset) {
     if (last_movement == 0) {
       gps_disp->show_backlight(true);
+      tz_sel->reset();
       action = tz_idle;
     }
     last_movement = millis();
@@ -130,7 +131,7 @@ void loop() {
   // will be reflected in an unconfirmed change in the TZ offset, whereas a push of the encoder
   // commits the change.
   if (action != tz_idle)
-    gps_disp->show_tz(tz_sel->get_tz());
+    gps_disp->show_tz(tz_sel->get_tz(), action != tz_reset);
 
   // If the local clock has changed since the last tick, then update the display.
   if (clock->tick())

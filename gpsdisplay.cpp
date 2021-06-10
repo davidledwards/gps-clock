@@ -70,8 +70,8 @@ void gps_display::show_searching() {
   }
 }
 
-void gps_display::show_tz(const tz_info* tz) {
-  write_tz(tz);
+void gps_display::show_tz(const tz_info* tz, bool pending) {
+  write_tz(tz, pending);
 }
 
 void gps_display::show_backlight(bool on) {
@@ -150,9 +150,13 @@ void gps_display::write_utc(const gps_time& time) {
   lcd.print(" UTC");
 }
 
-void gps_display::write_tz(const tz_info* tz) {
+void gps_display::write_tz(const tz_info* tz, bool pending) {
   lcd.setCursor(0, 3);
-  lcd.print("tz: ");
+  lcd.print("tz");
+  if (pending)
+    lcd.print("? ");
+  else
+    lcd.print(": ");
   size_t n = lcd.print(tz->name);
   while (n++ < 16)
     lcd.print(" ");

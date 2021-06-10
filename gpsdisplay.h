@@ -32,7 +32,7 @@ public:
 
   void show_info(const gps_info& info, const gps_time& time);
   void show_searching();
-  void show_tz(const tz_info* tz);
+  void show_tz(const tz_info* tz, bool pending);
   void show_backlight(bool on);
 
 private:
@@ -48,7 +48,7 @@ private:
   void write_lon(const gps_info& info);
   void write_satellites(const gps_info& info);
   void write_utc(const gps_time& time);
-  void write_tz(const tz_info* tz);
+  void write_tz(const tz_info* tz, bool pending);
   void clear_gps();
   void clear_row(uint8_t row);
 };

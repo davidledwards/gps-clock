@@ -46,9 +46,8 @@ tz_action tz_selector::read() {
         // Nothing to report by the encoder, but make sure if an unconfirmed change has been idle for
         // a period of time, then it gets automatically reset.
         if (last_action > 0 && millis() - last_action > IDLE_RESET_MS) {
-          tz_proposed = tz_confirmed;
-          last_action = 0;
-          return tz_propose;
+          reset();
+          return tz_reset;
         } else
           return tz_idle;
       case 1:
@@ -64,6 +63,11 @@ tz_action tz_selector::read() {
         return tz_propose;
     }
   }
+}
+
+void tz_selector::reset() {
+  tz_proposed = tz_confirmed;
+  last_action = 0;
 }
 
 const tz_info* const tz_selector::get_tz() {
