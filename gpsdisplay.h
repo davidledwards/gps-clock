@@ -17,6 +17,7 @@
 #define __GPSDISPLAY_H
 
 #include <Arduino.h>
+#include "gpsconfig.h"
 #include "gpsunit.h"
 #include "tzdatabase.h"
 
