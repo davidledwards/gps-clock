@@ -30,14 +30,16 @@ const uint32_t GPS_SYNC_MILLIS = 2000;
 const uint32_t AUTO_OFF_MILLIS = 30000;
 
 // I2C address of the 20x4 LCD display used to show GPS information.
+#if !(defined(USE_PCF8574T) || defined(USE_PCF8574AT) || defined(USE_MCP23008))
+#define USE_PCF8574T
+#endif
+
 #if defined(USE_PCF8574T)
 const uint8_t GPS_I2C_ADDR = 0x27;
 #elif defined(USE_PCF8574AT)
 const uint8_t GPS_I2C_ADDR = 0x3F;
 #elif defined(USE_MCP23008)
 const uint8_t GPS_I2C_ADDR = 0x73;
-#else
-#error define one of: USE_PCF8574T, USE_PCF8574AT, USE_MCP23008
 #endif
 
 // I2C addresses of the various 4-digit LED displays used to show local time.
