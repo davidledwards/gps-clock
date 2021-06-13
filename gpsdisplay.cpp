@@ -30,8 +30,6 @@ static const uint8_t CHAR_DEGREES_BITMAP[] = {
   0b00000000
 };
 
-static const char BLANK_LINE[] = "                    ";
-
 gps_display::gps_display(uint8_t i2c_addr)
 #if defined(USE_PCF8574T) || defined(USE_PCF8574AT)
   : lcd(i2c_addr, LCD_COLS, LCD_ROWS),
@@ -65,7 +63,7 @@ void gps_display::show_searching() {
   if (!searching) {
     clear_gps();
     lcd.setCursor(0, 0);
-    lcd.print("searching...");
+    lcd.print(F("searching..."));
     searching = true;
   }
 }
@@ -94,9 +92,8 @@ void gps_display::write_lat(const gps_info& info) {
   lcd.write(CHAR_DEGREES);
   lcd.print(lat_dir);
   if (lat < 10.0)
-    lcd.print("  ");
-  else
-    lcd.print(" ");
+    lcd.print(' ');
+  lcd.print(' ');
 }
 
 void gps_display::write_lon(const gps_info& info) {
@@ -112,7 +109,7 @@ void gps_display::write_lon(const gps_info& info) {
   }
   lcd.setCursor(10, 0);
   if (lon < 100.0)
-    lcd.print(" ");
+    lcd.print(' ');
   lcd.print(lon, 4);
   lcd.write(CHAR_DEGREES);
   lcd.print(lon_dir);
@@ -120,14 +117,14 @@ void gps_display::write_lon(const gps_info& info) {
 
 void gps_display::write_satellites(const gps_info& info) {
   lcd.setCursor(0, 1);
-  lcd.print("satellites: ");
+  lcd.print(F("satellites: "));
   lcd.print(info.satellites);
-  lcd.print(" ");
+  lcd.print(' ');
 }
 
 void gps_display::write_utc(const gps_time& time) {
   lcd.setCursor(0, 2);
-  lcd.print("20");
+  lcd.print(F("20"));
   if (time.year < 10)
     lcd.print('0');
   lcd.print(time.year);
@@ -147,19 +144,19 @@ void gps_display::write_utc(const gps_time& time) {
   if (time.minute < 10)
     lcd.print('0');
   lcd.print(time.minute);
-  lcd.print(" UTC");
+  lcd.print(F(" UTC"));
 }
 
 void gps_display::write_tz(const tz_info* tz, bool pending) {
   lcd.setCursor(0, 3);
-  lcd.print("tz");
+  lcd.print(F("tz"));
   if (pending)
-    lcd.print("? ");
+    lcd.print(F("? "));
   else
-    lcd.print(": ");
+    lcd.print(F(": "));
   size_t n = lcd.print(tz->name);
   while (n++ < 16)
-    lcd.print(" ");
+    lcd.print(' ');
 }
 
 void gps_display::clear_gps() {
@@ -170,5 +167,6 @@ void gps_display::clear_gps() {
 
 void gps_display::clear_row(uint8_t row) {
   lcd.setCursor(0, row);
-  lcd.print(BLANK_LINE);
+  for (int i = 0; i < LCD_COLS; ++i)
+    lcd.print(' ');
 }

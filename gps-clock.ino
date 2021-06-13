@@ -78,9 +78,9 @@ void loop() {
   // Read the TZ selector before making updates to the displays since it might result in a change
   // to the timezone.
   tz_action action = tz_sel->read();
+  const tz_info* tz = tz_sel->get_tz();
 
-  // Intelligently turn LCD backlight on/off. Note that when the backlight is turned on due to a
-  // non-idle event from the TZ selector, the event is quietly suppressed.
+  // Intelligently turn LCD backlight on/off.
   if (action == tz_idle) {
     if (last_movement > 0 && millis() - last_movement > AUTO_OFF_MILLIS) {
       gps_disp->show_backlight(false);
@@ -88,6 +88,7 @@ void loop() {
     }
   } else if (action != tz_reset) {
     if (last_movement == 0) {
+      // When backlight is turned on due to some kind of selector movement, the event is quietly ignored.
       gps_disp->show_backlight(true);
       tz_sel->reset();
       action = tz_idle;
@@ -96,11 +97,10 @@ void loop() {
   }
 
   // Possibly update timezone.
-  if (action == tz_confirm) {
-    const tz_info* tz = tz_sel->get_tz();
+  if (action != tz_idle)
     clock->set_tz(tz);
+  if (action == tz_confirm)
     storage->write_tz(tz->name);
-  }
 
   // Read the 12/24 selector and toggle the current mode if activated, which also requires an
   // immediate refresh of the display so as not to wait until the next tick.
@@ -114,7 +114,8 @@ void loop() {
   // been established.
   gps_info info;
   gps_time time;
-  switch (gps->read(info, time)) {
+  gps_state state = gps->read(info, time);
+  switch (state) {
     case gps_available:
       // Under normal circumstances in which a fix has been established, this only happens roughly
       // every GPS_SYNC_MILLIS. This is a good time to synchronize the clock.
@@ -128,13 +129,14 @@ void loop() {
   }
 
   // Any activity from the TZ selector is reflected on the display, e.g. rotation of the encoder
-  // will be reflected in an unconfirmed change in the TZ offset, whereas a push of the encoder
+  // will be reflected in an unconfirmed change in the timezone, whereas a push of the encoder
   // commits the change.
   if (action != tz_idle)
-    gps_disp->show_tz(tz_sel->get_tz(), action != tz_reset);
+    gps_disp->show_tz(tz, action == tz_propose);
 
-  // If the local clock has changed since the last tick, then update the display.
-  if (clock->tick())
+  // If the local clock has changed since the last tick or a timezone was changed, then update
+  // the display.
+  if (clock->is_sync() && (clock->tick() || action != tz_idle))
     clock_disp->show_now(clock->now());
 
   // Change brightness level of the clock. In most cases, this results in a no-op since the light

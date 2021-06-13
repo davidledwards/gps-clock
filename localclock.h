@@ -42,6 +42,7 @@ public:
   local_time now();
   void set_tz(const tz_info* tz);
   void sync(const gps_time& time);
+  bool is_sync();
 
 private:
   time_t last_time;

@@ -37,13 +37,6 @@ static const tz_info TZ_TABLE[] = {
       TimeChangeRule {"CDT", Second, Sun, Mar, 2, -300},
       TimeChangeRule {"CST", First, Sun, Nov, 2, -360}
     )
-  },
-  tz_info {
-    "EET/EEST",
-    Timezone(
-      TimeChangeRule {"EEST", Last, Sun, Mar, 2, 180},
-      TimeChangeRule {"EET", Last, Sun, Oct, 2, 120}
-    )
   }
 };
 

@@ -29,21 +29,17 @@ local_clock::local_clock(const tz_info* tz)
 }
 
 bool local_clock::tick() {
-  if (timeStatus() == timeNotSet)
+  if (is_sync()) {
+    time_t cur_time = ::now();
+    bool ticked = cur_time != last_time;
+    last_time = cur_time;
+    return ticked;
+  } else
     return false;
-  else {
-    time_t cur_time = tz->tz.toLocal(::now());
-    if (cur_time == last_time)
-      return false;
-    else {
-      last_time = cur_time;
-      return true;
-    }
-  }
 }
 
 local_time local_clock::now() {
-  return local_time(last_time);
+  return local_time(tz->tz.toLocal(last_time));
 }
 
 void local_clock::set_tz(const tz_info* tz) {
@@ -52,4 +48,8 @@ void local_clock::set_tz(const tz_info* tz) {
 
 void local_clock::sync(const gps_time& time) {
   setTime(time.hour, time.minute, time.second, time.day, time.month, 2000 + time.year);
+}
+
+bool local_clock::is_sync() {
+  return timeStatus() != timeNotSet;
 }

@@ -19,18 +19,18 @@
 // adjustment.
 static const uint32_t IDLE_RESET_MS = 10000;
 
-// Period of time before the encoder reports the next event, which is designed to remove noise from the
-// electrical component.
-static const uint32_t ENCODER_DELAY_MS = 20;
+// Rotary encoder delays for both debouncing and error correction.
+static const uint32_t DEBOUNCE_DELAY_MS = 5;
+static const uint32_t ERROR_DELAY_MS = 20;
 
-tz_selector::tz_selector(uint8_t a_pin, uint8_t b_pin, uint8_t button_pin,
-  const tz_database* tz_db, const tz_info* tz)
+tz_selector::tz_selector(uint8_t a_pin, uint8_t b_pin, uint8_t button_pin, const tz_database* tz_db, const tz_info* tz)
   : encoder(a_pin, b_pin, button_pin),
     tz_db(tz_db),
     tz_confirmed(tz_db->find_index(tz->name)),
     tz_proposed(tz_confirmed),
     last_action(0) {
-  encoder.setErrorDelay(ENCODER_DELAY_MS);
+  encoder.setDebounceDelay(DEBOUNCE_DELAY_MS);
+  encoder.setErrorDelay(ERROR_DELAY_MS);
 }
 
 tz_action tz_selector::read() {
@@ -46,7 +46,8 @@ tz_action tz_selector::read() {
         // Nothing to report by the encoder, but make sure if an unconfirmed change has been idle for
         // a period of time, then it gets automatically reset.
         if (last_action > 0 && millis() - last_action > IDLE_RESET_MS) {
-          reset();
+          tz_proposed = tz_confirmed;
+          last_action = 0;
           return tz_reset;
         } else
           return tz_idle;
