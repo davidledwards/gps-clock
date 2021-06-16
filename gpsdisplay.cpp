@@ -124,26 +124,22 @@ void gps_display::write_satellites(const gps_info& info) {
 
 void gps_display::write_utc(const gps_time& time) {
   lcd.setCursor(0, 2);
-  lcd.print(F("20"));
-  if (time.year < 10)
-    lcd.print('0');
-  lcd.print(time.year);
+  lcd.print(time.year / 1000 % 10);
+  lcd.print(time.year / 100 % 10);
+  lcd.print(time.year / 10 % 10);
+  lcd.print(time.year % 10);
   lcd.print('-');
-  if (time.month < 10)
-    lcd.print('0');
-  lcd.print(time.month);
+  lcd.print(time.month / 10 % 10);
+  lcd.print(time.month % 10);
   lcd.print('-');
-  if (time.day < 10)
-    lcd.print('0');
-  lcd.print(time.day);
+  lcd.print(time.day / 10 % 10);
+  lcd.print(time.day % 10);
   lcd.print(' ');
-  if (time.hour < 10)
-    lcd.print('0');
-  lcd.print(time.hour);
+  lcd.print(time.hour / 10 % 10);
+  lcd.print(time.hour % 10);
   lcd.print(':');
-  if (time.minute < 10)
-    lcd.print('0');
-  lcd.print(time.minute);
+  lcd.print(time.minute / 10 % 10);
+  lcd.print(time.minute % 10);
   lcd.print(F(" UTC"));
 }
 

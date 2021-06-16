@@ -17,25 +17,56 @@
 
 // Array of predefined timezones where first entry must always be "UTC", thus array size is
 // guaranteed to be greater than zero. It should be safe to always reference first element.
+//
+// Note that names assigned to timezone change rules are irrelevant, so these are initialized
+// as empty strings to minimize consumption of RAM.
 static const tz_info TZ_TABLE[] = {
   tz_info {
     "UTC",
     Timezone(
-      TimeChangeRule {"UTC", Last, Sun, Mar, 1, 0}
+      TimeChangeRule {"", Last, Sun, Mar, 1, 0}
     )
   },
   tz_info {
     "CET/CEST",
     Timezone(
-      TimeChangeRule {"CEST", Last, Sun, Mar, 2, 120},
-      TimeChangeRule {"CET", Last, Sun, Oct, 2, 60}
+      TimeChangeRule {"", Last, Sun, Mar, 2, 120},
+      TimeChangeRule {"", Last, Sun, Oct, 2, 60}
     )
   },
   tz_info {
     "CST/CDT",
     Timezone(
-      TimeChangeRule {"CDT", Second, Sun, Mar, 2, -300},
-      TimeChangeRule {"CST", First, Sun, Nov, 2, -360}
+      TimeChangeRule {"", Second, Sun, Mar, 2, -300},
+      TimeChangeRule {"", First, Sun, Nov, 2, -360}
+    )
+  },
+  tz_info {
+    "EET/EEST",
+    Timezone(
+      TimeChangeRule {"", Last, Sun, Mar, 2, 180},
+      TimeChangeRule {"", Last, Sun, Oct, 2, 120}
+    )
+  },
+  tz_info {
+    "EST/EDT",
+    Timezone(
+      TimeChangeRule {"", Second, Sun, Mar, 2, -240},
+      TimeChangeRule {"", First, Sun, Nov, 2, -300}
+    )
+  },
+  tz_info {
+    "MST/MDT",
+    Timezone(
+      TimeChangeRule {"", Second, Sun, Mar, 2, -360},
+      TimeChangeRule {"", First, Sun, Nov, 2, -420}
+    )
+  },
+  tz_info {
+    "PST/PDT",
+    Timezone(
+      TimeChangeRule {"", Second, Sun, Mar, 2, -420},
+      TimeChangeRule {"", First, Sun, Nov, 2, -480}
     )
   }
 };

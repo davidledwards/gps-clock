@@ -69,7 +69,7 @@ bool gps_unit::get_time(const TinyGPS& gps, gps_time& time) {
   if (age == TinyGPS::GPS_INVALID_AGE)
     return false;
   else {
-    time = gps_time {year - 2000, month, day, hour, minute, second};
+    time = gps_time {year, month, day, hour, minute, second};
     return true;
   }
 }

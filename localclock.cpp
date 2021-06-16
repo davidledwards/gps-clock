@@ -40,7 +40,7 @@ void local_clock::set_tz(const tz_info* tz) {
 }
 
 void local_clock::sync(const gps_time& time) {
-  setTime(time.hour, time.minute, time.second, time.day, time.month, 2000 + time.year);
+  setTime(time.hour, time.minute, time.second, time.day, time.month, time.year);
 }
 
 bool local_clock::is_sync() {
