@@ -21,6 +21,7 @@
 class light_monitor {
 public:
   light_monitor(uint8_t pin);
+
   uint8_t get_brightness();
 
 private:

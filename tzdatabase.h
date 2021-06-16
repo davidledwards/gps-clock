@@ -13,35 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef __LOCALCLOCK_H
-#define __LOCALCLOCK_H
+#ifndef __TZDATABASE_H
+#define __TZDATABASE_H
 
 #include <Arduino.h>
-#include <TimeLib.h>
-#include "gpsunit.h"
-#include "tzdatabase.h"
+#include <Timezone.h>
 
-struct local_time {
-  uint16_t year;
-  uint8_t month;
-  uint8_t day;
-  uint8_t hour;
-  uint8_t minute;
+static const size_t TZ_NAME_SIZE = 15;
+
+struct tz_info {
+  const char* const name;
+  const Timezone tz;
 };
 
-class local_clock {
+class tz_database {
 public:
-  local_clock(const tz_info* tz);
+  tz_database();
 
-  bool tick();
-  local_time now();
-  void set_tz(const tz_info* tz);
-  void sync(const gps_time& time);
-  bool is_sync();
-
-private:
-  time_t last_time;
-  const tz_info* tz;
+  size_t size();
+  const tz_info* const find(const char* name);
+  size_t find_index(const char* name);
+  const tz_info* const get(size_t index);
 };
 
 #endif

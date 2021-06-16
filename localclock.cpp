@@ -15,44 +15,34 @@
  */
 #include "localclock.h"
 
-local_clock::local_clock()
-  : tz_adjust(0),
+local_clock::local_clock(const tz_info* tz)
+  : tz(tz),
     last_time(0) {
 }
 
 bool local_clock::tick() {
-  if (timeStatus() == timeNotSet)
-    return false;
-  else {
+  if (is_sync()) {
     time_t cur_time = ::now();
-    if (cur_time == last_time)
-      return false;
-    else {
-      last_time = cur_time;
-      return true;
-    }
-  }
+    bool ticked = cur_time != last_time;
+    last_time = cur_time;
+    return ticked;
+  } else
+    return false;
 }
 
 local_time local_clock::now() {
-  return local_time {year(last_time), month(last_time), day(last_time), hour(last_time), minute(last_time)};
+  time_t t = tz->tz.toLocal(last_time);
+  return local_time {year(t), month(t), day(t), hour(t), minute(t)};
 }
 
-void local_clock::set_tz(long tz_adjust) {
-  if (timeStatus() != timeNotSet) {
-    // Underlying time library performs a relative time adjustment so the value is actually the difference
-    // between the current and new offsets.
-    adjustTime(tz_adjust - this->tz_adjust);
-  }
-  this->tz_adjust = tz_adjust;
-}
-
-long local_clock::get_tz() {
-  return tz_adjust;
+void local_clock::set_tz(const tz_info* tz) {
+  this->tz = tz;
 }
 
 void local_clock::sync(const gps_time& time) {
-  // Resetting the time also resets the timezone adjustment.
   setTime(time.hour, time.minute, time.second, time.day, time.month, 2000 + time.year);
-  adjustTime(tz_adjust);
+}
+
+bool local_clock::is_sync() {
+  return timeStatus() != timeNotSet;
 }

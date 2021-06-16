@@ -30,6 +30,7 @@ class clock_display {
 public:
   clock_display(uint8_t time_i2c_addr, uint8_t mday_i2c_addr, uint8_t year_i2c_addr,
     uint8_t brightness, clock_mode mode);
+
   void show_unset();
   void show_now(const local_time& time);
   void set_brightness(uint8_t brightness);
