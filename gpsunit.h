@@ -18,36 +18,21 @@
 
 #include <Arduino.h>
 #include <SoftwareSerial.h>
-#include <Adafruit_GPS.h>
+#include <TinyGPS.h>
 
-class gps_info {
-public:
-  gps_info();
-
+struct gps_info {
   float lat;
   float lon;
   uint8_t satellites;
-
-private:
-  gps_info(const Adafruit_GPS& gps);
-  friend class gps_unit;
 };
 
-class gps_time {
-public:
-  gps_time();
-
+struct gps_time {
   uint8_t year;
   uint8_t month;
   uint8_t day;
   uint8_t hour;
   uint8_t minute;
   uint8_t second;
-  uint16_t msecond;
-
-private:
-  gps_time(const Adafruit_GPS& gps);
-  friend class gps_unit;
 };
 
 enum gps_state {
@@ -58,14 +43,16 @@ enum gps_state {
 
 class gps_unit {
 public:
-  gps_unit(uint8_t tx_pin, uint8_t rx_pin, uint32_t sync_ms);
+  gps_unit(uint8_t tx_pin, uint8_t rx_pin);
   gps_state read(gps_info& info, gps_time& time);
 
 private:
   const SoftwareSerial ser;
-  const Adafruit_GPS gps;
-  const uint32_t sync_ms;
+  const TinyGPS gps;
   uint32_t last_sync;
+
+  static bool get_info(const TinyGPS& gps, gps_info& info);
+  static bool get_time(const TinyGPS& gps, gps_time& time);
 };
 
 #endif

@@ -41,7 +41,7 @@ void setup() {
   local_state state = storage->read();
 
   // Initialize GPS module.
-  gps = new gps_unit(GPS_TX_PIN, GPS_RX_PIN, GPS_SYNC_MILLIS);
+  gps = new gps_unit(GPS_TX_PIN, GPS_RX_PIN);
 
   // Initialize local clock with persisted timezone.
   clock = new local_clock();
@@ -75,7 +75,7 @@ void loop() {
 
   // Intelligently turn LCD backlight on/off.
   if (action == tz_idle) {
-    if (last_movement > 0 && millis() - last_movement > AUTO_OFF_MILLIS) {
+    if (last_movement > 0 && millis() - last_movement > AUTO_OFF_MS) {
       gps_disp->show_backlight(false);
       last_movement = 0;
     }

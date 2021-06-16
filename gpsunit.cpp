@@ -15,77 +15,61 @@
  */
 #include "gpsunit.h"
 
-gps_info::gps_info()
-  : satellites(0),
-    lat(0.0),
-    lon(0.0) {
-}
+// GPS module baud rate.
+static const long GPS_BAUD_RATE = 9600;
 
-gps_info::gps_info(const Adafruit_GPS& gps)
-  : satellites(gps.satellites),
-    lat(gps.latitudeDegrees),
-    lon(gps.longitudeDegrees) {
-}
+// Number of milliseconds that must elapse before returning new GPS information.
+static const uint32_t SYNC_DELAY_MS = 2000;
 
-gps_time::gps_time()
-  : year(0),
-    month(0),
-    day(0),
-    hour(0),
-    minute(0),
-    second(0),
-    msecond(0) {
-}
+// Number of milliseconds since the last synchronization before this class starts reporting that
+// the GPS module is searching.
+static const uint32_t SEARCHING_DELAY_MS = 30000;
 
-gps_time::gps_time(const Adafruit_GPS& gps)
-  : year(gps.year),
-    month(gps.month),
-    day(gps.day),
-    hour(gps.hour),
-    minute(gps.minute),
-    second(gps.seconds),
-    msecond(gps.milliseconds) {
- }
-
-gps_unit::gps_unit(uint8_t tx_pin, uint8_t rx_pin, uint32_t sync_ms)
+gps_unit::gps_unit(uint8_t tx_pin, uint8_t rx_pin)
   : ser(tx_pin, rx_pin),
-    gps(&ser),
-    sync_ms(sync_ms),
-    last_sync(millis()) {
-  // Baud rate for communicating with GPS module.
-  gps.begin(9600);
-
-  // Requests minimum amount of data including fix information.
-  gps.sendCommand(PMTK_SET_NMEA_OUTPUT_RMCGGA);
-
-  // Ideal update rate to ensure parser works properly.
-  gps.sendCommand(PMTK_SET_NMEA_UPDATE_1HZ);
-
-  // Gets satellite information.
-  gps.sendCommand(PGCMD_ANTENNA);
+    last_sync(0) {
+  ser.begin(GPS_BAUD_RATE);
 }
 
 gps_state gps_unit::read(gps_info& info, gps_time& time) {
-  // Reading the GPS must be done continuously in lieu of using interrupts, which may or may not
-  // result in any action.
-  gps.read();
-  if (gps.newNMEAreceived() && !gps.parse(gps.lastNMEA())) {
-    // Indicates that new sentence was received, but could not be parsed, so just ignore until
-    // the next sentence comes along.
-    return gps_ignore;
-  } else {
-    // Only consider sampling the GPS every so often, the period of which is defined by the
-    // synchronization period specified in the constructor.
-    uint32_t now = millis();
-    if (now - last_sync > sync_ms) {
-      last_sync = now;
-      if (gps.fix) {
-        info = gps_info(gps);
-        time = gps_time(gps);
+  while (ser.available()) {
+    if (gps.encode(ser.read()) && millis() - last_sync > SYNC_DELAY_MS) {
+      if (get_info(gps, info) && get_time(gps, time)) {
+        last_sync = millis();
         return gps_available;
-      } else
-        return gps_searching;
-    } else
-      return gps_ignore;
+      }
+    }
+  }
+  return millis() - last_sync > SEARCHING_DELAY_MS ? gps_searching : gps_ignore;
+}
+
+bool gps_unit::get_info(const TinyGPS& gps, gps_info& info) {
+  float lat;
+  float lon;
+  unsigned long age;
+  gps.f_get_position(&lat, &lon, &age);
+  unsigned short satellites = gps.satellites();
+  if (age == TinyGPS::GPS_INVALID_AGE || satellites == TinyGPS::GPS_INVALID_SATELLITES)
+    return false;
+  else {
+    info = gps_info {lat, lon, satellites};
+    return true;
+  }
+}
+
+bool gps_unit::get_time(const TinyGPS& gps, gps_time& time) {
+  int year;
+  byte month;
+  byte day;
+  byte hour;
+  byte minute;
+  byte second;
+  unsigned long age;
+  gps.crack_datetime(&year, &month, &day, &hour, &minute, &second, 0, &age);
+  if (age == TinyGPS::GPS_INVALID_AGE)
+    return false;
+  else {
+    time = gps_time {year - 2000, month, day, hour, minute, second};
+    return true;
   }
 }

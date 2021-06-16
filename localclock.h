@@ -20,17 +20,12 @@
 #include <TimeLib.h>
 #include "gpsunit.h"
 
-class local_time {
-public:
+struct local_time {
   uint16_t year;
   uint8_t month;
   uint8_t day;
   uint8_t hour;
   uint8_t minute;
-
-private:
-  local_time(time_t t);
-  friend class local_clock;
 };
 
 class local_clock {

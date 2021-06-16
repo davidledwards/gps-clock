@@ -19,14 +19,9 @@
 #include <Arduino.h>
 #include "clockdisplay.h"
 
-class local_state {
-public:
+struct local_state {
   long tz_adjust;
   clock_mode mode;
-
-private:
-  local_state(long tz_adjust, clock_mode mode);
-  friend class local_storage;
 };
 
 class local_storage {

@@ -15,14 +15,6 @@
  */
 #include "localclock.h"
 
-local_time::local_time(time_t t)
-  : year(::year(t)),
-    month(::month(t)),
-    day(::day(t)),
-    hour(::hour(t)),
-    minute(::minute(t)) {
-}
-
 local_clock::local_clock()
   : tz_adjust(0),
     last_time(0) {
@@ -43,7 +35,7 @@ bool local_clock::tick() {
 }
 
 local_time local_clock::now() {
-  return local_time(last_time);
+  return local_time {year(last_time), month(last_time), day(last_time), hour(last_time), minute(last_time)};
 }
 
 void local_clock::set_tz(long tz_adjust) {
