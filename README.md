@@ -76,6 +76,17 @@ The format is also stored in EEPROM, which means the clock will remember the las
 * [220 Ohm Resistor](https://www.amazon.com/slp/220-ohm-resistor/pwc2jfx3cwoh9sf) (1)
 * [Tactile Button](https://www.adafruit.com/product/367) (1)
 
+### Generation 3 Software Update
+
+I decided to move away from UTC offsets when selecting the timezone using the rotary encoder. Instead, the encoder now moves through a list of predefined timezones with daylight savings rules incorporated. The tradeoff is that given the constrained amount of RAM on the UNO board (2K), only a handful of timezones can be defined. Plans are in place to support the [MEGA](https://www.elegoo.com/products/elegoo-mega-2560-r3-board) board which comes with 8K of RAM, thus allowing a larger set of timezones.
+
+A few other cosmetic improvements accompany this software update.
+
+* In 12-hour mode, the dot on the LED to the right of the minute digit would be illuminated to give the user an indication that 12-hour mode was selected. This was necessary in order to distinguish between `10:32 PM` in 12-hour mode versus `10:32 AM` in 24-hour mode. However, it turns out that the dot only needs to be illuminated in 12-hour mode when the hour is PM, i.e. between 12:00 PM and 11:59 PM. This is also consistent with the behavior of most 12-hour clocks.
+* When the rotary encoder is moved clockwise or counterclockwise to adjust timezone, the LCD display now provides a visual indicator showing that the timezone has changed but not yet committed (via pressing the button). The label on the LCD display shows `tz?` when selecting and `tz:` when committed. Additionally, the LED display is immediately updated to reflect the local time in the selected timezone. As previously supported, if the encoder detects no movement after 10 seconds, the selection is discarded and reverted back to the last committed timezone.
+
+Internally, the GPS library was replaced with a smaller implementation requiring less memory. Originally, I had used the library built for the Adafruit GPS module, but all the bells and whistles were unnecessary. A generic library supporting the basic standard sentences that all GPS modules emit was sufficient. The upside was additional memory that could be used by the timezone database.
+
 ## Assembly
 
 ### Circuit Diagram
@@ -243,6 +254,20 @@ Builds the sketch and its associated C++ files. The output directory of the buil
 make build
 ```
 
+Several environment variables affect the compilation process. Each of them have default values that may not reflect the hardware components being used.
+
+#### `BOARD_TYPE`
+
+The default board type is `uno`, which is the only officially supported target at this point in time. The `mega` board type is experimental.
+
+To change the board type:
+
+```shell
+export BOARD_TYPE=mega
+```
+
+#### `IO_EXPANDER`
+
 Make sure `IO_EXPANDER` is defined in the environment based on the type of I2C backpack attached to the LCD display, as this affects the build. The makefile defaults to `PCF8574T`.
 
 For Adafruit LCD display:
@@ -262,6 +287,8 @@ or
 ```sh
 export IO_EXPANDER=USE_PCF8574AT
 ```
+
+#### `PORT`
 
 Uploads the program to the Arduino board. Make sure `PORT` is defined by the environment or provided as an argument to `make`. `PORT` is the serial port to which the Arduino board is attached. If undefined, it defaults to `/dev/null` and will cause an upload attempt to fail.
 
