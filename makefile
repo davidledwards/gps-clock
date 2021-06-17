@@ -14,8 +14,11 @@
 # limitations under the License.
 #
 SKETCH = gps-clock
-BOARD_CORE = arduino:avr
-BOARD_NAME = $(BOARD_CORE):uno
+BOARD_PACKAGE = arduino
+BOARD_ARCH = avr
+BOARD_TYPE ?= uno
+BOARD_CORE = $(BOARD_PACKAGE):$(BOARD_ARCH)
+BOARD_NAME = $(BOARD_CORE):$(BOARD_TYPE)
 
 # This variable specifies the serial port for uploading bits to the board and must be defined by
 # the environment, otherwise the value defaults to /dev/null.
@@ -62,8 +65,9 @@ help :
 	@echo "  clean     remove all transient build files"
 	@echo ""
 	@echo "environment:"
-	@echo "  PORT=$(PORT)"
+	@echo "  BOARD_TYPE=$(BOARD_TYPE)"
 	@echo "  IO_EXPANDER=$(IO_EXPANDER)"
+	@echo "  PORT=$(PORT)"
 
 all : clean install build upload
 
