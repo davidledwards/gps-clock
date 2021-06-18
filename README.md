@@ -80,6 +80,8 @@ The format is also stored in EEPROM, which means the clock will remember the las
 
 I decided to move away from UTC offsets when selecting the timezone using the rotary encoder. Instead, the encoder now moves through a list of predefined timezones with daylight savings rules incorporated. The tradeoff is that given the constrained amount of RAM on the UNO board (2K), only a handful of timezones can be defined. Plans are in place to support the [MEGA](https://www.elegoo.com/products/elegoo-mega-2560-r3-board) board which comes with 8K of RAM, thus allowing a larger set of timezones.
 
+If you decide to clone the repository and modify the selectable timezones, be cautious when adding new entries. Use of too much RAM for global variables reduces the amount of available stack space. Overflowing stack space can result in all kinds of wonky behavior. Once support for the MEGA board is announced, there should be plenty of space to define the most popular timezones around the globe.
+
 A few other cosmetic improvements accompany this software update.
 
 * In 12-hour mode, the dot on the LED to the right of the minute digit would be illuminated to give the user an indication that 12-hour mode was selected. This was necessary in order to distinguish between `10:32 PM` in 12-hour mode versus `10:32 AM` in 24-hour mode. However, it turns out that the dot only needs to be illuminated in 12-hour mode when the hour is PM, i.e. between 12:00 PM and 11:59 PM. This is also consistent with the behavior of most 12-hour clocks.
@@ -258,7 +260,7 @@ Several environment variables affect the compilation process. Each of them have 
 
 #### `BOARD_TYPE`
 
-The default board type is `uno`, which is the only officially supported target at this point in time. The `mega` board type is experimental.
+The default board type is `uno`, which is the only officially supported target at this point in time. The `mega` board type is experimental, though compilation and uploads appear to be working just fine.
 
 To change the board type:
 
