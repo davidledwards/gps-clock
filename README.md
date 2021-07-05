@@ -2,11 +2,7 @@
 
 A GPS-synchronized digital clock based on the open-source [Arduino](https://arduino.cc) hardware platform.
 
-* [Overview](#overview)
-* [Hardware](#hardware)
-* [Assembly](#assembly)
-* [Software](#software)
-* [License](#license)
+[toc]
 
 ## Overview
 
@@ -76,9 +72,9 @@ The format is also stored in EEPROM, which means the clock will remember the las
 * [220 Ohm Resistor](https://www.amazon.com/slp/220-ohm-resistor/pwc2jfx3cwoh9sf) (1)
 * [Tactile Button](https://www.adafruit.com/product/367) (1)
 
-### Generation 3 Software Update
+#### Software Update
 
-I decided to move away from UTC offsets when selecting the timezone using the rotary encoder. Instead, the encoder now moves through a list of predefined timezones with daylight savings rules incorporated. The tradeoff is that given the constrained amount of RAM on the UNO board (2K), only a handful of timezones can be defined. Plans are in place to support the [MEGA](https://www.elegoo.com/products/elegoo-mega-2560-r3-board) board which comes with 8K of RAM, thus allowing a larger set of timezones.
+I decided to move away from UTC offsets when selecting the timezone using the rotary encoder. Instead, the encoder now moves through a list of predefined timezones with daylight savings rules incorporated. The tradeoff is that given the constrained amount of RAM on the Uno board (2K), only a handful of timezones can be defined. Plans are in place to support the [Arduino Mega](https://www.elegoo.com/products/elegoo-mega-2560-r3-board) board which comes with 8K of RAM, thus allowing a larger set of timezones.
 
 If you decide to clone the repository and modify the selectable timezones, be cautious when adding new entries. Use of too much RAM for global variables reduces the amount of available stack space. Overflowing stack space can result in all kinds of wonky behavior. Once support for the MEGA board is announced, there should be plenty of space to define the most popular timezones around the globe.
 
@@ -89,11 +85,42 @@ A few other cosmetic improvements accompany this software update.
 
 Internally, the GPS library was replaced with a smaller implementation requiring less memory. Originally, I had used the library built for the Adafruit GPS module, but all the bells and whistles were unnecessary. A generic library supporting the basic standard sentences that all GPS modules emit was sufficient. The upside was additional memory that could be used by the timezone database.
 
+### Generation 4
+
+https://github.com/davidledwards/gps-clock/tree/release-4
+
+This generation comes with a handful of component changes as well as the addition of an extra LED display to show *seconds* as part of time. The clock construction looks significantly different than past generations.
+
+The Arduino Uno board used in past generations has been replaced with the much smaller Arduino Nano board, which uses the same ATmega328 processor. It is also pin-compatible with the Uno, although the relative position of pins differs. Both boards have the same amount of RAM and flash memory.
+
+The expensive Adafruit GPS shield was also replaced with a much more affordable and smaller NEO-6M GPS module. Moving to the Nano did away with the convenience of snapping the Adafruit GPS shield on top of the Uno, so it forced me to look at other options. The NEO-6M appears to work great at about 25% of the cost of the Adafruit GPS.
+
+Another 4-digit LED display was introduced to show the current time with *seconds*. Both time-oriented LED displays were also upgraded from 0.56 inches to 1.2 inches.
+
+* [Elegoo Nano](https://www.amazon.com/gp/product/B0713XK923) (1)
+* [NEO-6M GPS Receiver](https://www.amazon.com/gp/product/B07P8YMVNT) (1)
+* [Adafruit 0.56" 4-Digit 7-Segment Display with I2C Backpack (white)](https://www.adafruit.com/product/1002) (2)
+* [Adafruit 1.2" 4-Digit 7-Segment Display with I2C Backpack (Red)](https://www.adafruit.com/product/1270) (2)
+* [GeeekPi 20x4 LCD Display](https://www.amazon.com/gp/product/B086VVT4NH) (1)
+* [WayinTop KY-040 Rotary Encoder](https://www.amazon.com/gp/product/B07T3672VK) (1)
+* [Adafruit Half-Sized PCB](https://www.adafruit.com/product/1609) (1)
+* [ElectroCookie Mini Solderable PCB](https://www.amazon.com/gp/product/B093VWBH4Q) (1)
+* [Photoresistor](https://www.amazon.com/Photoresistor/s?k=Photoresistor) (1)
+* [10K Ohm Resistor](https://www.amazon.com/10k-ohm-resistor/s?k=10k+ohm+resistor) (1)
+* [Tactile Button](https://www.adafruit.com/product/367) (1)
+* [Mini USB Cable](https://www.amazon.com/gp/product/B007NLW3C2) (1)
+
 ## Assembly
 
 ### Circuit Diagram
 
-<img src="images/gps-clock.png" alt="Circuit diagram"/>
+#### Generation 1-3
+
+<img src="images/gps-clock.png" style="zoom:25%;" />
+
+#### Generation 4
+
+<img src="images/gps-clock-gen-4.png" style="zoom:25%;" />
 
 ### LED Displays
 
@@ -101,13 +128,13 @@ Three 4-digit LED displays are used to show the local time in YYYY.MM.DD HH:MM f
 
 These are the materials that ship with the 4-digit displays.
 
-<img src="images/led-display-unassembled.jpg" alt="Unassembled LED display" style="zoom:25%;" />
+<img src="images/led-display-unassembled.jpg" style="zoom:25%;" />
 
 Solder the backpack to the display, but make sure it is not attached upside down. The *dots* are a convenient visual aid for aligning to the correct orientation. Solder four (4) of the pin headers to the top of the backpack. Repeat the same process for the remaining displays and backpacks.
 
-This is a view of the assembled LED display.
+This is a view of the assembled LED display for both sizes.
 
-<img src="images/led-display-assembled.jpg" alt="Assembled LED display" style="zoom:25%;" />
+<img src="images/led-display-assembled.jpg" style="zoom:25%;" />
 
 Once the LED displays have been assembled, each needs to be assigned a unique I2C address. This is accomplished by soldering jumpers on the underside of the backpack. There are three (3) jumpers that act like bits, so as one can imagine, there are 8 unique addresses. Each backpack comes with all three jumpers open, which is equivalent to address `0x70`. The `gpsconfig.h` file shows the address chosen for each LED display.
 
@@ -115,15 +142,23 @@ The LED displays are then arranged onto a larger PCB. The YYYY and MMDD displays
 
 This is a view of the LED displays attached to the PCB.
 
-<img src="images/led-pcb.jpg" alt="LED displays attached to PCB" style="zoom:25%;" />
+<img src="images/led-pcb.jpg" style="zoom:25%;" />
 
 This is the wiring on the front side of the PCB before the LED displays were soldered. Wires from the power rail attach to pins on each display. And, the two pins representing the I2C bus are attached to each display in parallel.
 
-<img src="images/led-pcb-front.jpg" alt="Front side of PCB" style="zoom:25%;" />
+<img src="images/led-pcb-front.jpg" style="zoom:25%;" />
 
 Finally, this is the back of the PCB. Note that pin headers for power (+/-) and I2C were attached on both ends of the board. The reason for an additional set of headers is that they are being used to connect the LCD display, which is discussed later.
 
-<img src="images/led-pcb-back.jpg" alt="Back side of PCB" style="zoom:25%;" />
+<img src="images/led-pcb-back.jpg" style="zoom:25%;" />
+
+#### Generation 4
+
+A fourth LED display was introduced to support showing *seconds*, which meant splitting the time display into two separate 4-digit components. Also, both of these components were increased in size from 0.56 inches to 1.2 inches in order to achieve a new design aesthetic.
+
+The first time-related LED display (referred to as TIME_UPPER in the source code) shows a 12/24 hour indicator in the leftmost digit: in 12-hour mode, `A` for AM and `P` for PM; in 24-hour mode, `H` is always displayed. The second LED display (referred to as TIME_LOWER in the source code) shows minutes and seconds.
+
+<img src="images/led-display-large.jpg" style="zoom:25%;" />
 
 ### LCD Display
 
@@ -131,11 +166,11 @@ A single 20-column, 4-row LCD display is used to show GPS information and the cu
 
 This is a view of the front side of the LCD attached to the backpack.
 
-<img src="images/lcd-front.jpg" alt="Front side of LCD" style="zoom:25%;" />
+<img src="images/lcd-front.jpg" style="zoom:25%;" />
 
 And, this is a view of the back side of the LCD. Notice that I used the screw headers instead of pin headers. In retrospect, I would have soldered pin headers but did not want the hassle of removing the backpack and resoldering. Since the LCD display is operating on the same I2C pins, it requires an address that does not conflict with the LED displays (`0x70`, `0x71`, `0x72`). If you look closely, the `A0` and `A1` jumpers on the lower left of the backpack are soldered together, making the address of the LCD `0x73`.
 
-<img src="images/lcd-back.jpg" alt="Back side of LCD" style="zoom:25%;" />
+<img src="images/lcd-back.jpg" style="zoom:25%;" />
 
 #### Generation 2
 
@@ -145,7 +180,7 @@ The JANSANE uses a PCF8574T and the Adafruit uses a MCP23008. In short, this mea
 
 The JANSANE backpack attached to the LCD requires a jumper to enable the backlight. Rather than just close the circuit, I decided to use a 220 ohm resistor, which turned out to soften the display a bit.
 
-<img src="images/lcd-jansane-back.jpg" alt="Back side of JANSANE LCD" style="zoom:25%;" />
+<img src="images/lcd-jansane-back.jpg" style="zoom:25%;" />
 
 ### Rotary Encoder
 
@@ -153,33 +188,39 @@ The rotary encoder used in this project rotates infinitely in both directions wi
 
 As seen in this photo, the rotary encoder is mounted on a small PCB. It could also be mounted to a face plate.
 
-<img src="images/rotary-front.jpg" alt="Front side of rotary encoder" style="zoom:25%;" />
+<img src="images/rotary-front.jpg" style="zoom:25%;" />
 
 This is a view of the back side of the PCB. Similar to other components, pin headers are used for making connections to the encoder.
 
-<img src="images/rotary-back.jpg" alt="Back side of rotary encoder" style="zoom:25%;" />
+<img src="images/rotary-back.jpg" style="zoom:25%;" />
 
 #### Generation 2
 
 The rotary encoder was mounted directly on the GPS board, which eliminated the need for a separate mini PCB.
 
+#### Generation 4
+
+The rotary encoder was upgraded to a version that came premounted on a small PCB with builtin pullup resistors.
+
+<img src="images/rotary-encoder-pcb.jpg" style="zoom:25%;" />
+
 ### GPS Module
 
 The GPS module conveniently mounts directly on top of the Arduino Uno board. A set of pin headers need to be soldered to the GPS board, but once completed, both PCBs slide together nicely.
 
-<img src="images/arduino-gps-module.jpg" alt="Arduino Uno and GPS module" style="zoom:25%;" />
+<img src="images/arduino-gps-module.jpg" style="zoom:25%;" />
 
 This is a view of the GPS module mounted to the Arduino. Notice the additional pin headers I soldered to the GPS board. These are the pins needed to connect the LEDs, LCD and rotary encoder.
 
-<img src="images/gps-module.jpg" alt="GPS module" style="zoom:25%;" />
+<img src="images/gps-module.jpg" style="zoom:25%;" />
 
 This is a side view of the GPS mounted to the Arduino. You can see the pin headers for power and those used for the I2C serial bus (`A4`, `A5`).
 
-<img src="images/gps-module-pins-analog.jpg" alt="Side view of GPS mounted to Arduino" style="zoom:25%;" />
+<img src="images/gps-module-pins-analog.jpg" style="zoom:25%;" />
 
 This is the other side of the GPS. The visible pin headers (`9`, `10`, `11`) connect to the rotary encoder.
 
-<img src="images/gps-module-pins-digital.jpg" alt="Side view of GPS mounted to Arduino" style="zoom:25%;" />
+<img src="images/gps-module-pins-digital.jpg" style="zoom:25%;" />
 
 #### Generation 2
 
@@ -187,43 +228,59 @@ The GPS board radically changed in this generation for two reasons. First, the r
 
 The photoresistor is nearly invisible because of its size. It sits adjacent to the GPS receiver near its top-left corner. The pulldown resistor is located just below the photoresistor.
 
-<img src="images/gps-module-front.jpg" alt="Front of GPS module" style="zoom:25%;" />
+<img src="images/gps-module-front.jpg" style="zoom:25%;" />
 
-<img src="images/gps-module-back.jpg" alt="Back of GPS module" style="zoom:25%;" />
+<img src="images/gps-module-back.jpg" style="zoom:25%;" />
 
 #### Generation 3
 
 The top of the GPS board was cleaned up in this generation by moving all wiring to the underside. The rotary encoder has been moved closer to the edge of the PCB to make room for the tactile button, which is used to toggle between 12- and 24-hour format.
 
-<img src="images/gps-3-front.jpg" alt="Front of GPS module" style="zoom:25%;" />
+<img src="images/gps-3-front.jpg" style="zoom:25%;" />
 
-<img src="images/gps-3-back.jpg" alt="Back of GPS module" style="zoom:25%;" />
+<img src="images/gps-3-back.jpg" style="zoom:25%;" />
+
+#### Generation 4
+
+The original Adafruit GPS module was replaced with a much smaller and less expensive NEO-6M unit. Much of what precipitated the change was the original convenience of snapping the Adafruit module on top of the Uno board that went away when moving to the Nano.
+
+<img src="images/neo-6m-gps.jpg" style="zoom:25%;" />
+
+The smaller form factor meant that soldering the rotary encoder, timezone switch and photoresistor was no longer an option. These were moved to a separate PCB where the GPS and Nano were also mounted.
+
+<img src="images/nano-gps-pcb.jpg" style="zoom:25%;" />
+
+The wires on the bottom area of the board connect to the rotary encoder and those on top connect to a separate PCB that allows all I2C devices to be attached in one place.
+
+This is a view of the I2C bus with all LED and LCD components connected.
+
+<img src="images/i2c-pcb.jpg" style="zoom:25%;" />
 
 ### Connected Components
 
 This is a view of all components connected together and arranged into a final product. The use of pin headers made it very convenient to delay the majority of decisions about the layout of components in a box or similar structure. However, during the final assembly process, I had to eliminate some of the headers since they were obstructing other components. Also, notice how the rotary encoder is stacked on top of the GPS module.
 
-<img src="images/final-front.jpg" alt="Front view of final assembly" style="zoom:25%;" />
+<img src="images/final-front.jpg" style="zoom:25%;" />
 
-<img src="images/final-top.jpg" alt="Top view of final assembly" style="zoom:25%;" />
+<img src="images/final-top.jpg" style="zoom:25%;" />
 
-<img src="images/final-back.jpg" alt="Back view of final assembly" style="zoom:25%;" />
+<img src="images/final-back.jpg" style="zoom:25%;" />
 
 This is an operating view of the clock with realtime GPS information displayed on the LCD. Once a satellite fix has been established, the LCD shows the latitude and longitude in decimal degrees format. It also displays the number of satellites for which a fix has been established and the UTC time. The selected timezone is also shown, but this is governed by the rotary encoder, not a data point from the GPS module.
 
-<img src="images/final-operating.jpg" alt="Operating view of final assembly" style="zoom:25%;" />
+<img src="images/final-operating.jpg" style="zoom:25%;" />
 
 ### Generation 2
 
 The second generation turned out to be a slightly nicer design in the final assembly, primarily because the mini PCB was eliminated.
 
-<img src="images/final-2-right.jpg" alt="Right view of final assembly" style="zoom:25%;" />
+<img src="images/final-2-right.jpg" style="zoom:25%;" />
 
-<img src="images/final-2-left.jpg" alt="Left view of final assembly" style="zoom:25%;" />
+<img src="images/final-2-left.jpg" style="zoom:25%;" />
 
-<img src="images/final-2-back.jpg" alt="Back view of final assembly" style="zoom:25%;" />
+<img src="images/final-2-back.jpg" style="zoom:25%;" />
 
-<img src="images/final-2-operating.jpg" alt="Operating view of final assembly" style="zoom:25%;" />
+<img src="images/final-2-operating.jpg" style="zoom:25%;" />
 
 #### Generation 3
 
@@ -233,11 +290,11 @@ The colors of the LEDs were also changed to green (year/month) and blue (time), 
 
 The operating view below shows 12-hour format enabled.
 
-<img src="images/final-3-front.jpg" alt="Front view of final assembly" style="zoom:25%;" />
+<img src="images/final-3-front.jpg" style="zoom:25%;" />
 
-<img src="images/final-3-back.jpg" alt="Back view of final assembly" style="zoom:25%;" />
+<img src="images/final-3-back.jpg" style="zoom:25%;" />
 
-<img src="images/final-3-operating.jpg" alt="Operating view of final assembly" style="zoom:25%;" />
+<img src="images/final-3-operating.jpg" style="zoom:25%;" />
 
 
 ## Software
@@ -260,12 +317,12 @@ Several environment variables affect the compilation process. Each of them have 
 
 #### `BOARD_TYPE`
 
-The default board type is `uno`, which is the only officially supported target at this point in time. The `mega` board type is experimental, though compilation and uploads appear to be working just fine.
+The default board type is `nano`. The other supported board type is `uno`, which was the default type in past generations.
 
 To change the board type:
 
 ```shell
-export BOARD_TYPE=mega
+export BOARD_TYPE=uno
 ```
 
 #### `IO_EXPANDER`
@@ -278,7 +335,7 @@ For Adafruit LCD display:
 export IO_EXPANDER=USE_MCP23008
 ```
 
-For JANSANE LCD display (two types, so verify which chip is attached to the backpack):
+For GeeekPi and JANSANE LCD displays (verify which chip is attached to the backpack):
 
 ```sh
 export IO_EXPANDER=USE_PCF8574T
