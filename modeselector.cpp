@@ -20,6 +20,7 @@ static const uint32_t DEBOUNCE_MS = 50;
 
 mode_selector::mode_selector(uint8_t pin)
   : button(pin) {
+  pinMode(pin, INPUT_PULLUP);
   button.setDebounceTime(DEBOUNCE_MS);
 }
 
