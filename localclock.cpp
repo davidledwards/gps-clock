@@ -32,7 +32,7 @@ bool local_clock::tick() {
 
 local_time local_clock::now() {
   time_t t = tz->tz.toLocal(last_time);
-  return local_time {year(t), month(t), day(t), hour(t), minute(t)};
+  return local_time {year(t), month(t), day(t), hour(t), minute(t), second(t)};
 }
 
 void local_clock::set_tz(const tz_info* tz) {

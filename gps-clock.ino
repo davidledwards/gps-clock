@@ -67,7 +67,8 @@ void setup() {
   light_mon = new light_monitor(PHOTORESISTOR_PIN);
 
   // Initialize localized clock display.
-  clock_disp = new clock_display(TIME_I2C_ADDR, MDAY_I2C_ADDR, YEAR_I2C_ADDR, light_mon->get_brightness(), state.mode);
+  clock_disp = new clock_display(TIME_LOWER_I2C_ADDR, TIME_UPPER_I2C_ADDR, MDAY_I2C_ADDR, YEAR_I2C_ADDR,
+    light_mon->get_brightness(), state.mode);
   clock_disp->show_unset();
 
   // Keep LCD backlight initially on when clock is restarted.
