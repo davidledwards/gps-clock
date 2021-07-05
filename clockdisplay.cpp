@@ -111,6 +111,7 @@ void clock_display::show_time(const local_time& time) {
     time_upper_led.writeDigitNum(3, time.hour / 10 % 10);
     time_upper_led.writeDigitNum(4, time.hour % 10);
   }
+  time_upper_led.writeDigitRaw(1, 0x00);
   time_upper_led.writeDisplay();
 
   time_lower_led.writeDigitNum(0, time.minute / 10 % 10);
