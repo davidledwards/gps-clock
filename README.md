@@ -2,7 +2,11 @@
 
 A GPS-synchronized digital clock based on the open-source [Arduino](https://arduino.cc) hardware platform.
 
-[toc]
+* [Overview](#overview)
+* [Hardware](#hardware)
+* [Assembly](#assembly)
+* [Software](#software)
+* [License](#license)
 
 ## Overview
 
