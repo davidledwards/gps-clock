@@ -80,7 +80,7 @@ The format is also stored in EEPROM, which means the clock will remember the las
 
 I decided to move away from UTC offsets when selecting the timezone using the rotary encoder. Instead, the encoder now moves through a list of predefined timezones with daylight savings rules incorporated. The tradeoff is that given the constrained amount of RAM on the Uno board (2K), only a handful of timezones can be defined. Plans are in place to support the [Arduino Mega](https://www.elegoo.com/products/elegoo-mega-2560-r3-board) board which comes with 8K of RAM, thus allowing a larger set of timezones.
 
-If you decide to clone the repository and modify the selectable timezones, be cautious when adding new entries. Use of too much RAM for global variables reduces the amount of available stack space. Overflowing stack space can result in all kinds of wonky behavior. Once support for the MEGA board is announced, there should be plenty of space to define the most popular timezones around the globe.
+If you decide to clone the repository and modify the selectable timezones, be cautious when adding new entries. Use of too much RAM for global variables reduces the amount of available stack space. Overflowing stack space can result in all kinds of wonky behavior. Once support for the Mega board is announced, there should be plenty of space to define the most popular timezones around the globe.
 
 A few other cosmetic improvements accompany this software update.
 
@@ -160,7 +160,7 @@ Finally, this is the back of the PCB. Note that pin headers for power (+/-) and 
 
 A fourth LED display was introduced to support showing *seconds*, which meant splitting the time display into two separate 4-digit components. Also, both of these components were increased in size from 0.56 inches to 1.2 inches in order to achieve a new design aesthetic.
 
-The first time-related LED display (referred to as TIME_UPPER in the source code) shows a 12/24 hour indicator in the leftmost digit: in 12-hour mode, `A` for AM and `P` for PM; in 24-hour mode, `H` is always displayed. The second LED display (referred to as TIME_LOWER in the source code) shows minutes and seconds.
+The first LED display (referred to as TIME_UPPER in the source code) shows a 12/24 hour indicator in the leftmost digit: in 12-hour mode, `A` for AM and `P` for PM; in 24-hour mode, `H` is always displayed. The second LED display (referred to as TIME_LOWER in the source code) shows minutes and seconds.
 
 <img src="images/led-display-large.jpg" style="zoom:25%;" />
 
@@ -250,7 +250,7 @@ The original Adafruit GPS module was replaced with a much smaller and less expen
 
 <img src="images/neo-6m-gps.jpg" style="zoom:25%;" />
 
-The smaller form factor meant that soldering the rotary encoder, timezone switch and photoresistor was no longer an option. These were moved to a separate PCB where the GPS and Nano were also mounted.
+The smaller form factor meant that soldering the rotary encoder, timezone switch and photoresistor was no longer an option. These were moved to a separate PCB where the GPS and Nano were also mounted. Instead of soldering the GPS and Nano directly to the board, I opted for pin headers to make replacement of these components easier.
 
 <img src="images/nano-gps-pcb.jpg" style="zoom:25%;" />
 
