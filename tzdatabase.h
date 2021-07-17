@@ -18,6 +18,7 @@
 
 #include <Arduino.h>
 #include <Timezone.h>
+#include "gpsconfig.h"
 
 static const size_t TZ_NAME_SIZE = 15;
 

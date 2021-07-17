@@ -18,9 +18,23 @@
 
 #include <stdint.h>
 
+// Detect supported board type.
+#if defined(__AVR_ATmega328__) || defined(__AVR_ATmega328P__)
+#define BOARD_UNO
+#elif defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__)
+#define BOARD_MEGA
+#else
+#error "board type not supported"
+#endif
+
 // Pins attached to the GPS module.
+#if defined(BOARD_UNO)
 const uint8_t GPS_RX_PIN = 7;
 const uint8_t GPS_TX_PIN = 8;
+#elif defined(BOARD_MEGA)
+const uint8_t GPS_RX_PIN = 50;
+const uint8_t GPS_TX_PIN = 51;
+#endif
 
 // Number of milliseconds before LCD backlight is turned off after no movement
 // of TZ selector.

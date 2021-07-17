@@ -27,6 +27,60 @@ static const tz_info TZ_TABLE[] = {
       TimeChangeRule {"", Last, Sun, Mar, 1, 0}
     )
   },
+#if defined(BOARD_MEGA)
+  tz_info {
+    "ACST",
+    Timezone(
+      TimeChangeRule {"", First, Sun, Oct, 2, 570}
+    )
+  },
+  tz_info {
+    "ACST/ACDT",
+    Timezone(
+      TimeChangeRule {"", First, Sun, Apr, 2, 630},
+      TimeChangeRule {"", First, Sun, Oct, 2, 570}
+    )
+  },
+  tz_info {
+    "AEST",
+    Timezone(
+      TimeChangeRule {"", First, Sun, Oct, 2, 600}
+    )
+  },
+  tz_info {
+    "AEST/AEDT",
+    Timezone(
+      TimeChangeRule {"", First, Sun, Apr, 2, 660},
+      TimeChangeRule {"", First, Sun, Oct, 2, 600}
+    )
+  },
+  tz_info {
+    "AKST/AKDT",
+    Timezone(
+      TimeChangeRule {"", Second, Sun, Mar, 2, -540},
+      TimeChangeRule {"", First, Sun, Nov, 2, -480}
+    )
+  },
+  tz_info {
+    "AST/ADT",
+    Timezone(
+      TimeChangeRule {"", Second, Sun, Mar, 2, -240},
+      TimeChangeRule {"", First, Sun, Nov, 2, -180}
+    )
+  },
+  tz_info {
+    "AWST",
+    Timezone(
+      TimeChangeRule {"", First, Sun, Oct, 2, 480}
+    )
+  },
+  tz_info {
+    "CAT",
+    Timezone(
+      TimeChangeRule {"", First, Sun, Oct, 2, 120}
+    )
+  },
+#endif
   tz_info {
     "CET/CEST",
     Timezone(
@@ -41,6 +95,14 @@ static const tz_info TZ_TABLE[] = {
       TimeChangeRule {"", First, Sun, Nov, 2, -360}
     )
   },
+#if defined(BOARD_MEGA)
+  tz_info {
+    "EAT",
+    Timezone(
+      TimeChangeRule {"", First, Sun, Oct, 2, 180}
+    )
+  },
+#endif
   tz_info {
     "EET/EEST",
     Timezone(
@@ -55,6 +117,14 @@ static const tz_info TZ_TABLE[] = {
       TimeChangeRule {"", First, Sun, Nov, 2, -300}
     )
   },
+#if defined(BOARD_MEGA)
+  tz_info {
+    "MSK",
+    Timezone(
+      TimeChangeRule {"", First, Sun, Oct, 2, 180}
+    )
+  },
+#endif
   tz_info {
     "MST/MDT",
     Timezone(
@@ -68,7 +138,28 @@ static const tz_info TZ_TABLE[] = {
       TimeChangeRule {"", Second, Sun, Mar, 2, -420},
       TimeChangeRule {"", First, Sun, Nov, 2, -480}
     )
-  }
+  },
+#if defined(BOARD_MEGA)
+  tz_info {
+    "WAT",
+    Timezone(
+      TimeChangeRule {"", First, Sun, Oct, 2, 60}
+    )
+  },
+  tz_info {
+    "WET",
+    Timezone(
+      TimeChangeRule {"", First, Sun, Oct, 2, 0}
+    )
+  },
+  tz_info {
+    "WET/WEST",
+    Timezone(
+      TimeChangeRule {"", Last, Sun, Mar, 2, 60},
+      TimeChangeRule {"", Last, Sun, Oct, 2, 0}
+    )
+  },
+#endif
 };
 
 // Number of timezones.
