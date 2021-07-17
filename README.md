@@ -16,6 +16,7 @@ A GPS-synchronized digital clock based on the open-source [Arduino](https://ardu
   * [GPS Module](#gps-module)
   * [Connected Components](#connected-components)
 * [Software](#software)
+* [Contributing](#contributing)
 * [License](#license)
 
 ## Overview
@@ -391,6 +392,10 @@ Performs an installation of libraries followed by a build and upload of the fina
 ```sh
 make all
 ```
+
+## Contributing
+
+Please refer to the [contribution guidelines](CONTRIBUTING.md) when reporting bugs and suggesting improvements.
 
 ## License
 
