@@ -20,6 +20,8 @@
 //
 // Note that names assigned to timezone change rules are irrelevant, so these are initialized
 // as empty strings to minimize consumption of RAM.
+//
+// Number of timezones depends on available RAM.
 static const tz_info TZ_TABLE[] = {
   tz_info {
     "UTC",
@@ -27,7 +29,7 @@ static const tz_info TZ_TABLE[] = {
       TimeChangeRule {"", Last, Sun, Mar, 1, 0}
     )
   },
-#if defined(BOARD_MEGA)
+#if RAM_SIZE > 2
   tz_info {
     "ACST",
     Timezone(
@@ -75,6 +77,12 @@ static const tz_info TZ_TABLE[] = {
     )
   },
   tz_info {
+    "BJT",
+    Timezone(
+      TimeChangeRule {"", First, Sun, Oct, 2, 480}
+    )
+  },
+  tz_info {
     "CAT",
     Timezone(
       TimeChangeRule {"", First, Sun, Oct, 2, 120}
@@ -88,6 +96,15 @@ static const tz_info TZ_TABLE[] = {
       TimeChangeRule {"", Last, Sun, Oct, 2, 60}
     )
   },
+#if RAM_SIZE > 2
+  tz_info {
+    "CHAST/CHADT",
+    Timezone(
+      TimeChangeRule {"", Last, Sun, Sep, 2, 825},
+      TimeChangeRule {"", First, Sun, Apr, 2, 765}
+    )
+  },
+#endif
   tz_info {
     "CST/CDT",
     Timezone(
@@ -95,7 +112,7 @@ static const tz_info TZ_TABLE[] = {
       TimeChangeRule {"", First, Sun, Nov, 2, -360}
     )
   },
-#if defined(BOARD_MEGA)
+#if RAM_SIZE > 2
   tz_info {
     "EAT",
     Timezone(
@@ -117,11 +134,48 @@ static const tz_info TZ_TABLE[] = {
       TimeChangeRule {"", First, Sun, Nov, 2, -300}
     )
   },
-#if defined(BOARD_MEGA)
+#if RAM_SIZE > 2
+  tz_info {
+    "ICT",
+    Timezone(
+      TimeChangeRule {"", First, Sun, Oct, 2, 420}
+    )
+  },
+  tz_info {
+    "IST",
+    Timezone(
+      TimeChangeRule {"", First, Sun, Nov, 2, 330}
+    )
+  },
+  tz_info {
+    "JST",
+    Timezone(
+      TimeChangeRule {"", First, Sun, Nov, 2, 540}
+    )
+  },
+  tz_info {
+    "HST",
+    Timezone(
+      TimeChangeRule {"", First, Sun, Nov, 2, -600}
+    )
+  },
+  tz_info {
+    "HST/HDT",
+    Timezone(
+      TimeChangeRule {"", Second, Sun, Mar, 2, -540},
+      TimeChangeRule {"", First, Sun, Nov, 2, -600}
+    )
+  },
   tz_info {
     "MSK",
     Timezone(
       TimeChangeRule {"", First, Sun, Oct, 2, 180}
+    )
+  },
+  tz_info {
+    "MST",
+    Timezone(
+      TimeChangeRule {"", First, Sun, Nov, 2, -420}
     )
   },
 #endif
@@ -132,6 +186,27 @@ static const tz_info TZ_TABLE[] = {
       TimeChangeRule {"", First, Sun, Nov, 2, -420}
     )
   },
+#if RAM_SIZE > 2
+  tz_info {
+    "NZST/NZDT",
+    Timezone(
+      TimeChangeRule {"", Last, Sun, Sep, 2, 780},
+      TimeChangeRule {"", First, Sun, Apr, 2, 720}
+    )
+  },
+  tz_info {
+    "PHST",
+    Timezone(
+      TimeChangeRule {"", First, Sun, Oct, 2, 480}
+    )
+  },
+  tz_info {
+    "PKT",
+    Timezone(
+      TimeChangeRule {"", First, Sun, Oct, 2, 300}
+    )
+  },
+#endif
   tz_info {
     "PST/PDT",
     Timezone(
@@ -139,7 +214,19 @@ static const tz_info TZ_TABLE[] = {
       TimeChangeRule {"", First, Sun, Nov, 2, -480}
     )
   },
-#if defined(BOARD_MEGA)
+#if RAM_SIZE > 2
+  tz_info {
+    "SAST",
+    Timezone(
+      TimeChangeRule {"", First, Sun, Oct, 2, 120}
+    )
+  },
+  tz_info {
+    "SST",
+    Timezone(
+      TimeChangeRule {"", First, Sun, Oct, 2, 480}
+    )
+  },
   tz_info {
     "WAT",
     Timezone(
