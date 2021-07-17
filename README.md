@@ -4,7 +4,17 @@ A GPS-synchronized digital clock based on the open-source [Arduino](https://ardu
 
 * [Overview](#overview)
 * [Hardware](#hardware)
+  * [Generation 1](#generation-1)
+  * [Generation 2](#generation-2)
+  * [Generation 3](#generation-3)
+  * [Generation 4](#generation-4)
 * [Assembly](#assembly)
+  * [Circuit Diagram](#circuit-diagram)
+  * [LED Displays](#led-displays)
+  * [LCD Display](#lcd-display)
+  * [Rotary Encoder](#rotary-encoder)
+  * [GPS Module](#gps-module)
+  * [Connected Components](#connected-components)
 * [Software](#software)
 * [License](#license)
 
@@ -100,6 +110,8 @@ The Arduino Uno board used in past generations has been replaced with the much s
 The expensive Adafruit GPS shield was also replaced with a much more affordable and smaller NEO-6M GPS module. Moving to the Nano did away with the convenience of snapping the Adafruit GPS shield on top of the Uno, so it forced me to look at other options. The NEO-6M appears to work great at about 25% of the cost of the Adafruit GPS.
 
 Another 4-digit LED display was introduced to show the current time with *seconds*. Both time-oriented LED displays were also upgraded from 0.56 inches to 1.2 inches.
+
+[Arduino Mega](https://www.elegoo.com/products/elegoo-mega-2560-r3-board) is officially supported. Since the RAM (8K) is substantially larger than the Uno/Nano (2K), the number of timezones has been increased when Mega is the compilation target.
 
 * [Elegoo Nano](https://www.amazon.com/gp/product/B0713XK923) (1)
 * [NEO-6M GPS Receiver](https://www.amazon.com/gp/product/B07P8YMVNT) (1)
@@ -321,12 +333,12 @@ Several environment variables affect the compilation process. Each of them have 
 
 #### `BOARD_TYPE`
 
-The default board type is `nano`. The other supported board type is `uno`, which was the default type in past generations.
+The default board type is `nano`. The other supported board types are `uno` and `mega`.
 
 To change the board type:
 
 ```shell
-export BOARD_TYPE=uno
+export BOARD_TYPE=mega
 ```
 
 #### `IO_EXPANDER`
