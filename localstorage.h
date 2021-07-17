@@ -17,6 +17,7 @@
 #define __LOCALSTORAGE_H
 
 #include <Arduino.h>
+#include "gpsconfig.h"
 #include "clockdisplay.h"
 #include "tzdatabase.h"
 

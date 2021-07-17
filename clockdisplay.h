@@ -18,6 +18,7 @@
 
 #include <Arduino.h>
 #include <Adafruit_LEDBackpack.h>
+#include "gpsconfig.h"
 #include "gpsunit.h"
 #include "localclock.h"
 

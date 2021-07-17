@@ -18,6 +18,7 @@
 
 #include <Arduino.h>
 #include <TimeLib.h>
+#include "gpsconfig.h"
 #include "gpsunit.h"
 #include "tzdatabase.h"
 

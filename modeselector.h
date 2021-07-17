@@ -18,6 +18,7 @@
 
 #include <Arduino.h>
 #include <ezButton.h>
+#include "gpsconfig.h"
 
 class mode_selector {
 public:

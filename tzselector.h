@@ -18,6 +18,7 @@
 
 #include <Arduino.h>
 #include <SimpleRotary.h>
+#include "gpsconfig.h"
 #include "tzdatabase.h"
 
 enum tz_action {

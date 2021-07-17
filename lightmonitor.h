@@ -17,6 +17,7 @@
 #define __LIGHTMONITOR_H
 
 #include <Arduino.h>
+#include "gpsconfig.h"
 
 class light_monitor {
 public:

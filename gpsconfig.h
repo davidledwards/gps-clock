@@ -18,11 +18,13 @@
 
 #include <stdint.h>
 
-// Detect supported board type.
+// Detect supported board type and RAM size (KB).
 #if defined(__AVR_ATmega328__) || defined(__AVR_ATmega328P__)
 #define BOARD_UNO
+#define RAM_SIZE 2
 #elif defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__)
 #define BOARD_MEGA
+#define RAM_SIZE 8
 #else
 #error "board type not supported"
 #endif

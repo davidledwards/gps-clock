@@ -19,6 +19,7 @@
 #include <Arduino.h>
 #include <SoftwareSerial.h>
 #include <TinyGPS.h>
+#include "gpsconfig.h"
 
 struct gps_info {
   float lat;
