@@ -4,17 +4,22 @@ A GPS-synchronized digital clock based on the open-source [Arduino](https://ardu
 
 * [Overview](#overview)
 * [Hardware](#hardware)
-  * [Generation 1](#generation-1)
-  * [Generation 2](#generation-2)
-  * [Generation 3](#generation-3)
-  * [Generation 4](#generation-4)
+  * [Generation 1](#hardware-generation-1)
+  * [Generation 2](#hardware-generation-2)
+  * [Generation 3](#hardware-generation-3)
+  * [Generation 4](#hardware-generation-4)
 * [Assembly](#assembly)
+  
   * [Circuit Diagram](#circuit-diagram)
   * [LED Displays](#led-displays)
   * [LCD Display](#lcd-display)
   * [Rotary Encoder](#rotary-encoder)
   * [GPS Module](#gps-module)
-  * [Connected Components](#connected-components)
+* [Clock](#clock)
+  * [Generation 1](#clock-generation-1)
+  * [Generation 2](#clock-generation-2)
+  * [Generation 3](#clock-generation-3)
+  * [Generation 4](#clock-generation-4)
 * [Software](#software)
 * [Contributing](#contributing)
 * [License](#license)
@@ -29,7 +34,7 @@ Bear with me if you happen to be a long-time Arduino hacker and developer, as th
 
 ## Hardware
 
-### Generation 1
+### Hardware Generation 1
 
 https://github.com/davidledwards/gps-clock/tree/release-1
 
@@ -44,7 +49,7 @@ These are the components of the original clock design.
 * [ElectroCookie Large Solderable PCB](https://www.amazon.com/gp/product/B07YBYZCTN) (1)
 * [ElectroCookie Mini Solderable PCB](https://www.amazon.com/gp/product/B081MSKJJX) (1)
 
-### Generation 2
+### Hardware Generation 2
 
 https://github.com/davidledwards/gps-clock/tree/release-2
 
@@ -67,7 +72,7 @@ The mini PCB from generation 1 was eliminated since the rotary encoder was mount
 * [10K Ohm Resistor](https://www.amazon.com/10k-ohm-resistor/s?k=10k+ohm+resistor) (1)
 * [220 Ohm Resistor](https://www.amazon.com/slp/220-ohm-resistor/pwc2jfx3cwoh9sf) (1)
 
-### Generation 3
+### Hardware Generation 3
 
 https://github.com/davidledwards/gps-clock/tree/release-3
 
@@ -87,7 +92,7 @@ The format is also stored in EEPROM, which means the clock will remember the las
 * [220 Ohm Resistor](https://www.amazon.com/slp/220-ohm-resistor/pwc2jfx3cwoh9sf) (1)
 * [Tactile Button](https://www.adafruit.com/product/367) (1)
 
-#### Software Update
+#### Generation 3 Software Update
 
 I decided to move away from UTC offsets when selecting the timezone using the rotary encoder. Instead, the encoder now moves through a list of predefined timezones with daylight savings rules incorporated. The tradeoff is that given the constrained amount of RAM on the Uno board (2K), only a handful of timezones can be defined. Plans are in place to support the [Arduino Mega](https://www.elegoo.com/products/elegoo-mega-2560-r3-board) board which comes with 8K of RAM, thus allowing a larger set of timezones.
 
@@ -100,7 +105,7 @@ A few other cosmetic improvements accompany this software update.
 
 Internally, the GPS library was replaced with a smaller implementation requiring less memory. Originally, I had used the library built for the Adafruit GPS module, but all the bells and whistles were unnecessary. A generic library supporting the basic standard sentences that all GPS modules emit was sufficient. The upside was additional memory that could be used by the timezone database.
 
-### Generation 4
+### Hardware Generation 4
 
 https://github.com/davidledwards/gps-clock/tree/release-4
 
@@ -131,15 +136,17 @@ Another 4-digit LED display was introduced to show the current time with *second
 
 ### Circuit Diagram
 
-#### Generation 1-3
+#### Assembly Generation 1
 
 <img src="images/gps-clock.png" style="zoom:25%;" />
 
-#### Generation 4
+#### Assembly Generation 4
 
 <img src="images/gps-clock-gen-4.png" style="zoom:25%;" />
 
 ### LED Displays
+
+#### LED Displays Generation 1
 
 Three 4-digit LED displays are used to show the local time in YYYY.MM.DD HH:MM format. The I2C backpacks are packaged unattached to the LED displays, which means they requiring soldering as part of the assembly process. The I2C backpacks are very convenient because they essentially need only two (2) pins on the Aurduino board for sending commands to the display. Furthermore, since I2C is a serial protocol that acts like a bus, multiple I2C-aware components can be attached to the same pins. However, they do require unique addresses, which will be discussed shortly.
 
@@ -169,7 +176,7 @@ Finally, this is the back of the PCB. Note that pin headers for power (+/-) and 
 
 <img src="images/led-pcb-back.jpg" style="zoom:25%;" />
 
-#### Generation 4
+#### LED Displays Generation 4
 
 A fourth LED display was introduced to support showing *seconds*, which meant splitting the time display into two separate 4-digit components. Also, both of these components were increased in size from 0.56 inches to 1.2 inches in order to achieve a new design aesthetic.
 
@@ -178,6 +185,8 @@ The first LED display (referred to as TIME_UPPER in the source code) shows a 12/
 <img src="images/led-display-large.jpg" style="zoom:25%;" />
 
 ### LCD Display
+
+#### LCD Display Generation 1
 
 A single 20-column, 4-row LCD display is used to show GPS information and the currently selected timezone. The I2C backpack for the LCD was sold separately, but as mentioned above, is very convenient in reducing pin consumption on the Arduino board. The pins on the LED display simply connect to the LCD display.
 
@@ -189,7 +198,7 @@ And, this is a view of the back side of the LCD. Notice that I used the screw he
 
 <img src="images/lcd-back.jpg" style="zoom:25%;" />
 
-#### Generation 2
+#### LCD Display Generation 2
 
 I decided to purchase a two-pack of the JANSANE 20x4 LCD displays instead of the Adafruit variant used in generation 1. It turns out that this introduced some complications in the source code because the JANSANE and Adafruit displays use different types of I/O expander chips.
 
@@ -201,6 +210,8 @@ The JANSANE backpack attached to the LCD requires a jumper to enable the backlig
 
 ### Rotary Encoder
 
+#### Rotary Encoder Generation 1
+
 The rotary encoder used in this project rotates infinitely in both directions with a nice mechanical pulse as it moves around. It also has a push button action. The encoder is used to select the timezone in 30-minute increments. For a variety of reasons, I kept the hardware and software simple with respect to timezone. Indeed, there are web services that will convert latitude/longitude to timezone, but this clock was designed to be self-contained and not rely on the presence of a wifi endpoint. The timezone offset is selected by rotating the encoder in either direction, but the selection is not committed until the encoder is pressed. Once committed, the local time shown in the LED display is modified accordingly. If a timezone is not selected, local time is always equivalent to UTC. The timezone is also stored in EEPROM so it can be recovered if the power source is interrupted.
 
 As seen in this photo, the rotary encoder is mounted on a small PCB. It could also be mounted to a face plate.
@@ -211,17 +222,19 @@ This is a view of the back side of the PCB. Similar to other components, pin hea
 
 <img src="images/rotary-back.jpg" style="zoom:25%;" />
 
-#### Generation 2
+#### Rotary Encoder Generation 2
 
 The rotary encoder was mounted directly on the GPS board, which eliminated the need for a separate mini PCB.
 
-#### Generation 4
+#### Rotary Encoder Generation 4
 
 The rotary encoder was upgraded to a version that came premounted on a small PCB with builtin pullup resistors.
 
 <img src="images/rotary-encoder-pcb.jpg" style="zoom:25%;" />
 
 ### GPS Module
+
+#### GPS Module Generation 1
 
 The GPS module conveniently mounts directly on top of the Arduino Uno board. A set of pin headers need to be soldered to the GPS board, but once completed, both PCBs slide together nicely.
 
@@ -239,7 +252,7 @@ This is the other side of the GPS. The visible pin headers (`9`, `10`, `11`) con
 
 <img src="images/gps-module-pins-digital.jpg" style="zoom:25%;" />
 
-#### Generation 2
+#### GPS Module Generation 2
 
 The GPS board radically changed in this generation for two reasons. First, the rotary encoder was mounted directly on the GPS board. Second, the newly introduced photoresistor and its corresponding 10K ohm pulldown resistor were also soldered to the board. This simplified wiring and eliminated the mini PCB. It was also more aesthetically pleasing because the encoder was further recessed and less prominent when compared to generation 1.
 
@@ -249,7 +262,7 @@ The photoresistor is nearly invisible because of its size. It sits adjacent to t
 
 <img src="images/gps-module-back.jpg" style="zoom:25%;" />
 
-#### Generation 3
+#### GPS Module Generation 3
 
 The top of the GPS board was cleaned up in this generation by moving all wiring to the underside. The rotary encoder has been moved closer to the edge of the PCB to make room for the tactile button, which is used to toggle between 12- and 24-hour format.
 
@@ -257,7 +270,7 @@ The top of the GPS board was cleaned up in this generation by moving all wiring 
 
 <img src="images/gps-3-back.jpg" style="zoom:25%;" />
 
-#### Generation 4
+#### GPS Module Generation 4
 
 The original Adafruit GPS module was replaced with a much smaller and less expensive NEO-6M unit. Much of what precipitated the change was the original convenience of snapping the Adafruit module on top of the Uno board that went away when moving to the Nano.
 
@@ -273,7 +286,9 @@ This is a view of the I2C bus with all LED and LCD components connected.
 
 <img src="images/i2c-pcb.jpg" style="zoom:25%;" />
 
-### Connected Components
+### Clock
+
+#### Clock Generation 1
 
 This is a view of all components connected together and arranged into a final product. The use of pin headers made it very convenient to delay the majority of decisions about the layout of components in a box or similar structure. However, during the final assembly process, I had to eliminate some of the headers since they were obstructing other components. Also, notice how the rotary encoder is stacked on top of the GPS module.
 
@@ -287,7 +302,7 @@ This is an operating view of the clock with realtime GPS information displayed o
 
 <img src="images/final-operating.jpg" style="zoom:25%;" />
 
-### Generation 2
+### Clock Generation 2
 
 The second generation turned out to be a slightly nicer design in the final assembly, primarily because the mini PCB was eliminated.
 
@@ -299,7 +314,7 @@ The second generation turned out to be a slightly nicer design in the final asse
 
 <img src="images/final-2-operating.jpg" style="zoom:25%;" />
 
-#### Generation 3
+#### Clock Generation 3
 
 Very little changed in comparison to generation 2 except for moving wires to the underside of PCBs. This is also evident on the face of the clock in which prior generations had wires soldered on the front side.
 
@@ -312,6 +327,24 @@ The operating view below shows 12-hour format enabled.
 <img src="images/final-3-back.jpg" style="zoom:25%;" />
 
 <img src="images/final-3-operating.jpg" style="zoom:25%;" />
+
+#### Clock Generation 4
+
+This clock was designed to be mounted on the wall given the larger LEDs used for the time component. Notice the GPS antenna to the right and below the large LEDs. This is important to attach to the NEO-6M board otherwise the unit will have difficulty locking onto GPS signals. The PCB in the middle is essentially an I2C bus for all the display components.
+
+<img src="images/final-4-front.jpg" style="zoom:25%;" />
+
+<img src="images/final-4-right.jpg" style="zoom:25%;" />
+
+<img src="images/final-4-left.jpg" style="zoom:25%;" />
+
+The back side has rubber stoppers attached to the lower portion and a sawtooth hanger with spacers to match the depth created by the stoppers. This ensures that the clock hangs parallel to the wall as opposed to a slight angle.
+
+<img src="images/final-4-back.jpg" style="zoom:25%;" />
+
+Below is the unit with power attached. Notice the seconds in this new generation as well as the AM/PM/24 indicator on the far left of the large LEDs. The LCD works exactly the same as prior generations, though it is not illuminated in this photo.
+
+<img src="images/final-4-running.jpg" style="zoom:25%;" />
 
 
 ## Software
