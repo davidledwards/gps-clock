@@ -286,9 +286,9 @@ This is a view of the I2C bus with all LED and LCD components connected.
 
 <img src="images/i2c-pcb.jpg" style="zoom:25%;" />
 
-### Clock
+## Clock
 
-#### Clock Generation 1
+### Clock Generation 1
 
 This is a view of all components connected together and arranged into a final product. The use of pin headers made it very convenient to delay the majority of decisions about the layout of components in a box or similar structure. However, during the final assembly process, I had to eliminate some of the headers since they were obstructing other components. Also, notice how the rotary encoder is stacked on top of the GPS module.
 
@@ -314,7 +314,7 @@ The second generation turned out to be a slightly nicer design in the final asse
 
 <img src="images/final-2-operating.jpg" style="zoom:25%;" />
 
-#### Clock Generation 3
+### Clock Generation 3
 
 Very little changed in comparison to generation 2 except for moving wires to the underside of PCBs. This is also evident on the face of the clock in which prior generations had wires soldered on the front side.
 
@@ -328,7 +328,7 @@ The operating view below shows 12-hour format enabled.
 
 <img src="images/final-3-operating.jpg" style="zoom:25%;" />
 
-#### Clock Generation 4
+### Clock Generation 4
 
 This clock was designed to be mounted on the wall given the larger LEDs used for the time component. Notice the GPS antenna to the right and below the large LEDs. This is important to attach to the NEO-6M board otherwise the unit will have difficulty locking onto GPS signals. The PCB in the middle is essentially an I2C bus for all the display components.
 
