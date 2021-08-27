@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 David Edwards
+ * Copyright 2021 David Edwards
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@
 #define BOARD_MEGA
 #define RAM_SIZE 8
 #else
-#error "board type not supported"
+#error "board type not detected"
 #endif
 
 #endif
