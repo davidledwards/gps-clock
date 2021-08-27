@@ -19,7 +19,6 @@
 #include <Arduino.h>
 #include <SoftwareSerial.h>
 #include <TinyGPS.h>
-#include "gpsconfig.h"
 
 struct gps_info {
   float lat;
@@ -44,7 +43,7 @@ enum gps_state {
 
 class gps_unit {
 public:
-  gps_unit(uint8_t tx_pin, uint8_t rx_pin);
+  gps_unit();
   gps_state read(gps_info& info, gps_time& time);
 
 private:

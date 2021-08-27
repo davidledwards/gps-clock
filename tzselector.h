@@ -18,7 +18,6 @@
 
 #include <Arduino.h>
 #include <SimpleRotary.h>
-#include "gpsconfig.h"
 #include "tzdatabase.h"
 
 enum tz_action {
@@ -30,8 +29,7 @@ enum tz_action {
 
 class tz_selector {
 public:
-  tz_selector(uint8_t a_pin, uint8_t b_pin, uint8_t button_pin, const tz_database* tz_db, const tz_info* tz);
-
+  tz_selector(const tz_database* tz_db, const tz_info* tz);
   tz_action read();
   void reset();
   const tz_info* const get_tz();

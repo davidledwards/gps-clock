@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 #include <Arduino.h>
-#include "gpsconfig.h"
 #include "gpsunit.h"
 #include "gpsdisplay.h"
 #include "localclock.h"
@@ -35,6 +34,10 @@ static gps_display* gps_disp;
 static clock_display* clock_disp;
 static light_monitor* light_mon;
 
+// Number of milliseconds before LCD backlight is turned off after no movement
+// of TZ selector.
+static const uint32_t AUTO_OFF_MS = 30000;
+
 // Time of last TZ selector movement or 0 if LCD display is turned off.
 static uint32_t last_movement;
 
@@ -44,7 +47,7 @@ void setup() {
   local_state state = storage->read();
 
   // Initialize GPS module.
-  gps = new gps_unit(GPS_TX_PIN, GPS_RX_PIN);
+  gps = new gps_unit();
 
   // Determine local timezone.
   tz_db = new tz_database();
@@ -54,21 +57,20 @@ void setup() {
   clock = new local_clock(tz);
 
   // Initialize timezone selector componnent.
-  tz_sel = new tz_selector(TZ_A_PIN, TZ_B_PIN, TZ_BUTTON_PIN, tz_db, tz);
+  tz_sel = new tz_selector(tz_db, tz);
 
   // Initialize 12/24 time selector.
-  mode_sel = new mode_selector(MODE_PIN);
+  mode_sel = new mode_selector();
 
   // Initialize GPS display.
-  gps_disp = new gps_display(GPS_I2C_ADDR);
+  gps_disp = new gps_display();
   gps_disp->show_tz(tz_sel->get_tz(), false);
 
   // Initialize photoresistor-based light monitor.
-  light_mon = new light_monitor(PHOTORESISTOR_PIN);
+  light_mon = new light_monitor();
 
   // Initialize localized clock display.
-  clock_disp = new clock_display(TIME_LOWER_I2C_ADDR, TIME_UPPER_I2C_ADDR, MDAY_I2C_ADDR, YEAR_I2C_ADDR,
-    light_mon->get_brightness(), state.mode);
+  clock_disp = new clock_display(light_mon->get_brightness(), state.mode);
   clock_disp->show_unset();
 
   // Keep LCD backlight initially on when clock is restarted.

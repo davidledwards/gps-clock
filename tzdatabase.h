@@ -18,7 +18,6 @@
 
 #include <Arduino.h>
 #include <Timezone.h>
-#include "gpsconfig.h"
 
 static const size_t TZ_NAME_SIZE = 15;
 
@@ -30,7 +29,6 @@ struct tz_info {
 class tz_database {
 public:
   tz_database();
-
   size_t size();
   const tz_info* const find(const char* name);
   size_t find_index(const char* name);

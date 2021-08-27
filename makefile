@@ -13,12 +13,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+ifneq (,$(wildcard ./.env))
+	include .env
+	export
+endif
+
 SKETCH = gps-clock
 BOARD_PACKAGE = arduino
 BOARD_ARCH = avr
-BOARD_TYPE ?= nano
+BOARD ?= nano
 BOARD_CORE = $(BOARD_PACKAGE):$(BOARD_ARCH)
-BOARD_NAME = $(BOARD_CORE):$(BOARD_TYPE)
+BOARD_NAME = $(BOARD_CORE):$(BOARD)
 
 # This variable specifies the serial port for uploading bits to the board and must be defined by
 # the environment, otherwise the value defaults to /dev/null.
@@ -65,13 +70,20 @@ help :
 	@echo "  clean     remove all transient build files"
 	@echo ""
 	@echo "environment:"
-	@echo "  BOARD_TYPE=$(BOARD_TYPE)"
+	@echo "  BOARD=$(BOARD)"
 	@echo "  IO_EXPANDER=$(IO_EXPANDER)"
 	@echo "  PORT=$(PORT)"
+	@echo "  FLAGS=$(FLAGS)"
 
 all : clean install build upload
 
 SRCS = $(wildcard *.ino *.h *.cpp)
+
+FLAGS="-D$(IO_EXPANDER)"
+
+ifdef WITH_SECONDS
+FLAGS+="-DWITH_SECONDS"
+endif
 
 $(PROG) : $(SRCS)
 	@echo "building..."

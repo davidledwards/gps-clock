@@ -15,6 +15,11 @@
  */
 #include "tzselector.h"
 
+// Pins attached to the rotary encoder used for selecting the timezone offset.
+static const uint8_t TZ_A_PIN = 9;
+static const uint8_t TZ_B_PIN = 10;
+static const uint8_t TZ_BUTTON_PIN = 11;
+
 // Proposed timezone not selected within given time frame is reverted to the previously confirmed
 // adjustment.
 static const uint32_t IDLE_RESET_MS = 10000;
@@ -23,8 +28,8 @@ static const uint32_t IDLE_RESET_MS = 10000;
 static const uint32_t DEBOUNCE_DELAY_MS = 5;
 static const uint32_t ERROR_DELAY_MS = 20;
 
-tz_selector::tz_selector(uint8_t a_pin, uint8_t b_pin, uint8_t button_pin, const tz_database* tz_db, const tz_info* tz)
-  : encoder(a_pin, b_pin, button_pin),
+tz_selector::tz_selector(const tz_database* tz_db, const tz_info* tz)
+  : encoder(TZ_A_PIN, TZ_B_PIN, TZ_BUTTON_PIN),
     tz_db(tz_db),
     tz_confirmed(tz_db->find_index(tz->name)),
     tz_proposed(tz_confirmed),

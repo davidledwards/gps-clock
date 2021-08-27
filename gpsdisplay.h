@@ -17,9 +17,12 @@
 #define __GPSDISPLAY_H
 
 #include <Arduino.h>
-#include "gpsconfig.h"
 #include "gpsunit.h"
 #include "tzdatabase.h"
+
+#if !(defined(USE_PCF8574T) || defined(USE_PCF8574AT) || defined(USE_MCP23008))
+#define USE_PCF8574T
+#endif
 
 #if defined(USE_PCF8574T) || defined(USE_PCF8574AT)
 #include <LiquidCrystal_I2C.h>
@@ -29,8 +32,7 @@
 
 class gps_display {
 public:
-  gps_display(uint8_t i2c_addr);
-
+  gps_display();
   void show_info(const gps_info& info, const gps_time& time);
   void show_searching();
   void show_tz(const tz_info* tz, bool pending);
@@ -42,7 +44,6 @@ private:
 #elif defined(USE_MCP23008)
   const Adafruit_LiquidCrystal lcd;
 #endif
-
   bool searching;
 
   void write_lat(const gps_info& info);

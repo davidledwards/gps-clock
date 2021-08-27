@@ -18,12 +18,10 @@
 
 #include <Arduino.h>
 #include <ezButton.h>
-#include "gpsconfig.h"
 
 class mode_selector {
 public:
-  mode_selector(uint8_t pin);
-
+  mode_selector();
   bool toggled();
 
 private:

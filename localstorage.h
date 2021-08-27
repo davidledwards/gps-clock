@@ -17,7 +17,6 @@
 #define __LOCALSTORAGE_H
 
 #include <Arduino.h>
-#include "gpsconfig.h"
 #include "clockdisplay.h"
 #include "tzdatabase.h"
 
@@ -34,7 +33,6 @@ private:
 class local_storage {
 public:
   local_storage();
-
   local_state read();
   void write_tz(const char* tz_name);
   void write_mode(clock_mode mode);

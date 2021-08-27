@@ -13,25 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef __LIGHTMONITOR_H
-#define __LIGHTMONITOR_H
+#ifndef __BOARD_H
+#define __BOARD_H
 
-#include <Arduino.h>
-
-class light_monitor {
-public:
-  light_monitor();
-  uint8_t get_brightness();
-
-private:
-  uint8_t pin;
-  uint16_t cur_reading;
-  uint8_t cur_brightness;
-  uint32_t last_reading_time;
-  uint16_t last_reading;
-  uint32_t waiting_start;
-
-  static uint8_t to_brightness(uint16_t reading);
-};
+// Detect supported board type and RAM size (KB).
+#if defined(__AVR_ATmega328__) || defined(__AVR_ATmega328P__)
+#define BOARD_UNO
+#define RAM_SIZE 2
+#elif defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__)
+#define BOARD_MEGA
+#define RAM_SIZE 8
+#else
+#error "board type not supported"
+#endif
 
 #endif

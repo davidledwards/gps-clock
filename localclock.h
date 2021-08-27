@@ -18,7 +18,6 @@
 
 #include <Arduino.h>
 #include <TimeLib.h>
-#include "gpsconfig.h"
 #include "gpsunit.h"
 #include "tzdatabase.h"
 
@@ -34,7 +33,6 @@ struct local_time {
 class local_clock {
 public:
   local_clock(const tz_info* tz);
-
   bool tick();
   local_time now();
   void set_tz(const tz_info* tz);

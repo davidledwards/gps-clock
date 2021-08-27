@@ -14,6 +14,16 @@
  * limitations under the License.
  */
 #include "gpsunit.h"
+#include "board.h"
+
+// Pins attached to the GPS module.
+#if defined(BOARD_UNO)
+static const uint8_t GPS_RX_PIN = 7;
+static const uint8_t GPS_TX_PIN = 8;
+#elif defined(BOARD_MEGA)
+static const uint8_t GPS_RX_PIN = 50;
+static const uint8_t GPS_TX_PIN = 51;
+#endif
 
 // GPS module baud rate.
 static const long GPS_BAUD_RATE = 9600;
@@ -25,8 +35,8 @@ static const uint32_t SYNC_DELAY_MS = 2000;
 // the GPS module is searching.
 static const uint32_t SEARCHING_DELAY_MS = 30000;
 
-gps_unit::gps_unit(uint8_t tx_pin, uint8_t rx_pin)
-  : ser(tx_pin, rx_pin),
+gps_unit::gps_unit()
+  : ser(GPS_TX_PIN, GPS_RX_PIN),
     last_sync(0) {
   ser.begin(GPS_BAUD_RATE);
 }

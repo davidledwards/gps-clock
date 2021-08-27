@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 #include "tzdatabase.h"
+#include "board.h"
 
 // Array of predefined timezones where first entry must always be "UTC", thus array size is
 // guaranteed to be greater than zero. It should be safe to always reference first element.

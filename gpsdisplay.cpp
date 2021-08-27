@@ -30,11 +30,20 @@ static const uint8_t CHAR_DEGREES_BITMAP[] = {
   0b00000000
 };
 
-gps_display::gps_display(uint8_t i2c_addr)
-#if defined(USE_PCF8574T) || defined(USE_PCF8574AT)
-  : lcd(i2c_addr, LCD_COLS, LCD_ROWS),
+// I2C address of the 20x4 LCD display used to show GPS information.
+#if defined(USE_PCF8574T)
+static const uint8_t GPS_I2C_ADDR = 0x27;
+#elif defined(USE_PCF8574AT)
+static const uint8_t GPS_I2C_ADDR = 0x3F;
 #elif defined(USE_MCP23008)
-  : lcd(i2c_addr - 0x70),
+static const uint8_t GPS_I2C_ADDR = 0x73;
+#endif
+
+gps_display::gps_display()
+#if defined(USE_PCF8574T) || defined(USE_PCF8574AT)
+  : lcd(GPS_I2C_ADDR, LCD_COLS, LCD_ROWS),
+#elif defined(USE_MCP23008)
+  : lcd(GPS_I2C_ADDR - 0x70),
 #endif
     searching(false) {
 #if defined(USE_PCF8574T) || defined(USE_PCF8574AT)
