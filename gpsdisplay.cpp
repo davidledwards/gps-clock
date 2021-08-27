@@ -32,18 +32,18 @@ static const uint8_t CHAR_DEGREES_BITMAP[] = {
 
 // I2C address of the 20x4 LCD display used to show GPS information.
 #if EXPANDER == EXPANDER_PCF8574T
-static const uint8_t GPS_I2C_ADDR = 0x27;
+static const uint8_t I2C_ADDR = 0x27;
 #elif EXPANDER == EXPANDER_PCF8574AT
-static const uint8_t GPS_I2C_ADDR = 0x3F;
+static const uint8_t I2C_ADDR = 0x3F;
 #elif EXPANDER == EXPANDER_MCP23008
-static const uint8_t GPS_I2C_ADDR = 0x73;
+static const uint8_t I2C_ADDR = 0x73;
 #endif
 
 gps_display::gps_display()
 #if EXPANDER == EXPANDER_PCF8574T || EXPANDER == EXPANDER_PCF8574AT
-  : lcd(GPS_I2C_ADDR, LCD_COLS, LCD_ROWS),
+  : lcd(I2C_ADDR, LCD_COLS, LCD_ROWS),
 #elif EXPANDER == EXPANDER_MCP23008
-  : lcd(GPS_I2C_ADDR - 0x70),
+  : lcd(I2C_ADDR - 0x70),
 #endif
     searching(false) {
 #if EXPANDER == EXPANDER_PCF8574T || EXPANDER == EXPANDER_PCF8574AT

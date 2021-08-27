@@ -20,10 +20,12 @@
 #include "gpsunit.h"
 #include "tzdatabase.h"
 
+// Supported I/O expanders for LCDs.
 #define EXPANDER_PCF8574T 0
 #define EXPANDER_PCF8574AT 1
 #define EXPANDER_MCP23008 2
 
+// Select default expander if undefined.
 #if !(EXPANDER == EXPANDER_PCF8574T || EXPANDER == EXPANDER_PCF8574AT || EXPANDER == EXPANDER_MCP23008)
 #define EXPANDER EXPANDER_PCF8574T
 #endif

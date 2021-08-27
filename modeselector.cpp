@@ -16,7 +16,7 @@
 #include "modeselector.h"
 
 // Digital pin connected to 12/24 time selector button.
-const uint8_t BUTTON_PIN = 2;
+static const uint8_t BUTTON_PIN = 2;
 
 // Debounce period which eliminates noise when button is activated.
 static const uint32_t DEBOUNCE_MS = 50;
