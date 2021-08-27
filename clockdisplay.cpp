@@ -18,7 +18,7 @@
 static const uint8_t DASH_BITMASK = 0b01000000;
 
 // I2C addresses of the various 4-digit LED displays used to show local time.
-#if defined(WITH_SECONDS)
+#if defined(USE_SECONDS)
 const uint8_t TIME_LOWER_I2C_ADDR = 0x70;
 const uint8_t TIME_UPPER_I2C_ADDR = 0x71;
 const uint8_t MDAY_I2C_ADDR = 0x72;
@@ -29,7 +29,7 @@ const uint8_t MDAY_I2C_ADDR = 0x71;
 const uint8_t YEAR_I2C_ADDR = 0x72;
 #endif
 
-#if defined(WITH_SECONDS)
+#if defined(USE_SECONDS)
 // Displays both colons on 1.2 inch Adafruit LED display when writing to location 2.
 static const uint8_t COLONS_BITMASK = 0x02 | 0x04 | 0x08;
 
@@ -42,7 +42,7 @@ static const uint8_t HOUR_PM_BITMASK = 0b01110011;
 clock_display::clock_display(uint8_t brightness, clock_mode mode)
   : cur_brightness(brightness),
     mode(mode) {
-#if defined(WITH_SECONDS)
+#if defined(USE_SECONDS)
   init_led(time_lower_led, TIME_LOWER_I2C_ADDR);
   init_led(time_upper_led, TIME_UPPER_I2C_ADDR);
 #else
@@ -53,7 +53,7 @@ clock_display::clock_display(uint8_t brightness, clock_mode mode)
 }
 
 void clock_display::show_unset() {
-#if defined(WITH_SECONDS)
+#if defined(USE_SECONDS)
   show_dashes(time_lower_led);
   show_dashes(time_upper_led);
 #else
@@ -71,7 +71,7 @@ void clock_display::show_now(const local_time& time) {
 
 void clock_display::set_brightness(uint8_t brightness) {
   if (brightness != cur_brightness) {
-#if defined(WITH_SECONDS)
+#if defined(USE_SECONDS)
     time_lower_led.setBrightness(brightness);
     time_upper_led.setBrightness(brightness);
 #else
@@ -121,7 +121,7 @@ void clock_display::show_mday(const local_time& time) {
 }
 
 void clock_display::show_time(const local_time& time) {
-#if defined(WITH_SECONDS)
+#if defined(USE_SECONDS)
   if (mode == clock_12) {
     time_upper_led.writeDigitRaw(0, time.hour < 12 ? HOUR_AM_BITMASK : HOUR_PM_BITMASK);
     uint8_t hour = time.hour % 12;

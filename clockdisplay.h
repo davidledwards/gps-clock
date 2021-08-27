@@ -35,7 +35,7 @@ public:
   clock_mode toggle_mode();
 
 private:
-#if defined(WITH_SECONDS)
+#if defined(USE_SECONDS)
   const Adafruit_7segment time_lower_led;
   const Adafruit_7segment time_upper_led;
 #else

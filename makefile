@@ -61,6 +61,15 @@ CORE = $(BOARD_CORE)@1.8.3
 # Name of the image that gets uploaded to the board.
 PROG = $(BUILD_FILES_PREFIX).hex
 
+SRCS = $(wildcard *.ino *.h *.cpp)
+
+# Construct build flags sent to compiler based on environment.
+BUILD_FLAGS = -DEXPANDER=EXPANDER_$(EXPANDER)
+
+ifdef USE_SECONDS
+BUILD_FLAGS += -DUSE_SECONDS
+endif
+
 help :
 	@echo "useful targets:"
 	@echo "  all       performs clean, install, build, upload"
@@ -73,24 +82,16 @@ help :
 	@echo "  BOARD=$(BOARD)"
 	@echo "  EXPANDER=$(EXPANDER)"
 	@echo "  PORT=$(PORT)"
-	@echo "  FLAGS=$(FLAGS)"
+	@echo "  USE_SECONDS=$(USE_SECONDS)"
 
 all : clean install build upload
-
-SRCS = $(wildcard *.ino *.h *.cpp)
-
-FLAGS="-D$(EXPANDER)"
-
-ifdef WITH_SECONDS
-FLAGS+="-DWITH_SECONDS"
-endif
 
 $(PROG) : $(SRCS)
 	@echo "building..."
 	arduino-cli compile \
 		--build-path $(BUILD_PATH) \
 		--build-cache-path $(BUILD_PATH) \
-		--build-property build.extra_flags="-DEXPANDER=EXPANDER_$(EXPANDER)" \
+		--build-property build.extra_flags="$(BUILD_FLAGS)" \
 		-b $(BOARD_NAME)
 
 build : $(PROG)
