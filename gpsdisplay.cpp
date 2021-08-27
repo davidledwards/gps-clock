@@ -30,27 +30,19 @@ static const uint8_t CHAR_DEGREES_BITMAP[] = {
   0b00000000
 };
 
-// I2C address of the 20x4 LCD display used to show GPS information.
-#if EXPANDER == EXPANDER_PCF8574T
-static const uint8_t I2C_ADDR = 0x27;
-#elif EXPANDER == EXPANDER_PCF8574AT
-static const uint8_t I2C_ADDR = 0x3F;
-#elif EXPANDER == EXPANDER_MCP23008
-static const uint8_t I2C_ADDR = 0x73;
+// Library-specific constructor and initialization code.
+#if defined(LCD_GENERIC)
+#define LCD_CTOR(lcd) lcd(LCD_I2C_ADDR, LCD_COLS, LCD_ROWS)
+#define LCD_INIT(lcd) lcd.init()
+#elif defined(LCD_ADAFRUIT)
+#define LCD_CTOR(lcd) lcd(LCD_I2C_ADDR - 0x70)
+#define LCD_INIT(lcd) lcd.begin(LCD_COLS, LCD_ROWS)
 #endif
 
 gps_display::gps_display()
-#if EXPANDER == EXPANDER_PCF8574T || EXPANDER == EXPANDER_PCF8574AT
-  : lcd(I2C_ADDR, LCD_COLS, LCD_ROWS),
-#elif EXPANDER == EXPANDER_MCP23008
-  : lcd(I2C_ADDR - 0x70),
-#endif
+  : LCD_CTOR(lcd),
     searching(false) {
-#if EXPANDER == EXPANDER_PCF8574T || EXPANDER == EXPANDER_PCF8574AT
-  lcd.init();
-#elif EXPANDER == EXPANDER_MCP23008
-  lcd.begin(LCD_COLS, LCD_ROWS);
-#endif
+  LCD_INIT(lcd);
   lcd.clear();
   lcd.setBacklight(HIGH);
   lcd.createChar(CHAR_DEGREES, CHAR_DEGREES_BITMAP);

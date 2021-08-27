@@ -17,24 +17,9 @@
 #define __GPSDISPLAY_H
 
 #include <Arduino.h>
+#include "lcd.h"
 #include "gpsunit.h"
 #include "tzdatabase.h"
-
-// Supported I/O expanders for LCDs.
-#define EXPANDER_PCF8574T 0
-#define EXPANDER_PCF8574AT 1
-#define EXPANDER_MCP23008 2
-
-// Select default expander if undefined.
-#if !(EXPANDER == EXPANDER_PCF8574T || EXPANDER == EXPANDER_PCF8574AT || EXPANDER == EXPANDER_MCP23008)
-#define EXPANDER EXPANDER_PCF8574T
-#endif
-
-#if EXPANDER == EXPANDER_PCF8574T || EXPANDER == EXPANDER_PCF8574AT
-#include <LiquidCrystal_I2C.h>
-#elif EXPANDER == EXPANDER_MCP23008
-#include <Adafruit_LiquidCrystal.h>
-#endif
 
 class gps_display {
 public:
@@ -45,11 +30,7 @@ public:
   void show_backlight(bool on);
 
 private:
-#if EXPANDER == EXPANDER_PCF8574T || EXPANDER == EXPANDER_PCF8574AT
-  const LiquidCrystal_I2C lcd;
-#elif EXPANDER == EXPANDER_MCP23008
-  const Adafruit_LiquidCrystal lcd;
-#endif
+  const LCD_CLASS lcd;
   bool searching;
 
   void write_lat(const gps_info& info);

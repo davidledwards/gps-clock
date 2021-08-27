@@ -64,7 +64,7 @@ PROG = $(BUILD_FILES_PREFIX).hex
 SRCS = $(wildcard *.ino *.h *.cpp)
 
 # Construct build flags sent to compiler based on environment.
-BUILD_FLAGS = -DEXPANDER=EXPANDER_$(EXPANDER)
+BUILD_FLAGS = -DEXPANDER_$(EXPANDER)
 
 ifdef USE_SECONDS
 BUILD_FLAGS += -DUSE_SECONDS
