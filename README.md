@@ -363,43 +363,7 @@ Builds the sketch and its associated C++ files. The output directory of the buil
 make build
 ```
 
-Several environment variables affect the compilation process. Each of them have default values that may not reflect the hardware components being used.
-
-#### `BOARD_TYPE`
-
-The default board type is `nano`. The other supported board types are `uno` and `mega`.
-
-To change the board type:
-
-```shell
-export BOARD_TYPE=mega
-```
-
-#### `IO_EXPANDER`
-
-Make sure `IO_EXPANDER` is defined in the environment based on the type of I2C backpack attached to the LCD display, as this affects the build. The makefile defaults to `PCF8574T`.
-
-For Adafruit LCD display:
-
-```sh
-export IO_EXPANDER=USE_MCP23008
-```
-
-For GeeekPi and JANSANE LCD displays (verify which chip is attached to the backpack):
-
-```sh
-export IO_EXPANDER=USE_PCF8574T
-```
-
-or
-
-```sh
-export IO_EXPANDER=USE_PCF8574AT
-```
-
-#### `PORT`
-
-Uploads the program to the Arduino board. Make sure `PORT` is defined by the environment or provided as an argument to `make`. `PORT` is the serial port to which the Arduino board is attached. If undefined, it defaults to `/dev/null` and will cause an upload attempt to fail.
+Uploads the program to the Arduino board. Make sure `PORT` is defined by the environment or provided as an argument to `make`.
 
 ```sh
 make upload
@@ -407,11 +371,6 @@ make upload
 
 ```sh
 make upload PORT=/dev/tty.usbmodem14401
-```
-
-```sh
-export PORT=/dev/tty.usbmodem14401
-make upload
 ```
 
 Removes transient build files.
@@ -424,6 +383,72 @@ Performs an installation of libraries followed by a build and upload of the fina
 
 ```sh
 make all
+```
+
+### Configuration
+
+Several environment variables affect the compilation process. Each of them have default values that may not necessarily reflect the hardware components being used, so please verify.
+
+* BOARD
+* EXPANDER
+* PORT
+* USE_SECONDS
+
+#### `BOARD`
+
+The default board type is `nano`. The other supported board types are `uno` and `mega`.
+
+To change the board type.
+
+```sh
+export BOARD=uno
+```
+
+#### `EXPANDER`
+
+Make sure `EXPANDER` is defined in the environment based on the type of I2C backpack attached to the LCD display, as this affects the build. The makefile defaults to `PCF8574T`.
+
+For Adafruit LCD display.
+
+```sh
+export EXPANDER=MCP23008
+```
+
+For GeeekPi and JANSANE LCD displays (verify which chip is attached to the backpack).
+
+```sh
+export EXPANDER=PCF8574T
+# or
+export EXPANDER=PCF8574AT
+```
+
+#### `PORT`
+
+This is the serial port to which the Arduino board is attached. If undefined, it defaults to `/dev/null` and will cause an upload attempt to fail.
+
+```sh
+export PORT=/dev/tty.usbmodem14401
+```
+
+#### USE_SECONDS
+
+Enables the use of *seconds* as part of the time display which was introduced in generation 4. Note that this option does change the assumptions around the number of LED displays and their corresponding i2c addresses, so please refer to the schematics.
+
+To enable seconds, define `USE_SECONDS` with any value.
+
+```sh
+export USE_SECONDS=1
+```
+
+Instead of defining these variables in the shell environment, a more convenient approach is to use a `.env` file placed in the root directory. If present, it will be automatically imported into the `makefile`.
+
+Example `.env` file.
+
+```makefile
+BOARD=uno
+EXPANDER=MCP23008
+PORT=/dev/tty.usbmodem14401
+USE_SECONDS=1
 ```
 
 ## Contributing
