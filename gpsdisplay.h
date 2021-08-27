@@ -20,13 +20,17 @@
 #include "gpsunit.h"
 #include "tzdatabase.h"
 
-#if !(defined(USE_PCF8574T) || defined(USE_PCF8574AT) || defined(USE_MCP23008))
-#define USE_PCF8574T
+#define EXPANDER_PCF8574T 0
+#define EXPANDER_PCF8574AT 1
+#define EXPANDER_MCP23008 2
+
+#if !(EXPANDER == EXPANDER_PCF8574T || EXPANDER == EXPANDER_PCF8574AT || EXPANDER == EXPANDER_MCP23008)
+#define EXPANDER EXPANDER_PCF8574T
 #endif
 
-#if defined(USE_PCF8574T) || defined(USE_PCF8574AT)
+#if EXPANDER == EXPANDER_PCF8574T || EXPANDER == EXPANDER_PCF8574AT
 #include <LiquidCrystal_I2C.h>
-#elif defined(USE_MCP23008)
+#elif EXPANDER == EXPANDER_MCP23008
 #include <Adafruit_LiquidCrystal.h>
 #endif
 
@@ -39,9 +43,9 @@ public:
   void show_backlight(bool on);
 
 private:
-#if defined(USE_PCF8574T) || defined(USE_PCF8574AT)
+#if EXPANDER == EXPANDER_PCF8574T || EXPANDER == EXPANDER_PCF8574AT
   const LiquidCrystal_I2C lcd;
-#elif defined(USE_MCP23008)
+#elif EXPANDER == EXPANDER_MCP23008
   const Adafruit_LiquidCrystal lcd;
 #endif
   bool searching;

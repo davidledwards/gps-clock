@@ -33,10 +33,10 @@ PORT ?= /dev/null
 # determine the I2C address as well as the library.
 #
 # Recognized options:
-# USE_PCF8574T (default)
-# USE_PCF8574AT
-# USE_MCP23008
-IO_EXPANDER ?= USE_PCF8574T
+# PCF8574T (default)
+# PCF8574AT
+# MCP23008
+EXPANDER ?= PCF8574T
 
 # A convenient technique for deterministically placing the build directoy somewhere other than the
 # project directory since this is not allowed.
@@ -71,7 +71,7 @@ help :
 	@echo ""
 	@echo "environment:"
 	@echo "  BOARD=$(BOARD)"
-	@echo "  IO_EXPANDER=$(IO_EXPANDER)"
+	@echo "  EXPANDER=$(EXPANDER)"
 	@echo "  PORT=$(PORT)"
 	@echo "  FLAGS=$(FLAGS)"
 
@@ -79,7 +79,7 @@ all : clean install build upload
 
 SRCS = $(wildcard *.ino *.h *.cpp)
 
-FLAGS="-D$(IO_EXPANDER)"
+FLAGS="-D$(EXPANDER)"
 
 ifdef WITH_SECONDS
 FLAGS+="-DWITH_SECONDS"
@@ -90,7 +90,7 @@ $(PROG) : $(SRCS)
 	arduino-cli compile \
 		--build-path $(BUILD_PATH) \
 		--build-cache-path $(BUILD_PATH) \
-		--build-property build.extra_flags=-D$(IO_EXPANDER) \
+		--build-property build.extra_flags="-DEXPANDER=EXPANDER_$(EXPANDER)" \
 		-b $(BOARD_NAME)
 
 build : $(PROG)
