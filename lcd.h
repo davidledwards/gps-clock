@@ -16,11 +16,6 @@
 #ifndef __LCD_H
 #define __LCD_H
 
-// Supported I/O expanders for LCDs.
-#if !defined(EXPANDER_PCF8574T) && !defined(EXPANDER_PCF8574AT) && !defined(EXPANDER_MCP23008)
-#error "I/O expander not detected"
-#endif
-
 // Determine type and I2C address of LCD based on I/O expander.
 #if defined(EXPANDER_PCF8574T)
 #define LCD_I2C_ADDR 0x27
@@ -32,7 +27,7 @@
 #define LCD_I2C_ADDR 0x73
 #define LCD_ADAFRUIT
 #else
-#error "LCD type not detected"
+#error "I/O expander not detected"
 #endif
 
 // Include appropriate library for controlling LCD display based on type of I/O expander.
