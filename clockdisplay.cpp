@@ -100,6 +100,6 @@ void clock_display::show_time(const local_time& time) {
   }
   time_led.drawColon(true);
   time_led.writeDigitNum(3, time.minute / 10 % 10);
-  time_led.writeDigitNum(4, time.minute % 10, mode == clock_12);
+  time_led.writeDigitNum(4, time.minute % 10, mode == clock_12 && time.hour >= 12);
   time_led.writeDisplay();
 }
