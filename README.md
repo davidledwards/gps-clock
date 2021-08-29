@@ -389,11 +389,6 @@ make all
 
 Several environment variables affect the compilation process. Each of them have default values that may not necessarily reflect the hardware components being used, so please verify.
 
-* BOARD
-* EXPANDER
-* PORT
-* USE_SECONDS
-
 #### `BOARD`
 
 The default board type is `nano`. The other supported board types are `uno` and `mega`.
