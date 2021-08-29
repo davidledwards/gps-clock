@@ -430,9 +430,9 @@ This is the serial port to which the Arduino board is attached. If undefined, it
 export PORT=/dev/tty.usbmodem14401
 ```
 
-#### USE_SECONDS
+#### `USE_SECONDS`
 
-Enables the use of *seconds* as part of the time display which was introduced in generation 4. Note that this option does change the assumptions around the number of LED displays and their corresponding i2c addresses, so please refer to the schematics.
+Enables the use of *seconds* as part of the time display which was introduced in generation 4. Note that this option does change the configuration of LED displays and the corresponding I2C addresses, so please refer to the [circuit diagrams](#circuit-diagram).
 
 To enable seconds, define `USE_SECONDS` with any value.
 
