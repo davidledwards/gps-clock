@@ -122,6 +122,12 @@ static const tz_info TZ_TABLE[] = {
   },
 #endif
   tz_info {
+    "EET",
+    Timezone(
+      TimeChangeRule {"", Last, Sun, Oct, 2, 120}
+    )
+  },
+  tz_info {
     "EET/EEST",
     Timezone(
       TimeChangeRule {"", Last, Sun, Mar, 2, 180},
