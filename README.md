@@ -20,6 +20,7 @@ A GPS-synchronized digital clock based on the open-source [Arduino](https://ardu
   * [Generation 2](#clock-generation-2)
   * [Generation 3](#clock-generation-3)
   * [Generation 4](#clock-generation-4)
+  * [Other Clocks](#other-clocks)
 * [Software](#software)
 * [Contributing](#contributing)
 * [License](#license)
@@ -346,6 +347,23 @@ Below is the unit with power attached. Notice the seconds in this new generation
 
 <img src="images/final-4-running.jpg" style="zoom:25%;" />
 
+### Other Clocks
+
+The clocks that follow were built by others inspired by this project. Proper attribution has been given unless the author requested anonymity.
+
+#### Moldova
+
+This person hails from [Moldova](https://goo.gl/maps/MhutEfQtRmN5artQ9) but chose to remain anonymous. Some of the features in [generation 4](#hardware-generation-4), including support for additional hardware components, were inspired by ideas that emerged during our exchange.
+
+<img src="images/roman-clock-internal-front.jpg" style="zoom:25%;" />
+
+![](images/roman-clock-internal-back.jpg)
+
+<img src="images/roman-clock-front.jpg" style="zoom:25%;" />
+
+<img src="images/roman-clock-back.jpg" style="zoom:25%;" />
+
+<img src="images/roman-clock-operating.jpg" style="zoom:25%;" />
 
 ## Software
 
@@ -389,11 +407,6 @@ make all
 
 Several environment variables affect the compilation process. Each of them have default values that may not necessarily reflect the hardware components being used, so please verify.
 
-* BOARD
-* EXPANDER
-* PORT
-* USE_SECONDS
-
 #### `BOARD`
 
 The default board type is `nano`. The other supported board types are `uno` and `mega`.
@@ -430,9 +443,9 @@ This is the serial port to which the Arduino board is attached. If undefined, it
 export PORT=/dev/tty.usbmodem14401
 ```
 
-#### USE_SECONDS
+#### `USE_SECONDS`
 
-Enables the use of *seconds* as part of the time display which was introduced in generation 4. Note that this option does change the assumptions around the number of LED displays and their corresponding i2c addresses, so please refer to the schematics.
+Enables the use of *seconds* as part of the time display which was introduced in generation 4. Note that this option does change the configuration of LED displays and the corresponding I2C addresses, so please refer to the [circuit diagrams](#circuit-diagram).
 
 To enable seconds, define `USE_SECONDS` with any value.
 

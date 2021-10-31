@@ -1,0 +1,8 @@
+* text=auto eol=lf
+*.cpp cpp
+*.h cpp
+*.ino cpp
+*.md markdown
+*.png binary
+*.jpg binary
+*.drawio binary
