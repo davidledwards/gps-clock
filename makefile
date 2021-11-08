@@ -101,9 +101,6 @@ CONFIG_TZ_BUTTON_PIN ?= 11
 CONFIG_TZ_DEBOUNCE_MS ?= 5
 CONFIG_TZ_ERROR_MS ?= 20
 
-# Configuration for automatically disabling LCD backlight.
-CONFIG_AUTO_OFF_MS ?= 30000
-
 # Configuration for GPS module.
 ifeq ($(BOARD), mega)
 CONFIG_GPS_RX_PIN_DEFAULT = 50
@@ -116,6 +113,9 @@ endif
 CONFIG_GPS_RX_PIN ?= $(CONFIG_GPS_RX_PIN_DEFAULT)
 CONFIG_GPS_TX_PIN ?= $(CONFIG_GPS_TX_PIN_DEFAULT)
 CONFIG_GPS_BAUD_RATE ?= 9600
+
+# Configuration for automatically disabling LCD backlight.
+CONFIG_AUTO_OFF_MS ?= 30000
 
 help :
 	@echo "useful targets:"

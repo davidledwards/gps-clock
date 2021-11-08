@@ -373,6 +373,12 @@ This person hails from [Moldova](https://goo.gl/maps/MhutEfQtRmN5artQ9) but chos
 
 The [Arduino CLI](https://arduino.cc/pro/cli) is used for both compilation of source code and uploading of the binary to the actual board. I found this CLI preferrable over the [Arduino IDE](https://www.arduino.cc/en/main/software) because it allows the build and upload process to be fully described through the makefile. Simplicity of the development environment was essential. That said, if you prefer an IDE experience, I found the [Arduino for Visual Studio Code](https://marketplace.visualstudio.com/items?itemName=vsciot-vscode.vscode-arduino) extension to be much nicer than Arduino IDE.
 
+Generates the `config.h` file that is mandatory for compilation. All configuration variables have default values if undefined.
+
+```shell
+make create-config
+```
+
 Installs the Arduino core and dependent external libraries. This is an idempotent operation that first updates the library index and then ensures that all versioned dependencies are downloaded.
 
 ```sh
@@ -401,72 +407,160 @@ Removes transient build files.
 make clean
 ```
 
-Performs an installation of libraries followed by a build and upload of the final program to the Arduino board.
+Prints all configuration variables as detected by the execution environment. These variables are used to generate the configuration file using `make create-config`. Please note that the configuration variables echoed by this command do not necessarily reflect what is contained in `config.h`.
 
 ```sh
-make all
+make list-config
 ```
 
-### Configuration
+Prints all environment variables as detected by the execution environment.
+
+```sh
+make list-env
+```
+
+### Environment
 
 Several environment variables affect the compilation process. Each of them have default values that may not necessarily reflect the hardware components being used, so please verify.
 
-#### `BOARD`
-
-The default board type is `nano`. The other supported board types are `uno` and `mega`.
-
-To change the board type.
-
-```sh
-export BOARD=uno
-```
-
-#### `EXPANDER`
-
-Make sure `EXPANDER` is defined in the environment based on the type of I2C backpack attached to the LCD display, as this affects the build. The makefile defaults to `PCF8574T`.
-
-For Adafruit LCD display.
-
-```sh
-export EXPANDER=MCP23008
-```
-
-For GeeekPi and JANSANE LCD displays (verify which chip is attached to the backpack).
-
-```sh
-export EXPANDER=PCF8574T
-# or
-export EXPANDER=PCF8574AT
-```
-
-#### `PORT`
-
-This is the serial port to which the Arduino board is attached. If undefined, it defaults to `/dev/null` and will cause an upload attempt to fail.
-
-```sh
-export PORT=/dev/tty.usbmodem14401
-```
-
-#### `USE_SECONDS`
-
-Enables the use of *seconds* as part of the time display which was introduced in generation 4. Note that this option does change the configuration of LED displays and the corresponding I2C addresses, so please refer to the [circuit diagrams](#circuit-diagram).
-
-To enable seconds, define `USE_SECONDS` with any value.
-
-```sh
-export USE_SECONDS=1
-```
-
-Instead of defining these variables in the shell environment, a more convenient approach is to use a `.env` file placed in the root directory. If present, it will be automatically imported into the `makefile`.
+Instead of defining these variables in the shell environment, a more convenient approach is to use a `.env` file placed in the root directory. If present, it will be automatically imported into the makefile.
 
 Example `.env` file.
 
 ```makefile
 BOARD=uno
-EXPANDER=MCP23008
 PORT=/dev/tty.usbmodem14401
-USE_SECONDS=1
 ```
+
+#### `BOARD`
+
+The default board type is `nano`. The other supported board types are `uno` and `mega`.
+
+#### `PORT`
+
+This is the serial port to which the Arduino board is attached. If undefined, it defaults to `/dev/null` and will cause an upload attempt to fail.
+
+### Configuration
+
+The compilation process is controlled by a number of configuration variables. A prerequisite for compilation is the creation of the `config.h` file, which is made convenient by using `make create-config`. A useful technique for discovering all possible configuration variables is done using `make list-config`.
+
+While configuration variables can be defined in the shell environment or provided as arguments to `make`, the preferred approach is to use a `.config` file placed in the root directory. If present, it will be automatically imported into the makefile.
+
+Example `.config` file.
+
+```shell
+CONFIG_USE_SECONDS=1
+CONFIG_LCD_EXPANDER=MCP23008
+CONFIG_MODE_PIN=8
+CONFIG_GPS_RX_PIN=3
+CONFIG_GPS_TX_PIN=2
+```
+
+#### `CONFIG_USE_SECONDS`
+
+Enables the use of *seconds* as part of the time display which was introduced in generation 4. Note that this option does directly change the configuration of LED displays and the corresponding I2C addresses, so please refer to the [circuit diagrams](#circuit-diagram).
+
+#### `CONFIG_LED_TIME_I2C_ADDR`
+
+I2C address of the time LED when `CONFIG_USE_SECONDS` is disabled. Default is `0x70`.
+
+#### `CONFIG_LED_TIME_LOWER_I2C_ADDR`
+
+I2C address of the low-order time LED when `CONFIG_USE_SECONDS` is enabled. Default is `0x70`.
+
+#### `CONFIG_LED_TIME_UPPER_I2C_ADDR`
+
+I2C address of the high-order time LED when `CONFIG_USE_SECONDS` is enabled. Default is `0x71`.
+
+#### `CONFIG_LED_MDAY_I2C_ADDR`
+
+I2C address of the month/day LED. If `CONFIG_USE_SECONDS` is enabled, default is `0x72` else `0x71`.
+
+#### `CONFIG_LED_YEAR_I2C_ADDR`
+
+I2C address of the year LED. If `CONFIG_USE_SECONDS` is enabled, default is `0x73` else `0x72`.
+
+#### `CONFIG_LCD_EXPANDER`
+
+Specifies the type of I2C backpack attached to the LCD display. Recognized options include:
+
+* PCF8574T
+* PCF8574AT
+* MCP23008
+
+Default is `PCF8574T`.
+
+#### `CONFIG_LCD_I2C_ADDR`
+
+I2C address of the LCD display. The default value depends on `CONFIG_LCD_EXPANDER`:
+
+* PCF8574T = `0x27`
+* PCF8574AT = `0x3F`
+* MCP23008 = `0x73`
+
+#### `CONFIG_LCD_TYPE`
+
+Type of LCD display. The default value depends on `CONFIG_LCD_EXPANDER`:
+
+* PCF8574T = `GENERIC`
+* PCF8574AT = `GENERIC`
+* MCP23008 = `ADAFRUIT`
+
+#### `CONFIG_DIMMER_PIN`
+
+Analog pin connected to photoresistor used to adjust brightness of LED displays. Default is `0`.
+
+#### `CONFIG_MODE_PIN`
+
+Digital pin connect to 12/24-hour button switch. Default is `2`.
+
+#### `CONFIG_MODE_DEBOUNCE_MS`
+
+Debounce delay in milliseconds for 12/24-hour button switch. Default is `50`.
+
+#### `CONFIG_TZ_A_PIN`
+
+Digital pin connected to A lead of timezone rotary encoder. Default is `9`.
+
+#### `CONFIG_TZ_B_PIN`
+
+Digital pin connected to B lead of timezone rotary encoder. Default is `10`.
+
+#### `CONFIG_TZ_BUTTON_PIN`
+
+Digital pin connected to button lead of timezone rotary encoder. Default is `11`.
+
+#### `CONFIG_TZ_DEBOUNCE_MS`
+
+Debounce delay in milleseconds for timezone rotary encoder. Default is `5`.
+
+#### `CONFIG_TZ_ERROR_MS`
+
+Error correction delay in milliseconds for timezone rotary encoder. Default is `20`.
+
+#### `CONFIG_GPS_RX_PIN`
+
+Digital pin connected to RX lead of GPS module. The default value depends on `BOARD`:
+
+* uno = `7`
+* nano = `7`
+* mega = `50`
+
+#### `CONFIG_GPS_TX_PIN`
+
+Digital pin connected to TX lead of GPS module. The default value depends on `BOARD`:
+
+* uno = `8`
+* nano = `8`
+* mega = `51`
+
+#### `CONFIG_GPS_BAUD_RATE`
+
+Baud rate of GPS module. Default is `9600`.
+
+#### `CONFIG_AUTO_OFF_MS`
+
+Number of milliseconds of inactivity before the LCD backlight is turned off. Default is `30000`.
 
 ## Contributing
 
