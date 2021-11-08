@@ -141,12 +141,14 @@ void gps_display::write_utc(const gps_time& time) {
   lcd.print(':');
   lcd.print(time.minute / 10 % 10);
   lcd.print(time.minute % 10);
-  lcd.print(F(" UTC"));
+  lcd.print(':');
+  lcd.print(time.second / 10 % 10);
+  lcd.print(time.second % 10);
 }
 
 void gps_display::write_tz(const tz_info* tz, bool pending) {
   lcd.setCursor(0, 3);
-  lcd.print(F("tz"));
+  lcd.print(F("TZ"));
   if (pending)
     lcd.print(F("? "));
   else
