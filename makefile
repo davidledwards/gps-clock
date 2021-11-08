@@ -29,15 +29,6 @@ BOARD_NAME = $(BOARD_CORE):$(BOARD)
 # the environment, otherwise the value defaults to /dev/null.
 PORT ?= /dev/null
 
-# This variable specifies the I/O expander used by the LCD display I2C interface, which is used to
-# determine the I2C address as well as the library.
-#
-# Recognized options:
-# PCF8574T (default)
-# PCF8574AT
-# MCP23008
-EXPANDER ?= PCF8574T
-
 # A convenient technique for deterministically placing the build directoy somewhere other than the
 # project directory since this is not allowed.
 BUILD_ROOT = $(abspath $(TMPDIR)/build)
@@ -62,57 +53,6 @@ CORE = $(BOARD_CORE)@1.8.3
 PROG = $(BUILD_FILES_PREFIX).hex
 
 SRCS = $(wildcard *.ino *.h *.cpp)
-
-# Construct build flags sent to compiler based on environment.
-BUILD_FLAGS = -DEXPANDER_$(EXPANDER)
-
-ifdef USE_SECONDS
-BUILD_FLAGS += -DUSE_SECONDS
-endif
-
-help :
-	@echo "useful targets:"
-	@echo "  install        install library and core dependencies"
-	@echo "  build          build sketch"
-	@echo "  upload         upload program to board"
-	@echo "  clean          remove all transient build files"
-	@echo "  create-config  generate configuration file"
-	@echo "  list-config    print configuration variables"
-	@echo "  list-env       print environment variables"
-
-$(PROG) : $(SRCS)
-	@echo "building..."
-	arduino-cli compile \
-		--build-path $(BUILD_PATH) \
-		--build-cache-path $(BUILD_PATH) \
-		--build-property build.extra_flags="$(BUILD_FLAGS)" \
-		-b $(BOARD_NAME)
-
-build : $(PROG)
-
-upload : build
-	@echo "uploading to ${PORT}..."
-	arduino-cli upload \
-	  --input-dir $(BUILD_PATH) \
-		-b $(BOARD_NAME) \
-		-p $(PORT)
-
-clean :
-	@echo "cleaning..."
-	rm -rf $(BUILD_PATH)
-	rm -f $(CURDIR)/$(BUILD_FILES_PREFIX).*
-
-install-libs :
-	@echo "installing libraries..."
-	arduino-cli lib update-index
-	arduino-cli lib install $(LIBS)
-
-install-core :
-	@echo "install core..."
-	arduino-cli core update-index
-	arduino-cli core install $(CORE)
-
-install : install-core install-libs
 
 # This section defines configuration variables which are used to generate configuration
 # header files. In most cases, variables are assigned default values if undefined.
@@ -177,8 +117,47 @@ CONFIG_GPS_RX_PIN ?= $(CONFIG_GPS_RX_PIN_DEFAULT)
 CONFIG_GPS_TX_PIN ?= $(CONFIG_GPS_TX_PIN_DEFAULT)
 CONFIG_GPS_BAUD_RATE ?= 9600
 
+help :
+	@echo "useful targets:"
+	@echo "  install        install library and core dependencies"
+	@echo "  build          build sketch"
+	@echo "  upload         upload program to board"
+	@echo "  clean          remove all transient build files"
+	@echo "  create-config  generate configuration file"
+	@echo "  list-config    print configuration variables"
+	@echo "  list-env       print environment variables"
+
+$(PROG) : $(SRCS)
+	@echo "building..."
+	arduino-cli compile \
+		--build-path $(BUILD_PATH) \
+		--build-cache-path $(BUILD_PATH) \
+		-b $(BOARD_NAME)
+
+build : $(PROG)
+
+upload : build
+	@echo "uploading to ${PORT}..."
+	arduino-cli upload \
+	  --input-dir $(BUILD_PATH) \
+		-b $(BOARD_NAME) \
+		-p $(PORT)
+
+clean :
+	@echo "cleaning..."
+	rm -rf $(BUILD_PATH)
+	rm -f $(CURDIR)/$(BUILD_FILES_PREFIX).*
+
+install :
+	@echo "installing libraries..."
+	arduino-cli lib update-index
+	arduino-cli lib install $(LIBS)
+	@echo "install core..."
+	arduino-cli core update-index
+	arduino-cli core install $(CORE)
+
 list-config :
-	@echo "CONFIG_USE_SECONDS=$(CONFIG_USE_SECONDS")"
+	@echo "CONFIG_USE_SECONDS=$(CONFIG_USE_SECONDS)"
 ifdef CONFIG_USE_SECONDS
 	@echo "CONFIG_LED_TIME_LOWER_I2C_ADDR=$(CONFIG_LED_TIME_LOWER_I2C_ADDR)"
 	@echo "CONFIG_LED_TIME_UPPER_I2C_ADDR=$(CONFIG_LED_TIME_UPPER_I2C_ADDR)"
