@@ -14,17 +14,12 @@
  * limitations under the License.
  */
 #include "modeselector.h"
-
-// Digital pin connected to 12/24 time selector button.
-static const uint8_t BUTTON_PIN = 2;
-
-// Debounce period which eliminates noise when button is activated.
-static const uint32_t DEBOUNCE_MS = 50;
+#include "config.h"
 
 mode_selector::mode_selector()
-  : button(BUTTON_PIN) {
-  pinMode(BUTTON_PIN, INPUT_PULLUP);
-  button.setDebounceTime(DEBOUNCE_MS);
+  : button(MODE_PIN) {
+  pinMode(MODE_PIN, INPUT_PULLUP);
+  button.setDebounceTime(MODE_DEBOUNCE_MS);
 }
 
 bool mode_selector::toggled() {

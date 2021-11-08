@@ -23,6 +23,7 @@
 #include "modeselector.h"
 #include "localstorage.h"
 #include "lightmonitor.h"
+#include "config.h"
 
 static local_storage* storage;
 static gps_unit* gps;
@@ -33,10 +34,6 @@ static mode_selector* mode_sel;
 static gps_display* gps_disp;
 static clock_display* clock_disp;
 static light_monitor* light_mon;
-
-// Number of milliseconds before LCD backlight is turned off after no movement
-// of TZ selector.
-static const uint32_t AUTO_OFF_MS = 30000;
 
 // Time of last TZ selector movement or 0 if LCD display is turned off.
 static uint32_t last_movement;
