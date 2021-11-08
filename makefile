@@ -225,12 +225,12 @@ endif
 	@echo "#define TZ_DEBOUNCE_MS static_cast<uint32_t>($(CONFIG_TZ_DEBOUNCE_MS))" >> config.h
 	@echo "#define TZ_ERROR_MS static_cast<uint32_t>($(CONFIG_TZ_ERROR_MS))" >> config.h
 	@echo "" >> config.h
-	@echo "// Configuration for automatically disabling LCD backlight." >> config.h
-	@echo "#define AUTO_OFF_MS static_cast<uint32_t>($(CONFIG_AUTO_OFF_MS))" >> config.h
-	@echo "" >> config.h
 	@echo "// Configuration for GPS module." >> config.h
 	@echo "#define GPS_RX_PIN static_cast<uint8_t>($(CONFIG_GPS_RX_PIN))" >> config.h
 	@echo "#define GPS_TX_PIN static_cast<uint8_t>($(CONFIG_GPS_TX_PIN))" >> config.h
 	@echo "#define GPS_BAUD_RATE static_cast<long>($(CONFIG_GPS_BAUD_RATE))" >> config.h
+	@echo "" >> config.h
+	@echo "// Configuration for automatically disabling LCD backlight." >> config.h
+	@echo "#define AUTO_OFF_MS static_cast<uint32_t>($(CONFIG_AUTO_OFF_MS))" >> config.h
 	@echo "" >> config.h
 	@echo "#endif" >> config.h
