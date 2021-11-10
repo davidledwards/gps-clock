@@ -148,13 +148,9 @@ void gps_display::write_utc(const gps_time& time) {
 
 void gps_display::write_tz(const tz_info* tz, bool pending) {
   lcd.setCursor(0, 3);
-  lcd.print(F("TZ"));
-  if (pending)
-    lcd.print(F("? "));
-  else
-    lcd.print(F(": "));
+  lcd.print(pending ? F("? ") : F("> "));
   size_t n = lcd.print(tz->name);
-  while (n++ < 16)
+  while (n++ < 18)
     lcd.print(' ');
 }
 
