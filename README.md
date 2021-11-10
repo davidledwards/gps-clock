@@ -369,6 +369,8 @@ This person hails from [Moldova](https://goo.gl/maps/MhutEfQtRmN5artQ9) but chos
 
 <img src="images/roman-clock-2-antenna.jpg" style="zoom:25%;" />
 
+<img src="images/roman-clock-circuit.jpg" style="zoom:25%;" />
+
 ## Software
 
 The [Arduino CLI](https://arduino.cc/pro/cli) is used for both compilation of source code and uploading of the binary to the actual board. I found this CLI preferrable over the [Arduino IDE](https://www.arduino.cc/en/main/software) because it allows the build and upload process to be fully described through the makefile. Simplicity of the development environment was essential. That said, if you prefer an IDE experience, I found the [Arduino for Visual Studio Code](https://marketplace.visualstudio.com/items?itemName=vsciot-vscode.vscode-arduino) extension to be much nicer than Arduino IDE.
