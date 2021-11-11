@@ -150,7 +150,7 @@ void gps_display::write_tz(const tz_info* tz, bool pending) {
   lcd.setCursor(0, 3);
   lcd.print(pending ? F("? ") : F("> "));
   size_t n = lcd.print(tz->name);
-  while (n++ < 18)
+  while (n++ < 16)
     lcd.print(' ');
 }
 
