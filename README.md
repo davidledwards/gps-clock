@@ -451,12 +451,17 @@ While configuration variables can be defined in the shell environment or provide
 Example `.config` file.
 
 ```shell
+CONFIG_DATE_FORMAT=EU
 CONFIG_USE_SECONDS=1
 CONFIG_LCD_EXPANDER=MCP23008
 CONFIG_MODE_PIN=8
 CONFIG_GPS_RX_PIN=3
 CONFIG_GPS_TX_PIN=2
 ```
+
+#### `CONFIG_DATE_FORMAT`
+
+Specifies the date format, which can be one of `ISO`, `EU` or `US`. Default is `ISO`.
 
 #### `CONFIG_USE_SECONDS`
 
