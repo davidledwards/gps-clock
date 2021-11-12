@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 #include "clockdisplay.h"
-#include "config.h"
 
 static const uint8_t DASH_BITMASK = 0b01000000;
 

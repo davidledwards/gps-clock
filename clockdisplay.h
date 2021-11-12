@@ -20,6 +20,7 @@
 #include <Adafruit_LEDBackpack.h>
 #include "gpsunit.h"
 #include "localclock.h"
+#include "config.h"
 
 enum clock_mode {
   clock_12,
