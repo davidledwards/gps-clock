@@ -15,17 +15,25 @@
  */
 #include "clockdisplay.h"
 
+#if !defined(DATE_FORMAT_ISO) && !defined(DATE_FORMAT_US) && !defined(DATE_FORMAT_EU)
+#error "DATE_FORMAT_? unrecognized"
+#endif
+
+#if !defined(LED_LAYOUT_NORMAL) && !defined(LED_LAYOUT_ROMAN)
+#error "LED_LAYOUT_? unrecognized"
+#endif
+
 static const uint8_t DASH_BITMASK = 0b01000000;
 
 // Assigns relative position of digits on LED displays.
 static const uint8_t DIGIT_0 = 0;
 static const uint8_t DIGIT_1 = 1;
-#if defined(LED_NO_COLON)
-static const uint8_t DIGIT_2 = 2;
-static const uint8_t DIGIT_3 = 3;
-#else
+#if defined(LED_LAYOUT_NORMAL)
 static const uint8_t DIGIT_2 = 3;
 static const uint8_t DIGIT_3 = 4;
+#elif defined(LED_LAYOUT_ROMAN)
+static const uint8_t DIGIT_2 = 2;
+static const uint8_t DIGIT_3 = 3;
 #endif
 
 #if defined(USE_SECONDS)
@@ -96,10 +104,10 @@ void clock_display::init_led(const Adafruit_7segment& led, uint8_t i2c_addr) {
 
 void clock_display::show_dashes(const Adafruit_7segment& led) {
   led.clear();
-  led.writeDigitRaw(0, DASH_BITMASK);
-  led.writeDigitRaw(1, DASH_BITMASK);
-  led.writeDigitRaw(3, DASH_BITMASK);
-  led.writeDigitRaw(4, DASH_BITMASK);
+  led.writeDigitRaw(DIGIT_0, DASH_BITMASK);
+  led.writeDigitRaw(DIGIT_1, DASH_BITMASK);
+  led.writeDigitRaw(DIGIT_2, DASH_BITMASK);
+  led.writeDigitRaw(DIGIT_3, DASH_BITMASK);
   led.writeDisplay();
 }
 
@@ -107,17 +115,32 @@ void clock_display::show_year(const local_time& time) {
   year_led.writeDigitNum(DIGIT_0, time.year / 1000 % 10);
   year_led.writeDigitNum(DIGIT_1, time.year / 100 % 10);
   year_led.writeDigitNum(DIGIT_2, time.year / 10 % 10);
+#if defined(DATE_FORMAT_ISO)
+  // ISO layout is [YYYY.][MM.DD]
   year_led.writeDigitNum(DIGIT_3, time.year % 10, true);
+#elif defined(DATE_FORMAT_US) || defined(DATE_FORMAT_EU)
+  // US layout is [MM.DD.][YYYY]
+  // EU layout is [DD.MM.][YYYY]
+  year_led.writeDigitNum(DIGIT_3, time.year % 10);
+#endif
   year_led.writeDisplay();
 }
 
 void clock_display::show_mday(const local_time& time) {
-#if defined(DATE_FORMAT_ISO) || defined(DATE_FORMAT_US)
+#if defined(DATE_FORMAT_ISO)
+  // ISO layout is [YYYY.][MM.DD]
   mday_led.writeDigitNum(DIGIT_0, time.month / 10 % 10);
   mday_led.writeDigitNum(DIGIT_1, time.month % 10, true);
   mday_led.writeDigitNum(DIGIT_2, time.day / 10 % 10);
   mday_led.writeDigitNum(DIGIT_3, time.day % 10);
-#else
+#elif defined(DATE_FORMAT_US)
+  // US layout is [MM.DD.][YYYY]
+  mday_led.writeDigitNum(DIGIT_0, time.month / 10 % 10);
+  mday_led.writeDigitNum(DIGIT_1, time.month % 10, true);
+  mday_led.writeDigitNum(DIGIT_2, time.day / 10 % 10);
+  mday_led.writeDigitNum(DIGIT_3, time.day % 10, true);
+#elif defined(DATE_FORMAT_EU)
+  // EU layout is [DD.MM.][YYYY]
   mday_led.writeDigitNum(DIGIT_0, time.day / 10 % 10);
   mday_led.writeDigitNum(DIGIT_1, time.day % 10, true);
   mday_led.writeDigitNum(DIGIT_2, time.month / 10 % 10);
@@ -128,29 +151,35 @@ void clock_display::show_mday(const local_time& time) {
 
 void clock_display::show_time(const local_time& time) {
 #if defined(USE_SECONDS)
+  // Layout:
+  //   NORMAL is [* HH][:MM:SS]
+  //   ROMAN layout is [HH][MM.][SS]
+  // where * is A/P/H to indicate AM/PM/24,
+  // where . is shown only in 12-hour mode when time is PM.
+#if defined(TIME_LAYOUT_NORMAL)
   if (mode == clock_12) {
-    time_upper_led.writeDigitRaw(0, time.hour < 12 ? HOUR_AM_BITMASK : HOUR_PM_BITMASK);
+    time_upper_led.writeDigitRaw(DIGIT_0, time.hour < 12 ? HOUR_AM_BITMASK : HOUR_PM_BITMASK);
     uint8_t hour = time.hour % 12;
     if (hour == 0)
       hour = 12;
     if (hour < 10)
-      time_upper_led.writeDigitRaw(3, 0x00);
+      time_upper_led.writeDigitRaw(DIGIT_2, 0x00);
     else
-      time_upper_led.writeDigitNum(3, hour / 10 % 10);
-    time_upper_led.writeDigitNum(4, hour % 10);
+      time_upper_led.writeDigitNum(DIGIT_2, hour / 10 % 10);
+    time_upper_led.writeDigitNum(DIGIT_3, hour % 10);
   } else {
-    time_upper_led.writeDigitRaw(0, HOUR_24_BITMASK);
-    time_upper_led.writeDigitNum(3, time.hour / 10 % 10);
-    time_upper_led.writeDigitNum(4, time.hour % 10);
+    time_upper_led.writeDigitRaw(DIGIT_0, HOUR_24_BITMASK);
+    time_upper_led.writeDigitNum(DIGIT_2, time.hour / 10 % 10);
+    time_upper_led.writeDigitNum(DIGIT_3, time.hour % 10);
   }
-  time_upper_led.writeDigitRaw(1, 0x00);
+  time_upper_led.writeDigitRaw(DIGIT_1, 0x00);
   time_upper_led.writeDisplay();
 
-  time_lower_led.writeDigitNum(0, time.minute / 10 % 10);
-  time_lower_led.writeDigitNum(1, time.minute % 10);
+  time_lower_led.writeDigitNum(DIGIT_0, time.minute / 10 % 10);
+  time_lower_led.writeDigitNum(DIGIT_1, time.minute % 10);
   time_lower_led.writeDigitRaw(2, COLONS_BITMASK);
-  time_lower_led.writeDigitNum(3, time.second / 10 % 10);
-  time_lower_led.writeDigitNum(4, time.second % 10);
+  time_lower_led.writeDigitNum(DIGIT_2, time.second / 10 % 10);
+  time_lower_led.writeDigitNum(DIGIT_3, time.second % 10);
   time_lower_led.writeDisplay();
 #else
   if (mode == clock_12) {
@@ -158,17 +187,45 @@ void clock_display::show_time(const local_time& time) {
     if (hour == 0)
       hour = 12;
     if (hour < 10)
-      time_led.writeDigitRaw(0, 0x00);
+      time_upper_led.writeDigitRaw(DIGIT_0, 0x00);
     else
-      time_led.writeDigitNum(0, hour / 10 % 10);
-    time_led.writeDigitNum(1, hour % 10);
+      time_upper_led.writeDigitNum(DIGIT_0, hour / 10 % 10);
+    time_upper_led.writeDigitNum(DIGIT_1, hour % 10);
   } else {
-    time_led.writeDigitNum(0, time.hour / 10 % 10);
-    time_led.writeDigitNum(1, time.hour % 10);
+    time_upper_led.writeDigitNum(DIGIT_0, time.hour / 10 % 10);
+    time_upper_led.writeDigitNum(DIGIT_1, time.hour % 10, true);
   }
+  time_upper_led.writeDigitNum(DIGIT_2, time.minute / 10 % 10);
+  time_upper_led.writeDigitNum(DIGIT_3, time.minute % 10, mode == clock_12 && time.hour >= 12);
+  time_upper_led.writeDisplay();
+
+  time_lower_led.writeDigitNum(DIGIT_0, time.second / 10 % 10);
+  time_lower_led.writeDigitNum(DIGIT_1, time.second % 10);
+  time_lower_led.writeDisplay();
+#endif
+#else
+  // Layout:
+  //   NORMAL is [HH:MM.]
+  //   ROMAN is [HH][MM.]
+  // where . is shown only in 12-hour mode when time is PM.
+  if (mode == clock_12) {
+    uint8_t hour = time.hour % 12;
+    if (hour == 0)
+      hour = 12;
+    if (hour < 10)
+      time_led.writeDigitRaw(DIGIT_0, 0x00);
+    else
+      time_led.writeDigitNum(DIGIT_0, hour / 10 % 10);
+    time_led.writeDigitNum(DIGIT_1, hour % 10);
+  } else {
+    time_led.writeDigitNum(DIGIT_0, time.hour / 10 % 10);
+    time_led.writeDigitNum(DIGIT_1, time.hour % 10);
+  }
+#if defined(LED_LAYOUT_NORMAL)
   time_led.drawColon(true);
-  time_led.writeDigitNum(3, time.minute / 10 % 10);
-  time_led.writeDigitNum(4, time.minute % 10, mode == clock_12 && time.hour >= 12);
+#endif
+  time_led.writeDigitNum(DIGIT_2, time.minute / 10 % 10);
+  time_led.writeDigitNum(DIGIT_3, time.minute % 10, mode == clock_12 && time.hour >= 12);
   time_led.writeDisplay();
 #endif
 }

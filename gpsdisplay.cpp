@@ -16,6 +16,10 @@
 #include "gpsdisplay.h"
 #include "config.h"
 
+#if !defined(DATE_FORMAT_ISO) && !defined(DATE_FORMAT_US) && !defined(DATE_FORMAT_EU)
+#error "DATE_FORMAT_? unrecognized"
+#endif
+
 static const uint8_t LCD_COLS = 20;
 static const uint8_t LCD_ROWS = 4;
 
@@ -144,8 +148,6 @@ void gps_display::write_utc(const gps_time& time) {
   write_month(time);
   lcd.print('-');
   write_year(time);
-#else
-#error "date format not recognized"
 #endif
   lcd.print(' ');
   lcd.print(time.hour / 10 % 10);

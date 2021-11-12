@@ -76,6 +76,8 @@ CONFIG_LED_MDAY_I2C_ADDR ?= 0x71
 CONFIG_LED_YEAR_I2C_ADDR ?= 0x72
 endif
 
+CONFIG_LED_LAYOUT ?= NORMAL
+
 # Configuration for LCD display that shows GPS information.
 CONFIG_LCD_EXPANDER ?= PCF8574T
 
@@ -170,7 +172,7 @@ else
 endif
 	@echo "CONFIG_LED_MDAY_I2C_ADDR=$(CONFIG_LED_MDAY_I2C_ADDR)"
 	@echo "CONFIG_LED_YEAR_I2C_ADDR=$(CONFIG_LED_YEAR_I2C_ADDR)"
-	@echo "CONFIG_LED_NO_COLON=$(CONFIG_LED_NO_COLON)"
+	@echo "CONFIG_LED_LAYOUT=$(CONFIG_LED_LAYOUT)"
 	@echo "CONFIG_LCD_EXPANDER=$(CONFIG_LCD_EXPANDER)"
 	@echo "CONFIG_LCD_I2C_ADDR=$(CONFIG_LCD_I2C_ADDR)"
 	@echo "CONFIG_LCD_TYPE=$(CONFIG_LCD_TYPE)"
@@ -213,11 +215,7 @@ else
 endif
 	@echo "#define LED_MDAY_I2C_ADDR static_cast<uint8_t>($(CONFIG_LED_MDAY_I2C_ADDR))" >> config.h
 	@echo "#define LED_YEAR_I2C_ADDR static_cast<uint8_t>($(CONFIG_LED_YEAR_I2C_ADDR))" >> config.h
-ifdef CONFIG_LED_NO_COLON
-	@echo "#define LED_NO_COLON" >> config.h
-else
-	@echo "#undef LED_NO_COLON" >> config.h
-endif
+	@echo "#define LED_LAYOUT_$(CONFIG_LED_LAYOUT)" >> config.h
 	@echo "" >> config.h
 	@echo "// Configuration for LCD display that shows GPS information." >> config.h
 	@echo "#define LCD_EXPANDER_$(CONFIG_LCD_EXPANDER)" >> config.h

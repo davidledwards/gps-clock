@@ -453,7 +453,6 @@ Example `.config` file.
 ```shell
 CONFIG_DATE_FORMAT=EU
 CONFIG_USE_SECONDS=1
-CONFIG_LED_NO_COLON=1
 CONFIG_LCD_EXPANDER=MCP23008
 CONFIG_MODE_PIN=8
 CONFIG_GPS_RX_PIN=3
@@ -488,9 +487,14 @@ I2C address of the month/day LED. If `CONFIG_USE_SECONDS` is enabled, default is
 
 I2C address of the year LED. If `CONFIG_USE_SECONDS` is enabled, default is `0x73` else `0x72`.
 
-#### `CONFIG_LED_NO_COLON`
+#### `CONFIG_LED_LAYOUT`
 
-Indicates that the LED components do not have a referenceable colon represented at digit location 2.
+Specifies the layout of the LED components. Recognized options include:
+
+* NORMAL
+* ROMAN
+
+Default value is `NORMAL`.
 
 #### `CONFIG_LCD_EXPANDER`
 
