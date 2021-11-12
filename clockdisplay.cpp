@@ -15,8 +15,8 @@
  */
 #include "clockdisplay.h"
 
-#if !defined(DATE_FORMAT_ISO) && !defined(DATE_FORMAT_US) && !defined(DATE_FORMAT_EU)
-#error "DATE_FORMAT_? unrecognized"
+#if !defined(DATE_LAYOUT_ISO) && !defined(DATE_LAYOUT_US) && !defined(DATE_LAYOUT_EU)
+#error "DATE_LAYOUT_? unrecognized"
 #endif
 
 #if !defined(LED_LAYOUT_NORMAL) && !defined(LED_LAYOUT_ROMAN)
@@ -115,10 +115,10 @@ void clock_display::show_year(const local_time& time) {
   year_led.writeDigitNum(DIGIT_0, time.year / 1000 % 10);
   year_led.writeDigitNum(DIGIT_1, time.year / 100 % 10);
   year_led.writeDigitNum(DIGIT_2, time.year / 10 % 10);
-#if defined(DATE_FORMAT_ISO)
+#if defined(DATE_LAYOUT_ISO)
   // ISO layout is [YYYY.][MM.DD]
   year_led.writeDigitNum(DIGIT_3, time.year % 10, true);
-#elif defined(DATE_FORMAT_US) || defined(DATE_FORMAT_EU)
+#elif defined(DATE_LAYOUT_US) || defined(DATE_LAYOUT_EU)
   // US layout is [MM.DD.][YYYY]
   // EU layout is [DD.MM.][YYYY]
   year_led.writeDigitNum(DIGIT_3, time.year % 10);
@@ -127,19 +127,19 @@ void clock_display::show_year(const local_time& time) {
 }
 
 void clock_display::show_mday(const local_time& time) {
-#if defined(DATE_FORMAT_ISO)
+#if defined(DATE_LAYOUT_ISO)
   // ISO layout is [YYYY.][MM.DD]
   mday_led.writeDigitNum(DIGIT_0, time.month / 10 % 10);
   mday_led.writeDigitNum(DIGIT_1, time.month % 10, true);
   mday_led.writeDigitNum(DIGIT_2, time.day / 10 % 10);
   mday_led.writeDigitNum(DIGIT_3, time.day % 10);
-#elif defined(DATE_FORMAT_US)
+#elif defined(DATE_LAYOUT_US)
   // US layout is [MM.DD.][YYYY]
   mday_led.writeDigitNum(DIGIT_0, time.month / 10 % 10);
   mday_led.writeDigitNum(DIGIT_1, time.month % 10, true);
   mday_led.writeDigitNum(DIGIT_2, time.day / 10 % 10);
   mday_led.writeDigitNum(DIGIT_3, time.day % 10, true);
-#elif defined(DATE_FORMAT_EU)
+#elif defined(DATE_LAYOUT_EU)
   // EU layout is [DD.MM.][YYYY]
   mday_led.writeDigitNum(DIGIT_0, time.day / 10 % 10);
   mday_led.writeDigitNum(DIGIT_1, time.day % 10, true);

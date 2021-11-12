@@ -16,8 +16,8 @@
 #include "gpsdisplay.h"
 #include "config.h"
 
-#if !defined(DATE_FORMAT_ISO) && !defined(DATE_FORMAT_US) && !defined(DATE_FORMAT_EU)
-#error "DATE_FORMAT_? unrecognized"
+#if !defined(DATE_LAYOUT_ISO) && !defined(DATE_LAYOUT_US) && !defined(DATE_LAYOUT_EU)
+#error "DATE_LAYOUT_? unrecognized"
 #endif
 
 static const uint8_t LCD_COLS = 20;
@@ -130,19 +130,19 @@ void gps_display::write_satellites(const gps_info& info) {
 
 void gps_display::write_utc(const gps_time& time) {
   lcd.setCursor(0, 2);
-#if defined(DATE_FORMAT_ISO)
+#if defined(DATE_LAYOUT_ISO)
   write_year(time);
   lcd.print('-');
   write_month(time);
   lcd.print('-');
   write_day(time);
-#elif defined(DATE_FORMAT_US)
+#elif defined(DATE_LAYOUT_US)
   write_month(time);
   lcd.print('-');
   write_day(time);
   lcd.print('-');
   write_year(time);
-#elif defined(DATE_FORMAT_EU)
+#elif defined(DATE_LAYOUT_EU)
   write_day(time);
   lcd.print('-');
   write_month(time);

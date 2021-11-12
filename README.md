@@ -459,9 +459,14 @@ CONFIG_GPS_RX_PIN=3
 CONFIG_GPS_TX_PIN=2
 ```
 
-#### `CONFIG_DATE_FORMAT`
+#### `CONFIG_DATE_LAYOUT`
 
-Specifies the date format, which can be one of `ISO`, `EU` or `US`. Default is `ISO`.
+Specifies the date layout. Recognized options include:
+* ISO
+* EU
+* US
+
+Default is `ISO`.
 
 #### `CONFIG_USE_SECONDS`
 

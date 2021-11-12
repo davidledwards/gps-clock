@@ -61,8 +61,8 @@ ifneq (,$(wildcard ./.config))
 	export
 endif
 
-# Configuration for date format.
-CONFIG_DATE_FORMAT ?= ISO
+# Configuration for date layout.
+CONFIG_DATE_LAYOUT ?= ISO
 
 # Configuration for LED displays that show date and time.
 ifdef CONFIG_USE_SECONDS
@@ -162,7 +162,7 @@ install :
 	arduino-cli core install $(CORE)
 
 list-config :
-	@echo "CONFIG_DATE_FORMAT=$(CONFIG_DATE_FORMAT)"
+	@echo "CONFIG_DATE_LAYOUT=$(CONFIG_DATE_LAYOUT)"
 	@echo "CONFIG_USE_SECONDS=$(CONFIG_USE_SECONDS)"
 ifdef CONFIG_USE_SECONDS
 	@echo "CONFIG_LED_TIME_LOWER_I2C_ADDR=$(CONFIG_LED_TIME_LOWER_I2C_ADDR)"
@@ -201,8 +201,8 @@ create-config :
 	@echo "#ifndef __CONFIG_H" >> config.h
 	@echo "#define __CONFIG_H" >> config.h
 	@echo "" >> config.h
-	@echo "// Configuration for date format." >> config.h
-	@echo "#define DATE_FORMAT_$(CONFIG_DATE_FORMAT)" >> config.h
+	@echo "// Configuration for date layout." >> config.h
+	@echo "#define DATE_LAYOUT_$(CONFIG_DATE_LAYOUT)" >> config.h
 	@echo "" >> config.h
 	@echo "// Configuration for LED displays that show date and time." >> config.h
 ifdef CONFIG_USE_SECONDS
