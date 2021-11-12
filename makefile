@@ -61,6 +61,9 @@ ifneq (,$(wildcard ./.config))
 	export
 endif
 
+# Configuration for date format.
+CONFIG_DATE_FORMAT ?= ISO
+
 # Configuration for LED displays that show date and time.
 ifdef CONFIG_USE_SECONDS
 CONFIG_LED_TIME_LOWER_I2C_ADDR ?= 0x70
@@ -157,6 +160,7 @@ install :
 	arduino-cli core install $(CORE)
 
 list-config :
+	@echo "CONFIG_DATE_FORMAT=$(CONFIG_DATE_FORMAT)"
 	@echo "CONFIG_USE_SECONDS=$(CONFIG_USE_SECONDS)"
 ifdef CONFIG_USE_SECONDS
 	@echo "CONFIG_LED_TIME_LOWER_I2C_ADDR=$(CONFIG_LED_TIME_LOWER_I2C_ADDR)"
@@ -194,8 +198,11 @@ create-config :
 	@echo "#ifndef __CONFIG_H" >> config.h
 	@echo "#define __CONFIG_H" >> config.h
 	@echo "" >> config.h
+	@echo "// Configuration for date format." >> config.h
+	@echo "#define DATE_FORMAT_$(CONFIG_DATE_FORMAT)" >> config.h
+	@echo "" >> config.h
+	@echo "// Configuration for LED displays that show date and time." >> config.h
 ifdef CONFIG_USE_SECONDS
-	@echo "// Configuration for LED displats that show date and time." >> config.h
 	@echo "#define USE_SECONDS" >> config.h
 	@echo "#define LED_TIME_LOWER_I2C_ADDR static_cast<uint8_t>($(CONFIG_LED_TIME_LOWER_I2C_ADDR))" >> config.h
 	@echo "#define LED_TIME_UPPER_I2C_ADDR static_cast<uint8_t>($(CONFIG_LED_TIME_UPPER_I2C_ADDR))" >> config.h
