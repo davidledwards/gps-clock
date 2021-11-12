@@ -18,7 +18,7 @@
 #include "config.h"
 
 // Number of milliseconds that must elapse before returning new GPS information.
-static const uint32_t SYNC_DELAY_MS = 500; // 2000
+static const uint32_t SYNC_DELAY_MS = 500;
 
 // Number of milliseconds since the last synchronization before this class starts reporting that
 // the GPS module is searching.
