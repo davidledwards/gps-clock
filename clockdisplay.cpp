@@ -121,7 +121,7 @@ void clock_display::show_mday(const local_time& time) {
   mday_led.writeDigitNum(DIGIT_0, time.day / 10 % 10);
   mday_led.writeDigitNum(DIGIT_1, time.day % 10, true);
   mday_led.writeDigitNum(DIGIT_2, time.month / 10 % 10);
-  mday_led.writeDigitNum(DIGIT_3, time.month % 10);
+  mday_led.writeDigitNum(DIGIT_3, time.month % 10, true);
 #endif
   mday_led.writeDisplay();
 }
