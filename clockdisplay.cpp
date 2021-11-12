@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 #include "clockdisplay.h"
+#include "config.h"
 
 static const uint8_t DASH_BITMASK = 0b01000000;
 
-// I2C addresses of the various 4-digit LED displays used to show local time.
-#if defined(USE_SECONDS)
-const uint8_t TIME_LOWER_I2C_ADDR = 0x70;
-const uint8_t TIME_UPPER_I2C_ADDR = 0x71;
-const uint8_t MDAY_I2C_ADDR = 0x72;
-const uint8_t YEAR_I2C_ADDR = 0x73;
+// Assigns relative position of digits on LED displays.
+static const uint8_t DIGIT_0 = 0;
+static const uint8_t DIGIT_1 = 1;
+#if defined(LED_NO_COLON)
+static const uint8_t DIGIT_2 = 2;
+static const uint8_t DIGIT_3 = 3;
 #else
-const uint8_t TIME_I2C_ADDR = 0x70;
-const uint8_t MDAY_I2C_ADDR = 0x71;
-const uint8_t YEAR_I2C_ADDR = 0x72;
+static const uint8_t DIGIT_2 = 3;
+static const uint8_t DIGIT_3 = 4;
 #endif
 
 #if defined(USE_SECONDS)
@@ -43,13 +43,13 @@ clock_display::clock_display(uint8_t brightness, clock_mode mode)
   : cur_brightness(brightness),
     mode(mode) {
 #if defined(USE_SECONDS)
-  init_led(time_lower_led, TIME_LOWER_I2C_ADDR);
-  init_led(time_upper_led, TIME_UPPER_I2C_ADDR);
+  init_led(time_lower_led, LED_TIME_LOWER_I2C_ADDR);
+  init_led(time_upper_led, LED_TIME_UPPER_I2C_ADDR);
 #else
-  init_led(time_led, TIME_I2C_ADDR);
+  init_led(time_led, LED_TIME_I2C_ADDR);
 #endif
-  init_led(mday_led, MDAY_I2C_ADDR);
-  init_led(year_led, YEAR_I2C_ADDR);
+  init_led(mday_led, LED_MDAY_I2C_ADDR);
+  init_led(year_led, LED_YEAR_I2C_ADDR);
 }
 
 void clock_display::show_unset() {
@@ -105,18 +105,25 @@ void clock_display::show_dashes(const Adafruit_7segment& led) {
 }
 
 void clock_display::show_year(const local_time& time) {
-  year_led.writeDigitNum(0, time.year / 1000 % 10);
-  year_led.writeDigitNum(1, time.year / 100 % 10);
-  year_led.writeDigitNum(3, time.year / 10 % 10);
-  year_led.writeDigitNum(4, time.year % 10, true);
+  year_led.writeDigitNum(DIGIT_0, time.year / 1000 % 10);
+  year_led.writeDigitNum(DIGIT_1, time.year / 100 % 10);
+  year_led.writeDigitNum(DIGIT_2, time.year / 10 % 10);
+  year_led.writeDigitNum(DIGIT_3, time.year % 10, true);
   year_led.writeDisplay();
 }
 
 void clock_display::show_mday(const local_time& time) {
-  mday_led.writeDigitNum(0, time.month / 10 % 10);
-  mday_led.writeDigitNum(1, time.month % 10, true);
-  mday_led.writeDigitNum(3, time.day / 10 % 10);
-  mday_led.writeDigitNum(4, time.day % 10);
+#if defined(DATE_FORMAT_ISO) || defined(DATE_FORMAT_US)
+  mday_led.writeDigitNum(DIGIT_0, time.month / 10 % 10);
+  mday_led.writeDigitNum(DIGIT_1, time.month % 10, true);
+  mday_led.writeDigitNum(DIGIT_2, time.day / 10 % 10);
+  mday_led.writeDigitNum(DIGIT_3, time.day % 10);
+#else
+  mday_led.writeDigitNum(DIGIT_0, time.day / 10 % 10);
+  mday_led.writeDigitNum(DIGIT_1, time.day % 10, true);
+  mday_led.writeDigitNum(DIGIT_2, time.month / 10 % 10);
+  mday_led.writeDigitNum(DIGIT_3, time.month % 10);
+#endif
   mday_led.writeDisplay();
 }
 

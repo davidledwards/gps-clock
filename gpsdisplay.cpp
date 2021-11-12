@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 #include "gpsdisplay.h"
+#include "config.h"
 
 static const uint8_t LCD_COLS = 20;
 static const uint8_t LCD_ROWS = 4;
