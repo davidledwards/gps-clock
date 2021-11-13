@@ -468,6 +468,15 @@ Specifies the date layout. Recognized options include:
 
 Default is `ISO`.
 
+#### `CONFIG_LED_LAYOUT`
+
+Specifies the layout of the LED components. Recognized options include:
+
+* NORMAL
+* ROMAN
+
+Default value is `NORMAL`.
+
 #### `CONFIG_USE_SECONDS`
 
 Enables the use of *seconds* as part of the time display which was introduced in generation 4. Note that this option does directly change the configuration of LED displays and the corresponding I2C addresses, so please refer to the [circuit diagrams](#circuit-diagram).
@@ -491,15 +500,6 @@ I2C address of the month/day LED. If `CONFIG_USE_SECONDS` is enabled, default is
 #### `CONFIG_LED_YEAR_I2C_ADDR`
 
 I2C address of the year LED. If `CONFIG_USE_SECONDS` is enabled, default is `0x73` else `0x72`.
-
-#### `CONFIG_LED_LAYOUT`
-
-Specifies the layout of the LED components. Recognized options include:
-
-* NORMAL
-* ROMAN
-
-Default value is `NORMAL`.
 
 #### `CONFIG_LCD_EXPANDER`
 

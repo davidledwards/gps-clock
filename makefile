@@ -65,6 +65,8 @@ endif
 CONFIG_DATE_LAYOUT ?= ISO
 
 # Configuration for LED displays that show date and time.
+CONFIG_LED_LAYOUT ?= NORMAL
+
 ifdef CONFIG_USE_SECONDS
 CONFIG_LED_TIME_LOWER_I2C_ADDR ?= 0x70
 CONFIG_LED_TIME_UPPER_I2C_ADDR ?= 0x71
@@ -75,8 +77,6 @@ CONFIG_LED_TIME_I2C_ADDR ?= 0x70
 CONFIG_LED_MDAY_I2C_ADDR ?= 0x71
 CONFIG_LED_YEAR_I2C_ADDR ?= 0x72
 endif
-
-CONFIG_LED_LAYOUT ?= NORMAL
 
 # Configuration for LCD display that shows GPS information.
 CONFIG_LCD_EXPANDER ?= PCF8574T
@@ -163,6 +163,7 @@ install :
 
 list-config :
 	@echo "CONFIG_DATE_LAYOUT=$(CONFIG_DATE_LAYOUT)"
+	@echo "CONFIG_LED_LAYOUT=$(CONFIG_LED_LAYOUT)"
 	@echo "CONFIG_USE_SECONDS=$(CONFIG_USE_SECONDS)"
 ifdef CONFIG_USE_SECONDS
 	@echo "CONFIG_LED_TIME_LOWER_I2C_ADDR=$(CONFIG_LED_TIME_LOWER_I2C_ADDR)"
@@ -172,7 +173,6 @@ else
 endif
 	@echo "CONFIG_LED_MDAY_I2C_ADDR=$(CONFIG_LED_MDAY_I2C_ADDR)"
 	@echo "CONFIG_LED_YEAR_I2C_ADDR=$(CONFIG_LED_YEAR_I2C_ADDR)"
-	@echo "CONFIG_LED_LAYOUT=$(CONFIG_LED_LAYOUT)"
 	@echo "CONFIG_LCD_EXPANDER=$(CONFIG_LCD_EXPANDER)"
 	@echo "CONFIG_LCD_I2C_ADDR=$(CONFIG_LCD_I2C_ADDR)"
 	@echo "CONFIG_LCD_TYPE=$(CONFIG_LCD_TYPE)"
@@ -205,6 +205,7 @@ create-config :
 	@echo "#define DATE_LAYOUT_$(CONFIG_DATE_LAYOUT)" >> config.h
 	@echo "" >> config.h
 	@echo "// Configuration for LED displays that show date and time." >> config.h
+	@echo "#define LED_LAYOUT_$(CONFIG_LED_LAYOUT)" >> config.h
 ifdef CONFIG_USE_SECONDS
 	@echo "#define USE_SECONDS" >> config.h
 	@echo "#define LED_TIME_LOWER_I2C_ADDR static_cast<uint8_t>($(CONFIG_LED_TIME_LOWER_I2C_ADDR))" >> config.h
@@ -215,7 +216,6 @@ else
 endif
 	@echo "#define LED_MDAY_I2C_ADDR static_cast<uint8_t>($(CONFIG_LED_MDAY_I2C_ADDR))" >> config.h
 	@echo "#define LED_YEAR_I2C_ADDR static_cast<uint8_t>($(CONFIG_LED_YEAR_I2C_ADDR))" >> config.h
-	@echo "#define LED_LAYOUT_$(CONFIG_LED_LAYOUT)" >> config.h
 	@echo "" >> config.h
 	@echo "// Configuration for LCD display that shows GPS information." >> config.h
 	@echo "#define LCD_EXPANDER_$(CONFIG_LCD_EXPANDER)" >> config.h
