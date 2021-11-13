@@ -375,12 +375,6 @@ This person hails from [Moldova](https://goo.gl/maps/MhutEfQtRmN5artQ9) but chos
 
 The [Arduino CLI](https://arduino.cc/pro/cli) is used for both compilation of source code and uploading of the binary to the actual board. I found this CLI preferrable over the [Arduino IDE](https://www.arduino.cc/en/main/software) because it allows the build and upload process to be fully described through the makefile. Simplicity of the development environment was essential. That said, if you prefer an IDE experience, I found the [Arduino for Visual Studio Code](https://marketplace.visualstudio.com/items?itemName=vsciot-vscode.vscode-arduino) extension to be much nicer than Arduino IDE.
 
-Generates the `config.h` file that is mandatory for compilation. All configuration variables have default values if undefined.
-
-```shell
-make create-config
-```
-
 Installs the Arduino core and dependent external libraries. This is an idempotent operation that first updates the library index and then ensures that all versioned dependencies are downloaded.
 
 ```sh
@@ -407,6 +401,12 @@ Removes transient build files.
 
 ```sh
 make clean
+```
+
+Generates a `config.h` file that is mandatory for compilation. All configuration variables have default values if undefined. Refer to the [configuration section](#configuration) for a description of variables evaluated during the process of generating `config.h`.
+
+```shell
+make create-config
 ```
 
 Prints all configuration variables as detected by the execution environment. These variables are used to generate the configuration file using `make create-config`. Please note that the configuration variables echoed by this command do not necessarily reflect what is contained in `config.h`.
@@ -448,9 +448,11 @@ The compilation process is controlled by a number of configuration variables. A 
 
 While configuration variables can be defined in the shell environment or provided as arguments to `make`, the preferred approach is to use a `.config` file placed in the root directory. If present, it will be automatically imported into the makefile.
 
+If access to the command line or use of `make` is not desired, create the `config.h` file by hand.
+
 Example `.config` file.
 
-```shell
+```makefile
 CONFIG_DATE_FORMAT=EU
 CONFIG_USE_SECONDS=1
 CONFIG_LCD_EXPANDER=MCP23008
@@ -461,19 +463,43 @@ CONFIG_GPS_TX_PIN=2
 
 #### `CONFIG_DATE_LAYOUT`
 
-Specifies the date layout. Recognized options include:
-* ISO
-* EU
-* US
+Specifies the date layout, which is reflected in both the LCD and LED displays. Since the date spans two 4-digit LED displays, the vertical bars below represent the boundaries of the LEDs. Recognized options include:
+* `ISO`
+  * `|YYYY.|MM.DD|`
+
+* `EU`
+  * `|DD.MM.|YYYY|`
+
+* `US`
+  * `|MM.DD.|YYYY|`
+
 
 Default is `ISO`.
 
 #### `CONFIG_LED_LAYOUT`
 
-Specifies the layout of the LED components. Recognized options include:
+Specifies the layout of the LED components. Since the time could span multiple 4-digit LED displays depending on configuration, the vertical bars below represent the boundaries of the LEDs. Recognized options include:
 
-* NORMAL
-* ROMAN
+* `NORMAL`
+
+  * This preferred layout reflects the [circuit design](#circuit-diagram).
+
+  * when `CONFIG_USE_SECONDS` defined
+    * `|* HH|:MM:SS|`
+    * where `*` is A/P/H to indicate AM/PM/24
+
+  * when `CONFIG_USE_SECONDS` not defined
+    * `|HH:MM.|`
+
+* `ROMAN`
+
+  * This configuration was created for a specific construction of the clock that does not use the prescribed LED components.
+
+  * when `CONFIG_USE_SECONDS` defined
+    * `|HH|MM.|SS|`
+
+  * when `CONFIG_USE_SECONDS` not defined
+    * `|HH|MM.|`
 
 Default value is `NORMAL`.
 
@@ -505,9 +531,9 @@ I2C address of the year LED. If `CONFIG_USE_SECONDS` is enabled, default is `0x7
 
 Specifies the type of I2C backpack attached to the LCD display. Recognized options include:
 
-* PCF8574T
-* PCF8574AT
-* MCP23008
+* `PCF8574T`
+* `PCF8574AT`
+* `MCP23008`
 
 Default is `PCF8574T`.
 
@@ -515,17 +541,17 @@ Default is `PCF8574T`.
 
 I2C address of the LCD display. The default value depends on `CONFIG_LCD_EXPANDER`:
 
-* PCF8574T = `0x27`
-* PCF8574AT = `0x3F`
-* MCP23008 = `0x73`
+* `PCF8574T` = `0x27`
+* `PCF8574AT` = `0x3F`
+* `MCP23008` = `0x73`
 
 #### `CONFIG_LCD_TYPE`
 
 Type of LCD display. The default value depends on `CONFIG_LCD_EXPANDER`:
 
-* PCF8574T = `GENERIC`
-* PCF8574AT = `GENERIC`
-* MCP23008 = `ADAFRUIT`
+* `PCF8574T` = `GENERIC`
+* `PCF8574AT` = `GENERIC`
+* `MCP23008` = `ADAFRUIT`
 
 #### `CONFIG_DIMMER_PIN`
 
@@ -563,17 +589,17 @@ Error correction delay in milliseconds for timezone rotary encoder. Default is `
 
 Digital pin connected to RX lead of GPS module. The default value depends on `BOARD`:
 
-* uno = `7`
-* nano = `7`
-* mega = `50`
+* `uno` = `7`
+* `nano` = `7`
+* `mega` = `50`
 
 #### `CONFIG_GPS_TX_PIN`
 
 Digital pin connected to TX lead of GPS module. The default value depends on `BOARD`:
 
-* uno = `8`
-* nano = `8`
-* mega = `51`
+* `uno` = `8`
+* `nano` = `8`
+* `mega` = `51`
 
 #### `CONFIG_GPS_BAUD_RATE`
 
