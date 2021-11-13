@@ -434,11 +434,11 @@ BOARD=uno
 PORT=/dev/tty.usbmodem14401
 ```
 
-#### `BOARD`
+#### BOARD
 
 The default board type is `nano`. The other supported board types are `uno` and `mega`.
 
-#### `PORT`
+#### PORT
 
 This is the serial port to which the Arduino board is attached. If undefined, it defaults to `/dev/null` and will cause an upload attempt to fail.
 
@@ -461,26 +461,26 @@ CONFIG_GPS_RX_PIN=3
 CONFIG_GPS_TX_PIN=2
 ```
 
-#### `CONFIG_DATE_LAYOUT`
+#### CONFIG_DATE_LAYOUT
 
 Specifies the date layout, which is reflected in both the LCD and LED displays. Since the date spans two 4-digit LED displays, the vertical bars below represent the boundaries of the LEDs. Recognized options include:
-* `ISO`
+* ISO
   * `|YYYY.|MM.DD|`
 
-* `EU`
+* EU
   * `|DD.MM.|YYYY|`
 
-* `US`
+* US
   * `|MM.DD.|YYYY|`
 
 
 Default is `ISO`.
 
-#### `CONFIG_LED_LAYOUT`
+#### CONFIG_LED_LAYOUT
 
 Specifies the layout of the LED components. Since the time could span multiple 4-digit LED displays depending on configuration, the vertical bars below represent the boundaries of the LEDs. Recognized options include:
 
-* `NORMAL`
+* NORMAL
 
   * This preferred layout reflects the [circuit design](#circuit-diagram).
 
@@ -491,7 +491,7 @@ Specifies the layout of the LED components. Since the time could span multiple 4
   * when `CONFIG_USE_SECONDS` not defined
     * `|HH:MM.|`
 
-* `ROMAN`
+* ROMAN
 
   * This configuration was created for a specific construction of the clock that does not use the prescribed LED components.
 
@@ -503,109 +503,109 @@ Specifies the layout of the LED components. Since the time could span multiple 4
 
 Default value is `NORMAL`.
 
-#### `CONFIG_USE_SECONDS`
+#### CONFIG_USE_SECONDS
 
 Enables the use of *seconds* as part of the time display which was introduced in generation 4. Note that this option does directly change the configuration of LED displays and the corresponding I2C addresses, so please refer to the [circuit diagrams](#circuit-diagram).
 
-#### `CONFIG_LED_TIME_I2C_ADDR`
+#### CONFIG_LED_TIME_I2C_ADDR
 
 I2C address of the time LED when `CONFIG_USE_SECONDS` is disabled. Default is `0x70`.
 
-#### `CONFIG_LED_TIME_LOWER_I2C_ADDR`
+#### CONFIG_LED_TIME_LOWER_I2C_ADDR
 
 I2C address of the low-order time LED when `CONFIG_USE_SECONDS` is enabled. Default is `0x70`.
 
-#### `CONFIG_LED_TIME_UPPER_I2C_ADDR`
+#### CONFIG_LED_TIME_UPPER_I2C_ADDR
 
 I2C address of the high-order time LED when `CONFIG_USE_SECONDS` is enabled. Default is `0x71`.
 
-#### `CONFIG_LED_MDAY_I2C_ADDR`
+#### CONFIG_LED_MDAY_I2C_ADDR
 
 I2C address of the month/day LED. If `CONFIG_USE_SECONDS` is enabled, default is `0x72` else `0x71`.
 
-#### `CONFIG_LED_YEAR_I2C_ADDR`
+#### CONFIG_LED_YEAR_I2C_ADDR
 
 I2C address of the year LED. If `CONFIG_USE_SECONDS` is enabled, default is `0x73` else `0x72`.
 
-#### `CONFIG_LCD_EXPANDER`
+#### CONFIG_LCD_EXPANDER
 
 Specifies the type of I2C backpack attached to the LCD display. Recognized options include:
 
-* `PCF8574T`
-* `PCF8574AT`
-* `MCP23008`
+* PCF8574T
+* PCF8574AT
+* MCP23008
 
 Default is `PCF8574T`.
 
-#### `CONFIG_LCD_I2C_ADDR`
+#### CONFIG_LCD_I2C_ADDR
 
 I2C address of the LCD display. The default value depends on `CONFIG_LCD_EXPANDER`:
 
-* `PCF8574T` = `0x27`
-* `PCF8574AT` = `0x3F`
-* `MCP23008` = `0x73`
+* PCF8574T = `0x27`
+* PCF8574AT = `0x3F`
+* MCP23008 = `0x73`
 
-#### `CONFIG_LCD_TYPE`
+#### CONFIG_LCD_TYPE
 
 Type of LCD display. The default value depends on `CONFIG_LCD_EXPANDER`:
 
-* `PCF8574T` = `GENERIC`
-* `PCF8574AT` = `GENERIC`
-* `MCP23008` = `ADAFRUIT`
+* PCF8574T = `GENERIC`
+* PCF8574A` = `GENERIC`
+* MCP23008 = `ADAFRUIT`
 
-#### `CONFIG_DIMMER_PIN`
+#### CONFIG_DIMMER_PIN
 
 Analog pin connected to photoresistor used to adjust brightness of LED displays. Default is `0`.
 
-#### `CONFIG_MODE_PIN`
+#### CONFIG_MODE_PIN
 
 Digital pin connect to 12/24-hour button switch. Default is `2`.
 
-#### `CONFIG_MODE_DEBOUNCE_MS`
+#### CONFIG_MODE_DEBOUNCE_MS
 
 Debounce delay in milliseconds for 12/24-hour button switch. Default is `50`.
 
-#### `CONFIG_TZ_A_PIN`
+#### CONFIG_TZ_A_PIN
 
 Digital pin connected to A lead of timezone rotary encoder. Default is `9`.
 
-#### `CONFIG_TZ_B_PIN`
+#### CONFIG_TZ_B_PIN
 
 Digital pin connected to B lead of timezone rotary encoder. Default is `10`.
 
-#### `CONFIG_TZ_BUTTON_PIN`
+#### CONFIG_TZ_BUTTON_PIN
 
 Digital pin connected to button lead of timezone rotary encoder. Default is `11`.
 
-#### `CONFIG_TZ_DEBOUNCE_MS`
+#### CONFIG_TZ_DEBOUNCE_MS
 
 Debounce delay in milleseconds for timezone rotary encoder. Default is `5`.
 
-#### `CONFIG_TZ_ERROR_MS`
+#### CONFIG_TZ_ERROR_MS
 
 Error correction delay in milliseconds for timezone rotary encoder. Default is `20`.
 
-#### `CONFIG_GPS_RX_PIN`
+#### CONFIG_GPS_RX_PIN
 
 Digital pin connected to RX lead of GPS module. The default value depends on `BOARD`:
 
-* `uno` = `7`
-* `nano` = `7`
-* `mega` = `50`
+* uno = `7`
+* nano = `7`
+* mega = `50`
 
-#### `CONFIG_GPS_TX_PIN`
+#### CONFIG_GPS_TX_PIN
 
 Digital pin connected to TX lead of GPS module. The default value depends on `BOARD`:
 
-* `uno` = `8`
-* `nano` = `8`
-* `mega` = `51`
+* uno = `8`
+* nano = `8`
+* mega = `51`
 
-#### `CONFIG_GPS_BAUD_RATE`
+#### CONFIG_GPS_BAUD_RATE
 
 Baud rate of GPS module. Default is `9600`.
 
-#### `CONFIG_AUTO_OFF_MS`
+#### CONFIG_AUTO_OFF_MS
 
 Number of milliseconds of inactivity before the LCD backlight is turned off. Default is `30000`.
 
