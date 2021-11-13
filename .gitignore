@@ -1,8 +1,5 @@
 .DS_Store
 *.elf
 *.hex
-.env
-.config
-config.h
 .vscode/
 build/
