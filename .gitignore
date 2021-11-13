@@ -3,3 +3,6 @@
 *.hex
 .vscode/
 build/
+/.env
+/.config
+/config.h
