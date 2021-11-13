@@ -156,7 +156,7 @@ void clock_display::show_time(const local_time& time) {
   //   ROMAN layout is [HH][MM.][SS]
   // where * is A/P/H to indicate AM/PM/24,
   // where . is shown only in 12-hour mode when time is PM.
-#if defined(TIME_LAYOUT_NORMAL)
+#if defined(LED_LAYOUT_NORMAL)
   if (mode == clock_12) {
     time_upper_led.writeDigitRaw(DIGIT_0, time.hour < 12 ? HOUR_AM_BITMASK : HOUR_PM_BITMASK);
     uint8_t hour = time.hour % 12;
