@@ -550,7 +550,7 @@ I2C address of the LCD display. The default value depends on `CONFIG_LCD_EXPANDE
 Type of LCD display. The default value depends on `CONFIG_LCD_EXPANDER`:
 
 * PCF8574T = `GENERIC`
-* PCF8574A` = `GENERIC`
+* PCF8574A = `GENERIC`
 * MCP23008 = `ADAFRUIT`
 
 #### CONFIG_DIMMER_PIN
