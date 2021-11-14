@@ -14,6 +14,11 @@
  * limitations under the License.
  */
 #include "gpsdisplay.h"
+#include "config.h"
+
+#if !defined(DATE_LAYOUT_ISO) && !defined(DATE_LAYOUT_US) && !defined(DATE_LAYOUT_EU)
+#error "DATE_LAYOUT_? unrecognized"
+#endif
 
 static const uint8_t LCD_COLS = 20;
 static const uint8_t LCD_ROWS = 4;
@@ -125,32 +130,56 @@ void gps_display::write_satellites(const gps_info& info) {
 
 void gps_display::write_utc(const gps_time& time) {
   lcd.setCursor(0, 2);
-  lcd.print(time.year / 1000 % 10);
-  lcd.print(time.year / 100 % 10);
-  lcd.print(time.year / 10 % 10);
-  lcd.print(time.year % 10);
+#if defined(DATE_LAYOUT_ISO)
+  write_year(time);
   lcd.print('-');
-  lcd.print(time.month / 10 % 10);
-  lcd.print(time.month % 10);
+  write_month(time);
   lcd.print('-');
-  lcd.print(time.day / 10 % 10);
-  lcd.print(time.day % 10);
+  write_day(time);
+#elif defined(DATE_LAYOUT_US)
+  write_month(time);
+  lcd.print('-');
+  write_day(time);
+  lcd.print('-');
+  write_year(time);
+#elif defined(DATE_LAYOUT_EU)
+  write_day(time);
+  lcd.print('-');
+  write_month(time);
+  lcd.print('-');
+  write_year(time);
+#endif
   lcd.print(' ');
   lcd.print(time.hour / 10 % 10);
   lcd.print(time.hour % 10);
   lcd.print(':');
   lcd.print(time.minute / 10 % 10);
   lcd.print(time.minute % 10);
-  lcd.print(F(" UTC"));
+  lcd.print(':');
+  lcd.print(time.second / 10 % 10);
+  lcd.print(time.second % 10);
+}
+
+void gps_display::write_year(const gps_time& time) {
+  lcd.print(time.year / 1000 % 10);
+  lcd.print(time.year / 100 % 10);
+  lcd.print(time.year / 10 % 10);
+  lcd.print(time.year % 10);
+}
+
+void gps_display::write_month(const gps_time& time) {
+  lcd.print(time.month / 10 % 10);
+  lcd.print(time.month % 10);
+}
+
+void gps_display::write_day(const gps_time& time) {
+  lcd.print(time.day / 10 % 10);
+  lcd.print(time.day % 10);
 }
 
 void gps_display::write_tz(const tz_info* tz, bool pending) {
   lcd.setCursor(0, 3);
-  lcd.print(F("tz"));
-  if (pending)
-    lcd.print(F("? "));
-  else
-    lcd.print(F(": "));
+  lcd.print(pending ? F("? ") : F("> "));
   size_t n = lcd.print(tz->name);
   while (n++ < 16)
     lcd.print(' ');

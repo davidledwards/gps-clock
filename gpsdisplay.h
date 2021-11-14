@@ -37,6 +37,9 @@ private:
   void write_lon(const gps_info& info);
   void write_satellites(const gps_info& info);
   void write_utc(const gps_time& time);
+  void write_year(const gps_time& time);
+  void write_month(const gps_time& time);
+  void write_day(const gps_time& time);
   void write_tz(const tz_info* tz, bool pending);
   void clear_gps();
   void clear_row(uint8_t row);

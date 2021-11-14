@@ -15,18 +15,7 @@
  */
 #include "gpsunit.h"
 #include "board.h"
-
-// Pins attached to the GPS module.
-#if defined(BOARD_UNO)
-static const uint8_t RX_PIN = 7;
-static const uint8_t TX_PIN = 8;
-#elif defined(BOARD_MEGA)
-static const uint8_t RX_PIN = 50;
-static const uint8_t TX_PIN = 51;
-#endif
-
-// GPS module baud rate.
-static const long BAUD_RATE = 9600;
+#include "config.h"
 
 // Number of milliseconds that must elapse before returning new GPS information.
 static const uint32_t SYNC_DELAY_MS = 2000;
@@ -36,9 +25,9 @@ static const uint32_t SYNC_DELAY_MS = 2000;
 static const uint32_t SEARCHING_DELAY_MS = 30000;
 
 gps_unit::gps_unit()
-  : ser(TX_PIN, RX_PIN),
+  : ser(GPS_TX_PIN, GPS_RX_PIN),
     last_sync(0) {
-  ser.begin(BAUD_RATE);
+  ser.begin(GPS_BAUD_RATE);
 }
 
 gps_state gps_unit::read(gps_info& info, gps_time& time) {

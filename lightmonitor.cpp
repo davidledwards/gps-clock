@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 #include "lightmonitor.h"
-
-// Analog pin connected to photoresistor for light monitor.
-static const uint8_t PHOTORESISTOR_PIN = 0;
+#include "config.h"
 
 // Length of time before taking next photoresistor reading.
 static const uint32_t READING_DELAY_MS = 1000;
@@ -34,7 +32,7 @@ static const uint16_t PIN_RANGE = 1024;
 static const uint16_t BRIGHTNESS_RANGE = 64;
 
 light_monitor::light_monitor()
-  : pin(PHOTORESISTOR_PIN),
+  : pin(DIMMER_PIN),
     cur_reading(PIN_RANGE / 2),
     cur_brightness(to_brightness(cur_reading)),
     last_reading_time(0),
