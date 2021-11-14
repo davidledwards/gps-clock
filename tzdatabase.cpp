@@ -31,12 +31,14 @@ static const tz_info TZ_TABLE[] = {
     )
   },
 #if RAM_SIZE > 2
+  // Australian Central Standard Time
   tz_info {
     "ACST",
     Timezone(
       TimeChangeRule {"", First, Sun, Oct, 2, 570}
     )
   },
+  // Australian Central Standard/Daylight Time
   tz_info {
     "ACST/ACDT",
     Timezone(
@@ -44,12 +46,14 @@ static const tz_info TZ_TABLE[] = {
       TimeChangeRule {"", First, Sun, Oct, 2, 570}
     )
   },
+  // Australian Eastern Standard Time
   tz_info {
     "AEST",
     Timezone(
       TimeChangeRule {"", First, Sun, Oct, 2, 600}
     )
   },
+  // Australian Eastern Standard/Daylight Time
   tz_info {
     "AEST/AEDT",
     Timezone(
@@ -57,6 +61,7 @@ static const tz_info TZ_TABLE[] = {
       TimeChangeRule {"", First, Sun, Oct, 2, 600}
     )
   },
+  // Alaska Standard/Daylight Time
   tz_info {
     "AKST/AKDT",
     Timezone(
@@ -64,6 +69,7 @@ static const tz_info TZ_TABLE[] = {
       TimeChangeRule {"", First, Sun, Nov, 2, -480}
     )
   },
+  // Atlantic Standard/Daylight Time
   tz_info {
     "AST/ADT",
     Timezone(
@@ -71,18 +77,21 @@ static const tz_info TZ_TABLE[] = {
       TimeChangeRule {"", First, Sun, Nov, 2, -180}
     )
   },
+  // Australian Western Standard Time
   tz_info {
     "AWST",
     Timezone(
       TimeChangeRule {"", First, Sun, Oct, 2, 480}
     )
   },
+  // Beijing Time
   tz_info {
     "BJT",
     Timezone(
       TimeChangeRule {"", First, Sun, Oct, 2, 480}
     )
   },
+  // Central Africa Time
   tz_info {
     "CAT",
     Timezone(
@@ -90,6 +99,7 @@ static const tz_info TZ_TABLE[] = {
     )
   },
 #endif
+  // Central European/Summer Time
   tz_info {
     "CET/CEST",
     Timezone(
@@ -98,6 +108,7 @@ static const tz_info TZ_TABLE[] = {
     )
   },
 #if RAM_SIZE > 2
+  // Chatham Standard/Daylight Time
   tz_info {
     "CHAST/CHADT",
     Timezone(
@@ -106,6 +117,7 @@ static const tz_info TZ_TABLE[] = {
     )
   },
 #endif
+  // Central Standard/Daylight Time (US)
   tz_info {
     "CST/CDT",
     Timezone(
@@ -114,6 +126,7 @@ static const tz_info TZ_TABLE[] = {
     )
   },
 #if RAM_SIZE > 2
+  // Eastern Africa Time
   tz_info {
     "EAT",
     Timezone(
@@ -121,12 +134,14 @@ static const tz_info TZ_TABLE[] = {
     )
   },
 #endif
+  // Eastern European Time
   tz_info {
     "EET",
     Timezone(
       TimeChangeRule {"", Last, Sun, Oct, 2, 120}
     )
   },
+  // Eastern European/Summer Time
   tz_info {
     "EET/EEST",
     Timezone(
@@ -134,6 +149,7 @@ static const tz_info TZ_TABLE[] = {
       TimeChangeRule {"", Last, Sun, Oct, 2, 120}
     )
   },
+  // Eastern Standard/Daylight Time (US)
   tz_info {
     "EST/EDT",
     Timezone(
@@ -142,30 +158,35 @@ static const tz_info TZ_TABLE[] = {
     )
   },
 #if RAM_SIZE > 2
+  // Indochina Time
   tz_info {
     "ICT",
     Timezone(
       TimeChangeRule {"", First, Sun, Oct, 2, 420}
     )
   },
+  // Indian Standard Time
   tz_info {
     "IST",
     Timezone(
       TimeChangeRule {"", First, Sun, Nov, 2, 330}
     )
   },
+  // Japan Standard Time
   tz_info {
     "JST",
     Timezone(
       TimeChangeRule {"", First, Sun, Nov, 2, 540}
     )
   },
+  // Hawaii Standard Time
   tz_info {
     "HST",
     Timezone(
       TimeChangeRule {"", First, Sun, Nov, 2, -600}
     )
   },
+  // Hawaii Standard/Daylight Time
   tz_info {
     "HST/HDT",
     Timezone(
@@ -173,12 +194,14 @@ static const tz_info TZ_TABLE[] = {
       TimeChangeRule {"", First, Sun, Nov, 2, -600}
     )
   },
+  // Moscow Standard Time
   tz_info {
     "MSK",
     Timezone(
       TimeChangeRule {"", First, Sun, Oct, 2, 180}
     )
   },
+  // Mountain Standard Time (US)
   tz_info {
     "MST",
     Timezone(
@@ -186,6 +209,7 @@ static const tz_info TZ_TABLE[] = {
     )
   },
 #endif
+  // Mountain Standard/Daylight Time (US)
   tz_info {
     "MST/MDT",
     Timezone(
@@ -194,6 +218,7 @@ static const tz_info TZ_TABLE[] = {
     )
   },
 #if RAM_SIZE > 2
+  // New Zealand Standard/Daylight Time
   tz_info {
     "NZST/NZDT",
     Timezone(
@@ -201,12 +226,14 @@ static const tz_info TZ_TABLE[] = {
       TimeChangeRule {"", First, Sun, Apr, 2, 720}
     )
   },
+  // Phillipine Standard Time
   tz_info {
     "PHST",
     Timezone(
       TimeChangeRule {"", First, Sun, Oct, 2, 480}
     )
   },
+  // Pakistan Standard Time
   tz_info {
     "PKT",
     Timezone(
@@ -214,6 +241,7 @@ static const tz_info TZ_TABLE[] = {
     )
   },
 #endif
+  // Pacific Standard/Daylight Time (US)
   tz_info {
     "PST/PDT",
     Timezone(
@@ -222,30 +250,35 @@ static const tz_info TZ_TABLE[] = {
     )
   },
 #if RAM_SIZE > 2
+  // South African Standard Time
   tz_info {
     "SAST",
     Timezone(
       TimeChangeRule {"", First, Sun, Oct, 2, 120}
     )
   },
+  // Samoa Standard Time
   tz_info {
     "SST",
     Timezone(
       TimeChangeRule {"", First, Sun, Oct, 2, 480}
     )
   },
+  // West Africa Time
   tz_info {
     "WAT",
     Timezone(
       TimeChangeRule {"", First, Sun, Oct, 2, 60}
     )
   },
+  // Western European Time
   tz_info {
     "WET",
     Timezone(
       TimeChangeRule {"", First, Sun, Oct, 2, 0}
     )
   },
+  // Western European/Summer Time
   tz_info {
     "WET/WEST",
     Timezone(
