@@ -24,6 +24,5 @@ jobs:
 
       - name: Build sketch
         run: |
-          echo "TMPDIR=$TMPDIR"
-          mkdir /tmp/foo.bar
+          mktemp -d
           make build

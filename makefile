@@ -31,7 +31,7 @@ PORT ?= /dev/null
 
 # A convenient technique for deterministically placing the build directoy somewhere other than the
 # project directory since this is not allowed.
-BUILD_ROOT = $(abspath $(TMPDIR)/build)
+BUILD_ROOT = $(abspath $(TMP)/build)
 BUILD_PATH = $(abspath $(BUILD_ROOT)/$(subst /,_,$(CURDIR)))
 BUILD_FILES_PREFIX = $(SKETCH).$(subst :,.,$(BOARD_NAME))
 
