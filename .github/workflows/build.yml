@@ -18,14 +18,17 @@ jobs:
         run: |
           brew install arduino-cli
 
-      - name: Create TMPDIR
+      - name: Create temporary directory for builds
         run : |
-          export TMPDIR=$(mktemp -d)
+          echo "TMPDIR=$(mktemp -d)" >> $GITHUB_ENV
 
       - name: Install sketch dependencies
         run: |
           make install
 
       - name: Build sketch
+        env:
+          TMPDIR: ${{ env.TMPDIR}}
         run: |
+          echo "TMPDIR=$TMPDIR"
           make build
