@@ -11,6 +11,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
+      - name: Install Homebrew
+        run: sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+        
       - name: Install Arduino CLI
         run: brew install arduino-cli
 
