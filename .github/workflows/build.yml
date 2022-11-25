@@ -31,4 +31,5 @@ jobs:
           TMPDIR: ${{ env.TMPDIR}}
         run: |
           echo "TMPDIR=$TMPDIR"
+          make create-config
           make build
