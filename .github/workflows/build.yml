@@ -11,12 +11,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Install Homebrew
-        uses: Homebrew/actions/setup-homebrew@master
-
       - name: Install Arduino CLI
+        uses: Homebrew/actions/setup-homebrew@master
         run: |
           brew install arduino-cli
+
+      - name: Create TMPDIR
+        run : |
+          export TMPDIR=$(mktemp -d)
 
       - name: Install sketch dependencies
         run: |
@@ -24,5 +26,4 @@ jobs:
 
       - name: Build sketch
         run: |
-          mktemp -d
           make build
