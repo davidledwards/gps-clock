@@ -15,10 +15,14 @@ jobs:
         uses: Homebrew/actions/setup-homebrew@master
 
       - name: Install Arduino CLI
-        run: brew install arduino-cli
+        run: |
+          brew install arduino-cli
 
       - name: Install sketch dependencies
-        run: make install
+        run: |
+          make install
 
       - name: Build sketch
-        run: make build
+        run: |
+          echo $TMPDIR
+          make build
