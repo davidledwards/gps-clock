@@ -37,7 +37,7 @@ Bear with me if you happen to be a long-time Arduino hacker and developer, as th
 
 ### Hardware Generation 1
 
-https://github.com/davidledwards/gps-clock/tree/release-1
+https://github.com/davidledwards/gps-clock/tree/1.4
 
 These are the components of the original clock design.
 
@@ -52,7 +52,7 @@ These are the components of the original clock design.
 
 ### Hardware Generation 2
 
-https://github.com/davidledwards/gps-clock/tree/release-2
+https://github.com/davidledwards/gps-clock/tree/2.4
 
 This generation of the clock included several refinements and improvements.
 
@@ -75,7 +75,7 @@ The mini PCB from generation 1 was eliminated since the rotary encoder was mount
 
 ### Hardware Generation 3
 
-https://github.com/davidledwards/gps-clock/tree/release-3
+https://github.com/davidledwards/gps-clock/tree/3.4
 
 This generation adds a push button to toggle between 12- and 24-hour formats. In 12-hour format, the LED display illuminates a dot on the lower-right edge of the time component. Additionally, it does not zero-pad the hour as seen in the 24-hour format. The goal was to make the format visually obvious to the observer without introducing any additional components.
 
@@ -108,7 +108,7 @@ Internally, the GPS library was replaced with a smaller implementation requiring
 
 ### Hardware Generation 4
 
-https://github.com/davidledwards/gps-clock/tree/release-4
+https://github.com/davidledwards/gps-clock/tree/4.4
 
 This generation comes with a handful of component changes as well as the addition of an extra LED display to show *seconds* as part of time. The clock construction looks significantly different than past generations.
 
