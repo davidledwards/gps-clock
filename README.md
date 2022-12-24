@@ -108,7 +108,7 @@ Internally, the GPS library was replaced with a smaller implementation requiring
 
 ### Hardware Generation 4
 
-https://github.com/davidledwards/gps-clock/tree/4.4
+https://github.com/davidledwards/gps-clock/tree/4.5
 
 This generation comes with a handful of component changes as well as the addition of an extra LED display to show *seconds* as part of time. The clock construction looks significantly different than past generations.
 
