@@ -37,17 +37,17 @@ BUILD_FILES_PREFIX = $(SKETCH).$(subst :,.,$(BOARD_NAME))
 
 # Library dependencies.
 LIBS = \
-	"Adafruit LED Backpack Library"@1.1.7 \
+	"Adafruit LED Backpack Library"@1.3.2 \
 	"LiquidCrystal I2C"@1.1.2 \
-	"Adafruit LiquidCrystal"@1.1.0 \
-	"TinyGPS"@13.0.0 \
-	"SimpleRotary"@1.1.2 \
+	"Adafruit LiquidCrystal"@2.0.1 \
+	"TinyGPSPlus"@1.0.3 \
+	"SimpleRotary"@1.1.3 \
 	"Time"@1.6.1 \
 	"Timezone"@1.2.4 \
-	"ezButton"@1.0.3
+	"ezButton"@1.0.4
 
 # Arduino core library dependency.
-CORE = $(BOARD_CORE)@1.8.3
+CORE = $(BOARD_CORE)@1.8.6
 
 # Name of the image that gets uploaded to the board.
 PROG = $(BUILD_FILES_PREFIX).hex

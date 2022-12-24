@@ -18,7 +18,7 @@
 
 #include <Arduino.h>
 #include <SoftwareSerial.h>
-#include <TinyGPS.h>
+#include <TinyGPSPlus.h>
 
 struct gps_info {
   float lat;
@@ -48,11 +48,11 @@ public:
 
 private:
   const SoftwareSerial ser;
-  const TinyGPS gps;
+  const TinyGPSPlus gps;
   uint32_t last_sync;
 
-  static bool get_info(const TinyGPS& gps, gps_info& info);
-  static bool get_time(const TinyGPS& gps, gps_time& time);
+  static bool get_info(const TinyGPSPlus& gps, gps_info& info);
+  static bool get_time(const TinyGPSPlus& gps, gps_time& time);
 };
 
 #endif

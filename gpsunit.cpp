@@ -42,33 +42,21 @@ gps_state gps_unit::read(gps_info& info, gps_time& time) {
   return millis() - last_sync > SEARCHING_DELAY_MS ? gps_searching : gps_ignore;
 }
 
-bool gps_unit::get_info(const TinyGPS& gps, gps_info& info) {
-  float lat;
-  float lon;
-  unsigned long age;
-  gps.f_get_position(&lat, &lon, &age);
-  unsigned short satellites = gps.satellites();
-  if (age == TinyGPS::GPS_INVALID_AGE || satellites == TinyGPS::GPS_INVALID_SATELLITES)
-    return false;
-  else {
-    info = gps_info {lat, lon, satellites};
+bool gps_unit::get_info(const TinyGPSPlus& gps, gps_info& info) {
+  if (gps.location.isValid() && gps.satellites.isValid()) {
+    info = gps_info {gps.location.lat(), gps.location.lng(), gps.satellites.value()};
     return true;
+  } else {
+    return false;
   }
 }
 
-bool gps_unit::get_time(const TinyGPS& gps, gps_time& time) {
-  int year;
-  byte month;
-  byte day;
-  byte hour;
-  byte minute;
-  byte second;
-  unsigned long age;
-  gps.crack_datetime(&year, &month, &day, &hour, &minute, &second, 0, &age);
-  if (age == TinyGPS::GPS_INVALID_AGE)
-    return false;
-  else {
-    time = gps_time {year, month, day, hour, minute, second};
+bool gps_unit::get_time(const TinyGPSPlus& gps, gps_time& time) {
+  if (gps.date.isValid() && gps.time.isValid()) {
+    time = gps_time {gps.date.year(), gps.date.month(), gps.date.day(),
+                     gps.time.hour(), gps.time.minute(), gps.time.second()};
     return true;
+  } else {
+    return false;
   }
 }
