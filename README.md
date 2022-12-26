@@ -9,7 +9,6 @@ A GPS-synchronized digital clock based on the open-source [Arduino](https://ardu
   * [Generation 3](#hardware-generation-3)
   * [Generation 4](#hardware-generation-4)
 * [Assembly](#assembly)
-  
   * [Circuit Diagram](#circuit-diagram)
   * [LED Displays](#led-displays)
   * [LCD Display](#lcd-display)
@@ -132,6 +131,10 @@ Another 4-digit LED display was introduced to show the current time with *second
 * [10K Ohm Resistor](https://www.amazon.com/10k-ohm-resistor/s?k=10k+ohm+resistor) (1)
 * [Tactile Button](https://www.adafruit.com/product/367) (1)
 * [Mini USB Cable](https://www.amazon.com/gp/product/B007NLW3C2) (1)
+
+#### Generation 4 Software Update
+
+The GPS library dependency was updated as a result of testing the use of a newer GPS module, [NEO-M8](https://www.u-blox.com/en/product/neo-m8-series), which is capable of locking on many more satellites. It turns out that this module emits sentences not recognized by [TinyGPS](https://github.com/mikalhart/TinyGPS). Fortunately, a newer library from the same developer, [TinyGPS++](https://github.com/mikalhart/TinyGPSPlus), is capable of parsing sentences from both NEO-M8 and NEO-6M modules. The impact on program storage space only increased by a few hundred bytes, which is still well below the `32K` limit on the Nano board.
 
 ## Assembly
 
