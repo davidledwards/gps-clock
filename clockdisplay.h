@@ -45,6 +45,7 @@ private:
   const Adafruit_7segment mday_led;
   const Adafruit_7segment year_led;
   uint8_t cur_brightness;
+  uint32_t last_brightness_adjust;
   clock_mode mode;
 
   void init_led(const Adafruit_7segment& led, uint8_t i2c_addr);

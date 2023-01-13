@@ -46,8 +46,12 @@ static const uint8_t HOUR_AM_BITMASK = 0b01110111;
 static const uint8_t HOUR_PM_BITMASK = 0b01110011;
 #endif
 
+// Number of milliseconds before adjusting brightness of LEDs.
+static const uint32_t BRIGHTNESS_ADJUST_INTERVAL = 500;
+
 clock_display::clock_display(uint8_t brightness, clock_mode mode)
   : cur_brightness(brightness),
+    last_brightness_adjust(0),
     mode(mode) {
 #if defined(USE_SECONDS)
   init_led(time_lower_led, LED_TIME_LOWER_I2C_ADDR);
@@ -77,16 +81,20 @@ void clock_display::show_now(const local_time& time) {
 }
 
 void clock_display::set_brightness(uint8_t brightness) {
-  if (brightness != cur_brightness) {
+  // Gradually adjust brightness level to desired target, as supplied in caller argument,
+  // which results in effect of smooth dimming and brightening.
+  if (brightness != cur_brightness && millis() - last_brightness_adjust > BRIGHTNESS_ADJUST_INTERVAL) {
+    cur_brightness = brightness < cur_brightness ? cur_brightness - 1 : cur_brightness + 1;
+    last_brightness_adjust = millis();
+
 #if defined(USE_SECONDS)
-    time_lower_led.setBrightness(brightness);
-    time_upper_led.setBrightness(brightness);
+    time_lower_led.setBrightness(cur_brightness);
+    time_upper_led.setBrightness(cur_brightness);
 #else
-    time_led.setBrightness(brightness);
+    time_led.setBrightness(cur_brightness);
 #endif
-    mday_led.setBrightness(brightness);
-    year_led.setBrightness(brightness);
-    cur_brightness = brightness;
+    mday_led.setBrightness(cur_brightness);
+    year_led.setBrightness(cur_brightness);
   }
 }
 
