@@ -46,8 +46,8 @@ static const uint8_t HOUR_AM_BITMASK = 0b01110111;
 static const uint8_t HOUR_PM_BITMASK = 0b01110011;
 #endif
 
-// Number of milliseconds before adjusting brightness of LEDs.
-static const uint32_t BRIGHTNESS_ADJUST_INTERVAL = 500;
+// Number of milliseconds before adjusting brightness of LEDs since last change.
+static const uint32_t BRIGHTNESS_ADJUST_INTERVAL = 250;
 
 clock_display::clock_display(uint8_t brightness, clock_mode mode)
   : cur_brightness(brightness),
