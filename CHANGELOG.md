@@ -1,0 +1,111 @@
+# Change Log
+
+This file contains relevant information for each release. Please refer to the commit history for more details.
+
+Some of the tags are not included in this changelog due to their redundant nature. This redundacy was due to a historical decision to manage multiple generational release streams. Beginning with version `4.0`, the software is backward-compatible with all prior generations with proper configuration.
+
+## [4.5](https://github.com/davidledwards/gps-clock/tree/4.5) - 2022-12-24
+
+### Added
+
+- Upgraded TinyGPS library to TinyGPS++ for compatiblity with newer GPS modules that emit GN* sentences
+
+## [4.4](https://github.com/davidledwards/gps-clock/tree/4.4) - 2021-11-14
+
+### Added
+
+- Use `make` to generate `config.h` based on configuration options
+- Add _seconds_ to GPS time on LCD display
+- Add support for ISO/EU/US date formats
+- Add support for _seconds_ on LED display
+- Add support for various LED layouts
+- Include predefined configurations
+- Update documentation with all configuration options
+
+### Changed
+
+- Remove "UTC" label from LCD display since this is implied
+- Remove "TZ" label from LCD display since it feels redundant
+
+### Fixed
+
+- Fix bug that was clobbering LCD display
+
+## [4.3](https://github.com/davidledwards/gps-clock/tree/4.3) - 2021-10-31
+
+### Added
+
+- Add EET time zone
+- Include section in README of clock diagrams from other developers
+
+## [4.2](https://github.com/davidledwards/gps-clock/tree/4.2) - 2021-08-27
+
+### Fixed
+
+- Only show dot in 12-hour mode when hour is essentially PM
+
+## [4.1](https://github.com/davidledwards/gps-clock/tree/4.1) - 2021-08-27
+
+### Changed
+
+- Used conditional compilation in lieu of central configuration file
+- Detect various I/O expanders to ensure proper LCD library is used
+
+## [4.0](https://github.com/davidledwards/gps-clock/tree/4.0) - 2021-07-24
+
+### Added
+
+- Initial support for displaying _seconds_
+- Add support for Arduino Mega board
+- Expand available time zones when compiling for Mega board
+
+### Fixed
+
+- Use pull-up resistor for 12/24-hour button
+
+## [3.2](https://github.com/davidledwards/gps-clock/tree/3.2) - 2021-01-24
+
+### Added
+
+- Automatically turn on LCD backlight when time zone selector is rotated and turn off after 30 seconds of no activity
+
+### Fixed
+
+- Bug in time zone selector that continued returning proposed time zone after expiration of idle period
+
+## [3.1](https://github.com/davidledwards/gps-clock/tree/3.1) - 2020-12-23
+
+### Changed
+
+- Updated libraries
+- Accommodate changes to Arduino CLI
+
+## [3.0](https://github.com/davidledwards/gps-clock/tree/3.0) - 2020-09-21
+
+### Added
+
+- Add support for selecting 12/24-hour format
+
+### Changed
+
+- Change default time format on LED display to 12-hour
+- Adjust debounce delay for rotary encoder used for selecting time zone
+
+## [2.1](https://github.com/davidledwards/gps-clock/tree/2.1) - 2020-09-07
+
+### Changed
+
+- Update libraries
+- Adjust debounce delay for rotary encoder
+
+## [2.0](https://github.com/davidledwards/gps-clock/tree/2.0) - 2020-08-15
+
+### Added
+
+- Use photoresistor to automatically adjust brightness of LED display
+
+## [1.0](https://github.com/davidledwards/gps-clock/tree/1.0) - 2020-07-18
+
+### Added
+
+- First generation of hardware and software
