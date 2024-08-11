@@ -37,14 +37,14 @@ BUILD_FILES_PREFIX = $(SKETCH).$(subst :,.,$(BOARD_NAME))
 
 # Library dependencies.
 LIBS = \
-	"Adafruit LED Backpack Library"@1.3.2 \
+	"Adafruit LED Backpack Library"@1.5.1 \
 	"LiquidCrystal I2C"@1.1.2 \
-	"Adafruit LiquidCrystal"@2.0.1 \
+	"Adafruit LiquidCrystal"@2.0.4 \
 	"TinyGPSPlus"@1.0.3 \
 	"SimpleRotary"@1.1.3 \
 	"Time"@1.6.1 \
 	"Timezone"@1.2.4 \
-	"ezButton"@1.0.4
+	"ezButton"@1.0.6
 
 # Arduino core library dependency.
 CORE = $(BOARD_CORE)@1.8.6
