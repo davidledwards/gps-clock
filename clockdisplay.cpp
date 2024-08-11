@@ -36,14 +36,22 @@ static const uint8_t DIGIT_2 = 2;
 static const uint8_t DIGIT_3 = 3;
 #endif
 
-#if defined(USE_SECONDS)
-// Displays both colons on 1.2 inch Adafruit LED display when writing to location 2.
-static const uint8_t COLONS_BITMASK = 0x02 | 0x04 | 0x08;
-
 // Letters for 12/24 hour designation; 'A' and 'P' for 12-hour, and 'H' for 24-hour.
+#if defined(USE_SECONDS)
 static const uint8_t HOUR_24_BITMASK = 0b01110110;
 static const uint8_t HOUR_AM_BITMASK = 0b01110111;
 static const uint8_t HOUR_PM_BITMASK = 0b01110011;
+#endif
+
+// Use dots instead of colons if specified.
+#if defined(USE_DOTS)
+static const bool ENABLE_DOT = true;
+static const uint8_t COLON_BITMASK = 0x00;
+#else
+static const bool ENABLE_DOT = false;
+#if defined(USE_SECONDS)
+static const uint8_t COLON_BITMASK = 0x02 | 0x04 | 0x08;
+#endif
 #endif
 
 clock_display::clock_display(uint8_t brightness, clock_mode mode)
@@ -152,8 +160,14 @@ void clock_display::show_mday(const local_time& time) {
 void clock_display::show_time(const local_time& time) {
 #if defined(USE_SECONDS)
   // Layout:
-  //   NORMAL is [* HH][:MM:SS]
-  //   ROMAN layout is [HH][MM.][SS]
+  //   NORMAL is
+  //     with colons (default)
+  //       [* HH][:MM:SS]
+  //     with dots
+  //       [* HH.][MM.SS]
+  //   ROMAN is
+  //     [HH][MM.][SS]
+  //
   // where * is A/P/H to indicate AM/PM/24,
   // where . is shown only in 12-hour mode when time is PM.
 #if defined(LED_LAYOUT_NORMAL)
@@ -166,18 +180,18 @@ void clock_display::show_time(const local_time& time) {
       time_upper_led.writeDigitRaw(DIGIT_2, 0x00);
     else
       time_upper_led.writeDigitNum(DIGIT_2, hour / 10 % 10);
-    time_upper_led.writeDigitNum(DIGIT_3, hour % 10);
+    time_upper_led.writeDigitNum(DIGIT_3, hour % 10, ENABLE_DOT);
   } else {
     time_upper_led.writeDigitRaw(DIGIT_0, HOUR_24_BITMASK);
     time_upper_led.writeDigitNum(DIGIT_2, time.hour / 10 % 10);
-    time_upper_led.writeDigitNum(DIGIT_3, time.hour % 10);
+    time_upper_led.writeDigitNum(DIGIT_3, time.hour % 10, ENABLE_DOT);
   }
   time_upper_led.writeDigitRaw(DIGIT_1, 0x00);
   time_upper_led.writeDisplay();
 
   time_lower_led.writeDigitNum(DIGIT_0, time.minute / 10 % 10);
-  time_lower_led.writeDigitNum(DIGIT_1, time.minute % 10);
-  time_lower_led.writeDigitRaw(2, COLONS_BITMASK);
+  time_lower_led.writeDigitNum(DIGIT_1, time.minute % 10, ENABLE_DOT);
+  time_lower_led.writeDigitRaw(2, COLON_BITMASK);
   time_lower_led.writeDigitNum(DIGIT_2, time.second / 10 % 10);
   time_lower_led.writeDigitNum(DIGIT_3, time.second % 10);
   time_lower_led.writeDisplay();
@@ -205,8 +219,13 @@ void clock_display::show_time(const local_time& time) {
 #endif
 #else
   // Layout:
-  //   NORMAL is [HH:MM.]
-  //   ROMAN is [HH][MM.]
+  //   NORMAL is
+  //     with colons (default)
+  //       [HH:MM.]
+  //     with dots
+  //       [HH.MM.]
+  //   ROMAN is
+  //     [HH][MM.]
   // where . is shown only in 12-hour mode when time is PM.
   if (mode == clock_12) {
     uint8_t hour = time.hour % 12;
@@ -216,13 +235,21 @@ void clock_display::show_time(const local_time& time) {
       time_led.writeDigitRaw(DIGIT_0, 0x00);
     else
       time_led.writeDigitNum(DIGIT_0, hour / 10 % 10);
+#if defined(LED_LAYOUT_NORMAL)
+    time_led.writeDigitNum(DIGIT_1, hour % 10, ENABLE_DOT);
+#else
     time_led.writeDigitNum(DIGIT_1, hour % 10);
+#endif
   } else {
     time_led.writeDigitNum(DIGIT_0, time.hour / 10 % 10);
+#if defined(LED_LAYOUT_NORMAL)
+    time_led.writeDigitNum(DIGIT_1, time.hour % 10, ENABLE_DOT);
+#else
     time_led.writeDigitNum(DIGIT_1, time.hour % 10);
+#endif
   }
 #if defined(LED_LAYOUT_NORMAL)
-  time_led.drawColon(true);
+  time_led.drawColon(!ENABLE_DOT);
 #endif
   time_led.writeDigitNum(DIGIT_2, time.minute / 10 % 10);
   time_led.writeDigitNum(DIGIT_3, time.minute % 10, mode == clock_12 && time.hour >= 12);

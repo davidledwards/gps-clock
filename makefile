@@ -165,6 +165,7 @@ list-config :
 	@echo "CONFIG_DATE_LAYOUT=$(CONFIG_DATE_LAYOUT)"
 	@echo "CONFIG_LED_LAYOUT=$(CONFIG_LED_LAYOUT)"
 	@echo "CONFIG_USE_SECONDS=$(CONFIG_USE_SECONDS)"
+	@echo "CONFIG_USE_DOTS=$(CONFIG_USE_DOTS)"
 ifdef CONFIG_USE_SECONDS
 	@echo "CONFIG_LED_TIME_LOWER_I2C_ADDR=$(CONFIG_LED_TIME_LOWER_I2C_ADDR)"
 	@echo "CONFIG_LED_TIME_UPPER_I2C_ADDR=$(CONFIG_LED_TIME_UPPER_I2C_ADDR)"
@@ -208,10 +209,18 @@ create-config :
 	@echo "#define LED_LAYOUT_$(CONFIG_LED_LAYOUT)" >> config.h
 ifdef CONFIG_USE_SECONDS
 	@echo "#define USE_SECONDS" >> config.h
+else
+	@echo "#undef USE_SECONDS" >> config.h
+endif
+ifdef CONFIG_USE_DOTS
+	@echo "#define USE_DOTS" >> config.h
+else
+	@echo "#undef USE_DOTS" >> config.h
+endif
+ifdef CONFIG_USE_SECONDS
 	@echo "#define LED_TIME_LOWER_I2C_ADDR static_cast<uint8_t>($(CONFIG_LED_TIME_LOWER_I2C_ADDR))" >> config.h
 	@echo "#define LED_TIME_UPPER_I2C_ADDR static_cast<uint8_t>($(CONFIG_LED_TIME_UPPER_I2C_ADDR))" >> config.h
 else
-	@echo "#undef USE_SECONDS" >> config.h
 	@echo "#define LED_TIME_I2C_ADDR static_cast<uint8_t>($(CONFIG_LED_TIME_I2C_ADDR))" >> config.h
 endif
 	@echo "#define LED_MDAY_I2C_ADDR static_cast<uint8_t>($(CONFIG_LED_MDAY_I2C_ADDR))" >> config.h

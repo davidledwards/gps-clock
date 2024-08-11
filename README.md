@@ -486,14 +486,17 @@ Specifies the layout of the LED components. Since the time could span multiple 4
 * NORMAL
 
   * This preferred layout reflects the [circuit design](#circuit-diagram).
-
   * when `CONFIG_USE_SECONDS` defined
-    * `|* HH|:MM:SS|`
+    * when `CONFIG_USE_DOTS` not defined (default)
+      * `|* HH|:MM:SS|`
+    * when `CONFIG_USE_DOTS` defined
+      * `|* HH.|MM.SS|`
     * where `*` is A/P/H to indicate AM/PM/24
-
   * when `CONFIG_USE_SECONDS` not defined
-    * `|HH:MM.|`
-
+    * when `CONFIG_USE_DOTS` not defined (default)
+      * `|HH:MM.|`
+    * when `CONFIG_USE_DOTS` defined
+      * `|HH.MM.|`
 * ROMAN
 
   * This configuration was created for a specific construction of the clock that does not use the prescribed LED components.
@@ -509,6 +512,10 @@ Default value is `NORMAL`.
 #### CONFIG_USE_SECONDS
 
 Enables the use of *seconds* as part of the time display which was introduced in generation 4. Note that this option does directly change the configuration of LED displays and the corresponding I2C addresses, so please refer to the [circuit diagrams](#circuit-diagram).
+
+#### CONFIG_USE_DOTS
+
+Enables the use of _dots_ instead of colons to separate parts of the LED time display. Note that this option is ignored when the `CONFIG_LED_LAYOUT` is `ROMAN`.
 
 #### CONFIG_LED_TIME_I2C_ADDR
 
