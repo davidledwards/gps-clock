@@ -409,37 +409,37 @@ make clean
 Generates a `config.h` file that is mandatory for compilation. All configuration variables have default values if undefined. Refer to the [configuration section](#configuration) for a description of variables evaluated during the process of generating `config.h`.
 
 ```shell
-make create-config
+make config
 ```
 
-Prints all configuration variables as detected by the execution environment. These variables are used to generate the configuration file using `make create-config`. Please note that the configuration variables echoed by this command do not necessarily reflect what is contained in `config.h`.
+Prints all configuration variables as detected by the execution environment. These variables are used to generate the configuration file using `make config`. Please note that the configuration variables echoed by this command do not necessarily reflect what is contained in `config.h`.
 
 ```sh
-make list-config
-```
-
-Prints all environment variables as detected by the execution environment.
-
-```sh
-make list-env
+make print
 ```
 
 ### Environment
 
 Several environment variables affect the compilation process. Each of them have default values that may not necessarily reflect the hardware components being used, so please verify.
 
-Instead of defining these variables in the shell environment, a more convenient approach is to use a `.env` file placed in the root directory. If present, it will be automatically imported into the makefile.
+#### BOARD_ARCH
 
-Example `.env` file.
+Supported board architectures:
 
-```makefile
-BOARD=uno
-PORT=/dev/tty.usbmodem14401
-```
+* `avr`
+* `samd`
+
+Default is `avr`.
 
 #### BOARD
 
-The default board type is `nano`. The other supported board types are `uno` and `mega`.
+Supported board types:
+
+* `nano`
+* `uno`
+* `mega2560`
+
+Default is `nano`.
 
 #### PORT
 
@@ -447,7 +447,7 @@ This is the serial port to which the Arduino board is attached. If undefined, it
 
 ### Configuration
 
-The compilation process is controlled by a number of configuration variables. A prerequisite for compilation is the creation of the `config.h` file, which is made convenient by using `make create-config`. A useful technique for discovering all possible configuration variables is done using `make list-config`.
+The compilation process is controlled by a number of configuration variables. A prerequisite for compilation is the creation of the `config.h` file, which is made convenient by using `make config`. A useful technique for discovering all possible configuration variables is done using `make print`.
 
 While configuration variables can be defined in the shell environment or provided as arguments to `make`, the preferred approach is to use a `.config` file placed in the root directory. If present, it will be automatically imported into the makefile.
 

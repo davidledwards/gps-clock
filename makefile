@@ -13,14 +13,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-ifneq (,$(wildcard ./.env))
-	include .env
+ifneq (,$(wildcard ./.config))
+	include .config
 	export
 endif
 
 SKETCH = gps-clock
 BOARD_PACKAGE = arduino
-BOARD_ARCH = avr
+BOARD_ARCH ?= avr
 BOARD ?= nano
 BOARD_CORE = $(BOARD_PACKAGE):$(BOARD_ARCH)
 BOARD_NAME = $(BOARD_CORE):$(BOARD)
@@ -46,20 +46,14 @@ LIBS = \
 	"Timezone"@1.2.4 \
 	"ezButton"@1.0.6
 
-# Arduino core library dependency.
-CORE = $(BOARD_CORE)@1.8.6
-
 # Name of the image that gets uploaded to the board.
 PROG = $(BUILD_FILES_PREFIX).hex
 
 SRCS = $(wildcard *.ino *.h *.cpp)
 
-# This section defines configuration variables which are used to generate configuration
-# header files. In most cases, variables are assigned default values if undefined.
-ifneq (,$(wildcard ./.config))
-	include .config
-	export
-endif
+# This section defines configuration variables which are used to generate
+# configuration header files. In most cases, variables are assigned default
+# values if undefined.
 
 # Configuration for date layout.
 CONFIG_DATE_LAYOUT ?= ISO
@@ -124,13 +118,12 @@ CONFIG_AUTO_OFF_MS ?= 30000
 
 help :
 	@echo "useful targets:"
-	@echo "  install        install library and core dependencies"
-	@echo "  build          build sketch"
-	@echo "  upload         upload program to board"
-	@echo "  clean          remove all transient build files"
-	@echo "  create-config  generate configuration file"
-	@echo "  list-config    print configuration variables"
-	@echo "  list-env       print environment variables"
+	@echo "  install  install library and core dependencies"
+	@echo "  build    build sketch"
+	@echo "  upload   upload program to board"
+	@echo "  clean    remove all transient build files"
+	@echo "  config   generate configuration file"
+	@echo "  print    print configuration variables"
 
 $(PROG) : $(SRCS)
 	@echo "building..."
@@ -159,9 +152,12 @@ install :
 	arduino-cli lib install $(LIBS)
 	@echo "install core..."
 	arduino-cli core update-index
-	arduino-cli core install $(CORE)
+	arduino-cli core install $(BOARD_CORE)
 
-list-config :
+print :
+	@echo "BOARD_ARCH=$(BOARD_ARCH)"
+	@echo "BOARD=$(BOARD)"
+	@echo "PORT=$(PORT)"
 	@echo "CONFIG_DATE_LAYOUT=$(CONFIG_DATE_LAYOUT)"
 	@echo "CONFIG_LED_LAYOUT=$(CONFIG_LED_LAYOUT)"
 	@echo "CONFIG_USE_SECONDS=$(CONFIG_USE_SECONDS)"
@@ -190,11 +186,7 @@ endif
 	@echo "CONFIG_GPS_BAUD_RATE=$(CONFIG_GPS_BAUD_RATE)"
 	@echo "CONFIG_AUTO_OFF_MS=$(CONFIG_AUTO_OFF_MS)"
 
-list-env :
-	@echo "BOARD=$(BOARD)"
-	@echo "PORT=$(PORT)"
-
-create-config :
+config :
 	@echo "generating config.h"
 	@echo "/*" > config.h
 	@echo " * This file was automatically generated on $(shell date -R)" >> config.h
