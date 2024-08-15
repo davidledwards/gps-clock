@@ -458,7 +458,8 @@ Example `.config` file.
 ```makefile
 CONFIG_DATE_FORMAT=EU
 CONFIG_USE_SECONDS=1
-CONFIG_LCD_EXPANDER=MCP23008
+CONFIG_GPS_DISPLAY=LCD
+CONFIG_LCD_DRIVER=MCP23008
 CONFIG_MODE_PIN=8
 CONFIG_GPS_RX_PIN=3
 CONFIG_GPS_TX_PIN=2
@@ -537,9 +538,18 @@ I2C address of the month/day LED. If `CONFIG_USE_SECONDS` is enabled, default is
 
 I2C address of the year LED. If `CONFIG_USE_SECONDS` is enabled, default is `0x73` else `0x72`.
 
-#### CONFIG_LCD_EXPANDER
+#### CONFIG_GPS_DISPLAY
 
-Specifies the type of I2C backpack attached to the LCD display. Recognized options include:
+Specifies the type of display used for GPS information. Recognized options include:
+
+* LCD
+* OLED
+
+Default is `LCD`.
+
+#### CONFIG_LCD_DRIVER
+
+Specifies the type of driver attached to the LCD display. Recognized options include:
 
 * PCF8574T
 * PCF8574AT
@@ -549,7 +559,7 @@ Default is `PCF8574T`.
 
 #### CONFIG_LCD_I2C_ADDR
 
-I2C address of the LCD display. The default value depends on `CONFIG_LCD_EXPANDER`:
+I2C address of the LCD display. The default value depends on `CONFIG_LCD_DRIVER`:
 
 * PCF8574T = `0x27`
 * PCF8574AT = `0x3F`
@@ -557,11 +567,33 @@ I2C address of the LCD display. The default value depends on `CONFIG_LCD_EXPANDE
 
 #### CONFIG_LCD_TYPE
 
-Type of LCD display. The default value depends on `CONFIG_LCD_EXPANDER`:
+Type of LCD display. The default value depends on `CONFIG_LCD_DRIVER`:
 
 * PCF8574T = `GENERIC`
 * PCF8574A = `GENERIC`
 * MCP23008 = `ADAFRUIT`
+
+#### CONFIG_OLED_DRIVER
+
+Specifies the type of driver attached to the OLED display. Recognized options include:
+
+* SSD1309
+
+Default is `SSD1309`.
+
+#### CONFIG_OLED_I2C_ADDR
+
+I2C address of the OLED display. The default value depends on `CONFIG_OLED_DRIVER`:
+
+* SSD1309 = `0x78`
+
+#### CONFIG_I2C_CLOCK_PIN
+
+Digital pin of I2C clock. Default is `19`.
+
+#### CONFIG_I2C_DATA_PIN
+
+Digital pin of I2C data. Default is `18`.
 
 #### CONFIG_DIMMER_PIN
 
@@ -569,7 +601,7 @@ Analog pin connected to photoresistor used to adjust brightness of LED displays.
 
 #### CONFIG_MODE_PIN
 
-Digital pin connect to 12/24-hour button switch. Default is `2`.
+Digital pin connected to 12/24-hour button switch. Default is `2`.
 
 #### CONFIG_MODE_DEBOUNCE_MS
 

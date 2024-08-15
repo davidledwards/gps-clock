@@ -78,15 +78,15 @@ CONFIG_GPS_DISPLAY ?= LCD
 
 ifeq ($(CONFIG_GPS_DISPLAY), LCD)
 # Configuration for LCD 20x4 display that shows GPS information.
-CONFIG_LCD_EXPANDER ?= PCF8574T
+CONFIG_LCD_DRIVER ?= PCF8574T
 
-ifeq ($(CONFIG_LCD_EXPANDER), PCF8574T)
+ifeq ($(CONFIG_LCD_DRIVER), PCF8574T)
 CONFIG_LCD_I2C_ADDR ?= 0x27
 CONFIG_LCD_TYPE ?= GENERIC
-else ifeq ($(CONFIG_LCD_EXPANDER), PCF8574AT)
+else ifeq ($(CONFIG_LCD_DRIVER), PCF8574AT)
 CONFIG_LCD_I2C_ADDR ?= 0x3F
 CONFIG_LCD_TYPE ?= GENERIC
-else ifeq ($(CONFIG_LCD_EXPANDER), MCP23008)
+else ifeq ($(CONFIG_LCD_DRIVER), MCP23008)
 CONFIG_LCD_I2C_ADDR ?= 0x73
 CONFIG_LCD_TYPE ?= ADAFRUIT
 endif
@@ -190,7 +190,7 @@ endif
 	@echo "CONFIG_LED_MDAY_I2C_ADDR=$(CONFIG_LED_MDAY_I2C_ADDR)"
 	@echo "CONFIG_LED_YEAR_I2C_ADDR=$(CONFIG_LED_YEAR_I2C_ADDR)"
 ifeq ($(CONFIG_GPS_DISPLAY), LCD)
-	@echo "CONFIG_LCD_EXPANDER=$(CONFIG_LCD_EXPANDER)"
+	@echo "CONFIG_LCD_DRIVER=$(CONFIG_LCD_DRIVER)"
 	@echo "CONFIG_LCD_I2C_ADDR=$(CONFIG_LCD_I2C_ADDR)"
 	@echo "CONFIG_LCD_TYPE=$(CONFIG_LCD_TYPE)"
 else ifeq ($(CONFIG_GPS_DISPLAY), OLED)
@@ -243,7 +243,7 @@ endif
 ifeq ($(CONFIG_GPS_DISPLAY), LCD)
 	@echo "// Configuration for LCD display that shows GPS information." >> config.h
 	@echo "#define GPS_DISPLAY_LCD" >> config.h
-	@echo "#define LCD_EXPANDER_$(CONFIG_LCD_EXPANDER)" >> config.h
+	@echo "#define LCD_DRIVER_$(CONFIG_LCD_DRIVER)" >> config.h
 	@echo "#define LCD_I2C_ADDR static_cast<uint8_t>($(CONFIG_LCD_I2C_ADDR))" >> config.h
 	@echo "#define LCD_$(CONFIG_LCD_TYPE)" >> config.h
 else ifeq ($(CONFIG_GPS_DISPLAY), OLED)
