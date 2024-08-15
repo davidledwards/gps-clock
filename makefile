@@ -40,6 +40,7 @@ LIBS = \
 	"Adafruit LED Backpack Library"@1.5.1 \
 	"LiquidCrystal I2C"@1.1.2 \
 	"Adafruit LiquidCrystal"@2.0.4 \
+	"U8g2"@2.34.22 \
 	"TinyGPSPlus"@1.0.3 \
 	"SimpleRotary"@1.1.3 \
 	"Time"@1.6.1 \

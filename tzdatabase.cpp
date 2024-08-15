@@ -295,15 +295,15 @@ static const size_t TZ_TABLE_SIZE = sizeof(TZ_TABLE) / sizeof(tz_info);
 tz_database::tz_database() {
 }
 
-size_t tz_database::size() {
+size_t tz_database::size() const {
   return TZ_TABLE_SIZE;
 }
 
-const tz_info* const tz_database::find(const char* name) {
+const tz_info* const tz_database::find(const char* name) const {
   return &TZ_TABLE[find_index(name)];
 }
 
-size_t tz_database::find_index(const char* name) {
+size_t tz_database::find_index(const char* name) const {
   for (size_t i = 0; i < TZ_TABLE_SIZE; ++i) {
     if (strcmp(TZ_TABLE[i].name, name) == 0)
       return i;
@@ -311,6 +311,6 @@ size_t tz_database::find_index(const char* name) {
   return 0;
 }
 
-const tz_info* const tz_database::get(size_t index) {
+const tz_info* const tz_database::get(size_t index) const {
   return &TZ_TABLE[index < TZ_TABLE_SIZE ? index : 0];
 }

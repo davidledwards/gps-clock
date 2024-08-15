@@ -17,12 +17,17 @@
 #define __GPSUNIT_H
 
 #include <Arduino.h>
-#include <SoftwareSerial.h>
 #include <TinyGPSPlus.h>
+#include "board.h"
+
+#if defined(USE_SOFTWARE_SERIAL)
+#include <SoftwareSerial.h>
+#endif
 
 struct gps_info {
   float lat;
   float lon;
+  float altitude;
   uint8_t satellites;
 };
 
@@ -47,12 +52,14 @@ public:
   gps_state read(gps_info& info, gps_time& time);
 
 private:
-  const SoftwareSerial ser;
-  const TinyGPSPlus gps;
+#if defined(USE_SOFTWARE_SERIAL)
+  SoftwareSerial ser;
+#endif
+  TinyGPSPlus gps;
   uint32_t last_sync;
 
-  static bool get_info(const TinyGPSPlus& gps, gps_info& info);
-  static bool get_time(const TinyGPSPlus& gps, gps_time& time);
+  static bool get_info(TinyGPSPlus& gps, gps_info& info);
+  static bool get_time(TinyGPSPlus& gps, gps_time& time);
 };
 
 #endif

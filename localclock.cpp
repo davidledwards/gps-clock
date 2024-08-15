@@ -31,8 +31,15 @@ bool local_clock::tick() {
 }
 
 local_time local_clock::now() {
-  time_t t = tz->tz.toLocal(last_time);
-  return local_time {year(t), month(t), day(t), hour(t), minute(t), second(t)};
+  time_t t = const_cast<tz_info*>(tz)->tz.toLocal(last_time);
+  return local_time {
+    static_cast<uint16_t>(year(t)),
+    static_cast<uint8_t>(month(t)),
+    static_cast<uint8_t>(day(t)),
+    static_cast<uint8_t>(hour(t)),
+    static_cast<uint8_t>(minute(t)),
+    static_cast<uint8_t>(second(t))
+  };
 }
 
 void local_clock::set_tz(const tz_info* tz) {

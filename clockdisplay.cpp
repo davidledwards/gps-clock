@@ -15,14 +15,6 @@
  */
 #include "clockdisplay.h"
 
-#if !defined(DATE_LAYOUT_ISO) && !defined(DATE_LAYOUT_US) && !defined(DATE_LAYOUT_EU)
-#error "DATE_LAYOUT_? unrecognized"
-#endif
-
-#if !defined(LED_LAYOUT_NORMAL) && !defined(LED_LAYOUT_ROMAN)
-#error "LED_LAYOUT_? unrecognized"
-#endif
-
 static const uint8_t DASH_BITMASK = 0b01000000;
 
 // Assigns relative position of digits on LED displays.
@@ -103,14 +95,14 @@ clock_mode clock_display::toggle_mode() {
   return mode;
 }
 
-void clock_display::init_led(const Adafruit_7segment& led, uint8_t i2c_addr) {
+void clock_display::init_led(Adafruit_7segment& led, uint8_t i2c_addr) {
   led.begin(i2c_addr);
   led.setBrightness(cur_brightness);
   led.clear();
   led.writeDisplay();
 }
 
-void clock_display::show_dashes(const Adafruit_7segment& led) {
+void clock_display::show_dashes(Adafruit_7segment& led) {
   led.clear();
   led.writeDigitRaw(DIGIT_0, DASH_BITMASK);
   led.writeDigitRaw(DIGIT_1, DASH_BITMASK);

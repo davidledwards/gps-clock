@@ -13,8 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include <EEPROM.h>
 #include "localstorage.h"
+#include "board.h"
+
+#if defined(USE_EEPROM_EMULATION)
+// TODO: use emulation library
+#else
+#include <EEPROM.h>
+#endif
 
 // Signature expected at head of storage.
 static const uint16_t SIG = 0x0001;
@@ -29,11 +35,15 @@ static char* safe_copy(char* dest, const char* src, size_t count) {
 }
 
 local_state::local_state(const char* tz_name, clock_mode mode)
-  : mode(mode) {
-  safe_copy(this->tz_name, tz_name, sizeof(this->tz_name));
+  : tz_name { '\0' },
+    mode(mode) {
+  safe_copy(const_cast<char*>(this->tz_name), tz_name, sizeof(this->tz_name));
 }
 
 local_storage::local_storage() {
+#if defined(USE_EEPROM_EMULATION)
+  // TODO
+#else
   uint16_t sig;
   EEPROM.get(SIG_ADDR, sig);
 
@@ -43,23 +53,36 @@ local_storage::local_storage() {
     write_tz("UTC");
     write_mode(clock_24);
   }
+#endif
 }
 
 local_state local_storage::read() {
+#if defined(USE_EEPROM_EMULATION)
+  // TODO: placeholder for now
+  return local_state("UTC", clock_24);
+#else
   char tz_name[TZ_NAME_SIZE + 1];
   bool time_12;
   EEPROM.get(STATE_ADDR, tz_name);
   tz_name[sizeof(tz_name) - 1] = '\0';
   EEPROM.get(STATE_ADDR + sizeof(tz_name), time_12);
   return local_state(tz_name, time_12 ? clock_12 : clock_24);
+#endif
 }
 
 void local_storage::write_tz(const char* tz_name) {
+#if defined(USE_EEPROM_EMULATION)
+  // TODO
+#else
   char name[TZ_NAME_SIZE + 1];
   safe_copy(name, tz_name, sizeof(name));
   EEPROM.put(STATE_ADDR, name);
+#endif
 }
 
 void local_storage::write_mode(clock_mode mode) {
+#if defined(USE_EEPROM_EMULATION)
+#else
   EEPROM.put(STATE_ADDR + TZ_NAME_SIZE + 1, mode == clock_12);
+#endif
 }

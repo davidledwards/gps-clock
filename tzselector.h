@@ -35,7 +35,7 @@ public:
   const tz_info* const get_tz();
 
 private:
-  const SimpleRotary encoder;
+  SimpleRotary encoder;
   const tz_database* tz_db;
   size_t tz_confirmed;
   size_t tz_proposed;

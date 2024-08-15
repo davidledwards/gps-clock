@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 David Edwards
+ * Copyright 2024 David Edwards
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,26 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef __TZDATABASE_H
-#define __TZDATABASE_H
+#ifndef __OLED_H
+#define __OLED_H
 
-#include <Arduino.h>
-#include <Timezone.h>
+#include "config.h"
 
-static const size_t TZ_NAME_SIZE = 15;
-
-struct tz_info {
-  const char* const name;
-  Timezone tz;
-};
-
-class tz_database {
-public:
-  tz_database();
-  size_t size() const;
-  const tz_info* const find(const char* name) const;
-  size_t find_index(const char* name) const;
-  const tz_info* const get(size_t index) const;
-};
+#if defined(OLED_GENERIC)
+#include <U8x8lib.h>
+#define OLED_CLASS U8X8_SSD1309_128X64_NONAME0_SW_I2C
+#endif
 
 #endif

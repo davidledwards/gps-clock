@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 David Edwards
+ * Copyright 2024 David Edwards
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,15 +16,34 @@
 #ifndef __BOARD_H
 #define __BOARD_H
 
-// Detect supported board type and RAM size (KB).
-#if defined(__AVR_ATmega328__) || defined(__AVR_ATmega328P__)
-#define BOARD_UNO
+#include <Arduino.h>
+#include "config.h"
+
+// Set directives based on board type.
+//
+// RAM_SIZE
+//   Amount of SRAM in KB.
+//
+// USE_SOFTWARE_SERIAL
+//   If serial interface is software-based.
+//
+// USE_EEPROM_EMULATION
+//   If EEPROM is native or emulated.
+
+#if defined(ARDUINO_AVR_UNO) || defined(ARDUINO_AVR_NANO)
 #define RAM_SIZE 2
-#elif defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__)
-#define BOARD_MEGA
+#define USE_SOFTWARE_SERIAL
+#undef USE_EEPROM_EMULATION
+#elif defined(ARDUINO_AVR_MEGA1280) || defined(ARDUINO_AVR_MEGA2560)
 #define RAM_SIZE 8
+#define USE_SOFTWARE_SERIAL
+#undef USE_EEPROM_EMULATION
+#elif defined(ARDUINO_SAMD_NANO_33_IOT)
+#define RAM_SIZE 32
+#undef USE_SOFTWARE_SERIAL
+#define USE_EEPROM_EMULATION
 #else
-#error "board type not detected"
+#error "ARDUINO_?: board type not supported"
 #endif
 
 #endif

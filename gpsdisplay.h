@@ -17,9 +17,15 @@
 #define __GPSDISPLAY_H
 
 #include <Arduino.h>
-#include "lcd.h"
+#include "config.h"
 #include "gpsunit.h"
 #include "tzdatabase.h"
+
+#if defined(GPS_DISPLAY_LCD)
+#include "lcd.h"
+#elif defined(GPS_DISPLAY_OLED)
+#include "oled.h"
+#endif
 
 class gps_display {
 public:
@@ -30,11 +36,16 @@ public:
   void show_backlight(bool on);
 
 private:
-  const LCD_CLASS lcd;
+#if defined(GPS_DISPLAY_LCD)
+  LCD_CLASS lcd;
+#elif defined(GPS_DISPLAY_OLED)
+  OLED_CLASS oled;
+#endif
   bool searching;
 
   void write_lat(const gps_info& info);
   void write_lon(const gps_info& info);
+  void write_altitude(const gps_info& info);
   void write_satellites(const gps_info& info);
   void write_utc(const gps_time& time);
   void write_year(const gps_time& time);

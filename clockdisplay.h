@@ -37,18 +37,18 @@ public:
 
 private:
 #if defined(USE_SECONDS)
-  const Adafruit_7segment time_lower_led;
-  const Adafruit_7segment time_upper_led;
+  Adafruit_7segment time_lower_led;
+  Adafruit_7segment time_upper_led;
 #else
-  const Adafruit_7segment time_led;
+  Adafruit_7segment time_led;
 #endif
-  const Adafruit_7segment mday_led;
-  const Adafruit_7segment year_led;
+  Adafruit_7segment mday_led;
+  Adafruit_7segment year_led;
   uint8_t cur_brightness;
   clock_mode mode;
 
-  void init_led(const Adafruit_7segment& led, uint8_t i2c_addr);
-  void show_dashes(const Adafruit_7segment& led);
+  void init_led(Adafruit_7segment& led, uint8_t i2c_addr);
+  void show_dashes(Adafruit_7segment& led);
   void show_year(const local_time& time);
   void show_mday(const local_time& time);
   void show_time(const local_time& time);
