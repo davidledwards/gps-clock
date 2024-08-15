@@ -73,7 +73,11 @@ CONFIG_LED_MDAY_I2C_ADDR ?= 0x71
 CONFIG_LED_YEAR_I2C_ADDR ?= 0x72
 endif
 
-# Configuration for LCD display that shows GPS information.
+# Configuration for GPS display that shows GPS information.
+CONFIG_GPS_DISPLAY ?= LCD
+
+ifeq ($(CONFIG_GPS_DISPLAY), LCD)
+# Configuration for LCD 20x4 display that shows GPS information.
 CONFIG_LCD_EXPANDER ?= PCF8574T
 
 ifeq ($(CONFIG_LCD_EXPANDER), PCF8574T)
@@ -86,6 +90,20 @@ else ifeq ($(CONFIG_LCD_EXPANDER), MCP23008)
 CONFIG_LCD_I2C_ADDR ?= 0x73
 CONFIG_LCD_TYPE ?= ADAFRUIT
 endif
+else ifeq ($(CONFIG_GPS_DISPLAY), OLED)
+# Configuration for OLED 16x8 display.
+CONFIG_OLED_DRIVER ?= SSD1309
+
+ifeq ($(CONFIG_OLED_DRIVER), SSD1309)
+CONFIG_OLED_I2C_ADDR_DEFAULT = 0x78
+endif
+
+CONFIG_OLED_I2C_ADDR ?= $(CONFIG_OLED_I2C_ADDR_DEFAULT)
+endif
+
+# Configuratoin for I2C bus.
+CONFIG_I2C_CLOCK_PIN ?= 19
+CONFIG_I2C_DATA_PIN ?= 18
 
 # Configuration for light monitor that automatically sets brightness level.
 CONFIG_DIMMER_PIN ?= 0
@@ -171,9 +189,16 @@ else
 endif
 	@echo "CONFIG_LED_MDAY_I2C_ADDR=$(CONFIG_LED_MDAY_I2C_ADDR)"
 	@echo "CONFIG_LED_YEAR_I2C_ADDR=$(CONFIG_LED_YEAR_I2C_ADDR)"
+ifeq ($(CONFIG_GPS_DISPLAY), LCD)
 	@echo "CONFIG_LCD_EXPANDER=$(CONFIG_LCD_EXPANDER)"
 	@echo "CONFIG_LCD_I2C_ADDR=$(CONFIG_LCD_I2C_ADDR)"
 	@echo "CONFIG_LCD_TYPE=$(CONFIG_LCD_TYPE)"
+else ifeq ($(CONFIG_GPS_DISPLAY), OLED)
+	@echo "CONFIG_OLED_DRIVER=$(CONFIG_OLED_DRIVER)"
+	@echo "CONFIG_OLED_I2C_ADDR=$(CONFIG_OLED_I2C_ADDR)"
+endif
+	@echo "CONFIG_I2C_CLOCK_PIN=$(CONFIG_I2C_CLOCK_PIN)"
+	@echo "CONFIG_I2C_DATA_PIN=$(CONFIG_I2C_DATA_PIN)"
 	@echo "CONFIG_DIMMER_PIN=$(CONFIG_DIMMER_PIN)"
 	@echo "CONFIG_MODE_PIN=$(CONFIG_MODE_PIN)"
 	@echo "CONFIG_MODE_DEBOUNCE_MS=$(CONFIG_MODE_DEBOUNCE_MS)"
@@ -202,13 +227,9 @@ config :
 	@echo "#define LED_LAYOUT_$(CONFIG_LED_LAYOUT)" >> config.h
 ifdef CONFIG_USE_SECONDS
 	@echo "#define USE_SECONDS" >> config.h
-else
-	@echo "#undef USE_SECONDS" >> config.h
 endif
 ifdef CONFIG_USE_DOTS
 	@echo "#define USE_DOTS" >> config.h
-else
-	@echo "#undef USE_DOTS" >> config.h
 endif
 ifdef CONFIG_USE_SECONDS
 	@echo "#define LED_TIME_LOWER_I2C_ADDR static_cast<uint8_t>($(CONFIG_LED_TIME_LOWER_I2C_ADDR))" >> config.h
@@ -219,10 +240,22 @@ endif
 	@echo "#define LED_MDAY_I2C_ADDR static_cast<uint8_t>($(CONFIG_LED_MDAY_I2C_ADDR))" >> config.h
 	@echo "#define LED_YEAR_I2C_ADDR static_cast<uint8_t>($(CONFIG_LED_YEAR_I2C_ADDR))" >> config.h
 	@echo "" >> config.h
+ifeq ($(CONFIG_GPS_DISPLAY), LCD)
 	@echo "// Configuration for LCD display that shows GPS information." >> config.h
+	@echo "#define GPS_DISPLAY_LCD" >> config.h
 	@echo "#define LCD_EXPANDER_$(CONFIG_LCD_EXPANDER)" >> config.h
 	@echo "#define LCD_I2C_ADDR static_cast<uint8_t>($(CONFIG_LCD_I2C_ADDR))" >> config.h
 	@echo "#define LCD_$(CONFIG_LCD_TYPE)" >> config.h
+else ifeq ($(CONFIG_GPS_DISPLAY), OLED)
+	@echo "// Configuration for OLED display that shows GPS information." >> config.h
+	@echo "#define GPS_DISPLAY_OLED" >> config.h
+	@echo "#define OLED_DRIVER_$(CONFIG_OLED_DRIVER)" >> config.h
+	@echo "#define OLED_I2C_ADDR static_cast<uint8_t>($(CONFIG_OLED_I2C_ADDR))" >> config.h
+endif
+	@echo "" >> config.h
+	@echo "// Configuration for I2C pins." >> config.h
+	@echo "#define I2C_CLOCK_PIN static_cast<uint8_t>($(CONFIG_I2C_CLOCK_PIN))" >> config.h
+	@echo "#define I2C_DATA_PIN static_cast<uint8_t>($(CONFIG_I2C_DATA_PIN))" >> config.h
 	@echo "" >> config.h
 	@echo "// Configuration for light monitor that automatically sets brightness level." >> config.h
 	@echo "#define DIMMER_PIN static_cast<uint8_t>($(CONFIG_DIMMER_PIN))" >> config.h

@@ -142,7 +142,7 @@ gps_display::gps_display()
 #if defined(GPS_DISPLAY_LCD)
   : LCD_CTOR(lcd),
 #elif defined(GPS_DISPLAY_OLED)
-  : oled(OLED_CLOCK_PIN, OLED_DATA_PIN),
+  : oled(I2C_CLOCK_PIN, I2C_DATA_PIN),
 #endif
     searching(false) {
 #if defined(GPS_DISPLAY_LCD)

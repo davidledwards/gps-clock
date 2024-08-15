@@ -18,7 +18,7 @@
 
 #include "config.h"
 
-#if defined(OLED_GENERIC)
+#if defined(OLED_DRIVER_SSD1309)
 #include <U8x8lib.h>
 #define OLED_CLASS U8X8_SSD1309_128X64_NONAME0_SW_I2C
 #endif
