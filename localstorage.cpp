@@ -17,16 +17,28 @@
 #include "board.h"
 
 #if defined(USE_EEPROM_EMULATION)
-// TODO: use emulation library
+#include <FlashStorage.h>
 #else
 #include <EEPROM.h>
 #endif
 
-// Signature expected at head of storage.
-static const uint16_t SIG = 0x0001;
+// Defines structure and contents of clock state stored to EEPROM or flash.
+// Note that structure is byte-aligned to ensure backward compatibility with
+// prior technique of reading and writing to EEPROM.
+#pragma pack(1)
+struct clock_state {
+  uint16_t signature;
+  char tz_name[TZ_NAME_SIZE + 1];
+  bool time_12;
+};
+#pragma pack()
 
-static const int SIG_ADDR = 0;
-static const int STATE_ADDR = SIG_ADDR + sizeof(SIG);
+#if defined(USE_EEPROM_EMULATION)
+FlashStorage(clock_storage, clock_state);
+#endif
+
+// Signature expected at head of storage.
+static const uint16_t SIGNATURE = 0x0001;
 
 static char* safe_copy(char* dest, const char* src, size_t count) {
   strncpy(dest, src, count - 1);
@@ -34,55 +46,57 @@ static char* safe_copy(char* dest, const char* src, size_t count) {
   return dest;
 }
 
-local_state::local_state(const char* tz_name, clock_mode mode)
+local_state::local_state(const clock_state& state)
   : tz_name { '\0' },
-    mode(mode) {
-  safe_copy(const_cast<char*>(this->tz_name), tz_name, sizeof(this->tz_name));
+    mode(state.time_12 ? clock_12 : clock_24) {
+  safe_copy(const_cast<char*>(this->tz_name), state.tz_name, sizeof(this->tz_name));
 }
 
 local_storage::local_storage() {
-#if defined(USE_EEPROM_EMULATION)
-  // TODO
-#else
-  uint16_t sig;
-  EEPROM.get(SIG_ADDR, sig);
+  clock_state state;
+  read_state(state);
 
   // Initialize storage if signature not recognized.
-  if (sig != SIG) {
-    EEPROM.put(SIG_ADDR, SIG);
-    write_tz("UTC");
-    write_mode(clock_24);
+  if (state.signature != SIGNATURE) {
+    state.signature = SIGNATURE;
+    strcpy(state.tz_name, "UTC");
+    state.time_12 = false;
+    write_state(state);
   }
-#endif
 }
 
 local_state local_storage::read() {
-#if defined(USE_EEPROM_EMULATION)
-  // TODO: placeholder for now
-  return local_state("UTC", clock_24);
-#else
-  char tz_name[TZ_NAME_SIZE + 1];
-  bool time_12;
-  EEPROM.get(STATE_ADDR, tz_name);
-  tz_name[sizeof(tz_name) - 1] = '\0';
-  EEPROM.get(STATE_ADDR + sizeof(tz_name), time_12);
-  return local_state(tz_name, time_12 ? clock_12 : clock_24);
-#endif
+  clock_state state;
+  read_state(state);
+  return local_state(state);
 }
 
 void local_storage::write_tz(const char* tz_name) {
-#if defined(USE_EEPROM_EMULATION)
-  // TODO
-#else
-  char name[TZ_NAME_SIZE + 1];
-  safe_copy(name, tz_name, sizeof(name));
-  EEPROM.put(STATE_ADDR, name);
-#endif
+  clock_state state;
+  read_state(state);
+  safe_copy(state.tz_name, tz_name, sizeof(state.tz_name));
+  write_state(state);
 }
 
 void local_storage::write_mode(clock_mode mode) {
+  clock_state state;
+  read_state(state);
+  state.time_12 = mode == clock_12;
+  write_state(state);
+}
+
+void local_storage::read_state(clock_state& state) {
 #if defined(USE_EEPROM_EMULATION)
+  state = clock_storage.read();
 #else
-  EEPROM.put(STATE_ADDR + TZ_NAME_SIZE + 1, mode == clock_12);
+  EEPROM.get(0, state);
+#endif
+}
+
+void local_storage::write_state(const clock_state& state) {
+#if defined(USE_EEPROM_EMULATION)
+  clock_storage.write(state);
+#else
+  EEPROM.put(0, state);
 #endif
 }

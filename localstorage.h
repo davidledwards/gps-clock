@@ -20,13 +20,15 @@
 #include "clockdisplay.h"
 #include "tzdatabase.h"
 
+struct clock_state;
+
 class local_state {
 public:
   const char tz_name[TZ_NAME_SIZE + 1];
   clock_mode mode;
 
 private:
-  local_state(const char* tz_name, clock_mode mode);
+  local_state(const clock_state& state);
   friend class local_storage;
 };
 
@@ -36,6 +38,10 @@ public:
   local_state read();
   void write_tz(const char* tz_name);
   void write_mode(clock_mode mode);
+
+private:
+  void read_state(clock_state& state);
+  void write_state(const clock_state& state);
 };
 
 #endif

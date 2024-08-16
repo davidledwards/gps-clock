@@ -45,7 +45,8 @@ LIBS = \
 	"SimpleRotary"@1.1.3 \
 	"Time"@1.6.1 \
 	"Timezone"@1.2.4 \
-	"ezButton"@1.0.6
+	"ezButton"@1.0.6 \
+	"FlashStorage"@1.0.0
 
 # Name of the image that gets uploaded to the board.
 PROG = $(BUILD_FILES_PREFIX).hex
