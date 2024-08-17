@@ -15,12 +15,37 @@
  */
 #include "gpsdisplay.h"
 
+// Define number of rows and columns for selected display.
 #if defined(GPS_DISPLAY_LCD)
-static const uint8_t LCD_COLS = 20;
-static const uint8_t LCD_ROWS = 4;
+static const uint8_t DISPLAY_COLS = 20;
+static const uint8_t DISPLAY_ROWS = 4;
+#elif defined(GPS_DISPLAY_OLED)
+static const uint8_t DISPLAY_COLS = 16;
+static const uint8_t DISPLAY_ROWS = 8;
+#endif
 
-static const uint8_t CHAR_DEGREES = 0;
-static const uint8_t CHAR_DEGREES_BITMAP[] = {
+// Various bitmaps (LCD) and tiles (OLED) used for single-character icons.
+//
+// See following link for explanation of bit layout.
+// https://github.com/olikraus/u8g2/wiki/u8x8reference#drawtile
+//
+// Bitmaps on LCD are 8x8 bit arrays oriented left-to-right and top-to-bottom.
+//
+// Tiles on OLED are 8x8 bit arrays oriented top-to-bottom and left-to-right.
+#if defined(GPS_DISPLAY_LCD)
+// DEGREE bitmap
+//
+// ....xx..
+// ...x..x.
+// ...x..x.
+// ....xx..
+// ........
+// ........
+// ........
+// ........
+//
+static const uint8_t DEGREE_CHAR = 0;
+static const uint8_t DEGREE_BITMAP[] = {
   0b00001100,
   0b00010010,
   0b00010010,
@@ -30,22 +55,7 @@ static const uint8_t CHAR_DEGREES_BITMAP[] = {
   0b00000000,
   0b00000000
 };
-
-// Library-specific constructor and initialization code.
-#if defined(LCD_GENERIC)
-#define LCD_CTOR(lcd) lcd(LCD_I2C_ADDR, LCD_COLS, LCD_ROWS)
-#define LCD_INIT(lcd) lcd.init()
-#elif defined(LCD_ADAFRUIT)
-#define LCD_CTOR(lcd) lcd(LCD_I2C_ADDR - 0x70)
-#define LCD_INIT(lcd) lcd.begin(LCD_COLS, LCD_ROWS)
-#endif
 #elif defined(GPS_DISPLAY_OLED)
-// Various tiles used for single-character icons.
-//
-// See following link for explanation of bit layout.
-// https://github.com/olikraus/u8g2/wiki/u8x8reference#drawtile
-//
-// Tiles are 8x8 bit arrays oriented top-to-bottom and left-to-right.
 
 // GPS icon:
 //
@@ -138,24 +148,35 @@ static uint8_t TILE_TIMEZONE[] = {
 };
 #endif
 
+// Library-specific constructor and initialization code for LCD displays.
+#if defined(GPS_DISPLAY_LCD)
+#if defined(LCD_GENERIC)
+#define LCD_CTOR(display) display(LCD_I2C_ADDR, DISPLAY_COLS, DISPLAY_ROWS)
+#define LCD_INIT(display) display.init()
+#elif defined(LCD_ADAFRUIT)
+#define LCD_CTOR(display) display(LCD_I2C_ADDR - 0x70)
+#define LCD_INIT(display) display.begin(DISPLAY_COLS, DISPLAY_ROWS)
+#endif
+#endif
+
 gps_display::gps_display()
 #if defined(GPS_DISPLAY_LCD)
-  : LCD_CTOR(lcd),
+  : LCD_CTOR(display),
 #elif defined(GPS_DISPLAY_OLED)
-  : oled(I2C_CLOCK_PIN, I2C_DATA_PIN),
+  : display(I2C_CLOCK_PIN, I2C_DATA_PIN),
 #endif
     searching(false) {
 #if defined(GPS_DISPLAY_LCD)
-  LCD_INIT(lcd);
-  lcd.clear();
-  lcd.setBacklight(HIGH);
-  lcd.createChar(CHAR_DEGREES, CHAR_DEGREES_BITMAP);
+  LCD_INIT(display);
+  display.clear();
+  display.setBacklight(HIGH);
+  display.createChar(DEGREE_CHAR, DEGREE_BITMAP);
 #elif defined(GPS_DISPLAY_OLED)
-  oled.setI2CAddress(OLED_I2C_ADDR);
-  oled.begin();
-  oled.clearDisplay();
-  oled.setPowerSave(0);
-  oled.setFont(u8x8_font_chroma48medium8_r);
+  display.setI2CAddress(OLED_I2C_ADDR);
+  display.begin();
+  display.setPowerSave(0);
+  display.clearDisplay();
+  display.setFont(u8x8_font_chroma48medium8_r);
 #endif
 }
 
@@ -175,13 +196,12 @@ void gps_display::show_searching() {
   if (!searching) {
     clear_gps();
 #if defined(GPS_DISPLAY_LCD)
-    lcd.setCursor(0, 0);
-    lcd.print(F("searching..."));
+    display.setCursor(0, 0);
 #elif defined(GPS_DISPLAY_OLED)
-    oled.drawTile(0, 3, 1, TILE_SATELLITE);
-    oled.setCursor(2, 3);
-    oled.print(F("searching..."));
+    display.drawTile(0, 3, 1, TILE_SATELLITE);
+    display.setCursor(2, 3);
 #endif
+    display.print(F("searching..."));
     searching = true;
   }
 }
@@ -192,9 +212,9 @@ void gps_display::show_tz(const tz_info* tz, bool pending) {
 
 void gps_display::show_backlight(bool on) {
 #if defined(GPS_DISPLAY_LCD)
-  lcd.setBacklight(on ? HIGH : LOW);
+  display.setBacklight(on ? HIGH : LOW);
 #elif defined(GPS_DISPLAY_OLED)
-  oled.setPowerSave(on ? 0 : 1);
+  display.setPowerSave(on ? 0 : 1);
 #endif
 }
 
@@ -209,23 +229,22 @@ void gps_display::write_lat(const gps_info& info) {
     lat = info.lat;
     lat_dir = 'N';
   }
-
 #if defined(GPS_DISPLAY_LCD)
-  lcd.setCursor(0, 0);
-  lcd.print(lat, 4);
-  lcd.write(CHAR_DEGREES);
-  lcd.print(lat_dir);
+  display.setCursor(0, 0);
+  display.print(lat, 4);
+  display.write(DEGREE_CHAR);
+  display.print(lat_dir);
   if (lat < 10.0)
-    lcd.print(' ');
-  lcd.print(' ');
+    display.print(' ');
+  display.print(' ');
 #elif defined(GPS_DISPLAY_OLED)
-  oled.drawTile(0, 0, 1, TILE_GPS);
-  oled.setCursor(2, 0);
-  size_t n = oled.print(lat, 6);
-  oled.drawTile(n + 2, 0, 1, TILE_DEGREE);
-  oled.setCursor(n + 3, 0);
-  oled.print(lat_dir);
-  // TODO: clear to EOL
+  display.drawTile(0, 0, 1, TILE_GPS);
+  display.setCursor(2, 0);
+  size_t n = display.print(lat, 6);
+  display.drawTile(n + 2, 0, 1, TILE_DEGREE);
+  display.setCursor(n + 3, 0);
+  n += 3 + display.print(lat_dir);
+  clear_row(0, n);
 #endif
 }
 
@@ -240,181 +259,146 @@ void gps_display::write_lon(const gps_info& info) {
     lon = info.lon;
     lon_dir = 'E';
   }
-
 #if defined(GPS_DISPLAY_LCD)
-  lcd.setCursor(10, 0);
+  display.setCursor(10, 0);
   if (lon < 100.0)
-    lcd.print(' ');
-  lcd.print(lon, 4);
-  lcd.write(CHAR_DEGREES);
-  lcd.print(lon_dir);
+    display.print(' ');
+  display.print(lon, 4);
+  display.write(DEGREE_CHAR);
+  display.print(lon_dir);
 #elif defined(GPS_DISPLAY_OLED)
-  oled.setCursor(2, 1);
-  size_t n = oled.print(lon, 6);
-  oled.drawTile(n + 2, 1, 1, TILE_DEGREE);
-  oled.setCursor(n + 3, 1);
-  oled.print(lon_dir);
-  // TODO: clear to EOL
+  display.setCursor(2, 1);
+  size_t n = display.print(lon, 6);
+  display.drawTile(n + 2, 1, 1, TILE_DEGREE);
+  display.setCursor(n + 3, 1);
+  n += 3 + display.print(lon_dir);
+  clear_row(1, n);
 #endif
 }
 
 void gps_display::write_altitude(const gps_info& info) {
 #if defined(GPS_DISPLAY_LCD)
-// intentianal no-op
+// Not supported on LCD displays.
 #elif defined(GPS_DISPLAY_OLED)
-  oled.drawTile(0, 2, 1, TILE_ALTITUDE);
-  oled.setCursor(2, 2);
-  oled.print(static_cast<uint32_t>(info.altitude));
-  oled.print(F(" m"));
-  // TODO: clear to EOL
+  display.drawTile(0, 2, 1, TILE_ALTITUDE);
+  display.setCursor(2, 2);
+  size_t n = 2 + display.print(static_cast<uint32_t>(info.altitude));
+  n += display.print(F(" m"));
+  clear_row(2, n);
 #endif
 }
 
 void gps_display::write_satellites(const gps_info& info) {
 #if defined(GPS_DISPLAY_LCD)
-  lcd.setCursor(0, 1);
-  lcd.print(F("satellites: "));
-  lcd.print(info.satellites);
-  lcd.print(' ');
+  display.setCursor(0, 1);
+  size_t n = display.print(F("satellites: "));
+  n += display.print(info.satellites);
+  clear_row(1, n);
 #elif defined(GPS_DISPLAY_OLED)
-  oled.drawTile(0, 3, 1, TILE_SATELLITE);
-  oled.setCursor(2, 3);
-  oled.print(info.satellites);
-  // TODO: clear to EOL
+  display.drawTile(0, 3, 1, TILE_SATELLITE);
+  display.setCursor(2, 3);
+  size_t n = 2 + display.print(info.satellites);
+  clear_row(3, n);
 #endif
 }
 
 void gps_display::write_utc(const gps_time& time) {
 #if defined(GPS_DISPLAY_LCD)
-  lcd.setCursor(0, 2);
-#if defined(DATE_LAYOUT_ISO)
-  write_year(time);
-  lcd.print('-');
-  write_month(time);
-  lcd.print('-');
-  write_day(time);
-#elif defined(DATE_LAYOUT_US)
-  write_month(time);
-  lcd.print('-');
-  write_day(time);
-  lcd.print('-');
-  write_year(time);
-#elif defined(DATE_LAYOUT_EU)
-  write_day(time);
-  lcd.print('-');
-  write_month(time);
-  lcd.print('-');
-  write_year(time);
-#endif
-  lcd.print(' ');
-  lcd.print(time.hour / 10 % 10);
-  lcd.print(time.hour % 10);
-  lcd.print(':');
-  lcd.print(time.minute / 10 % 10);
-  lcd.print(time.minute % 10);
-  lcd.print(':');
-  lcd.print(time.second / 10 % 10);
-  lcd.print(time.second % 10);
+  display.setCursor(0, 2);
 #elif defined(GPS_DISPLAY_OLED)
-  oled.drawTile(0, 4, 1, TILE_CLOCK);
-  oled.setCursor(2, 4);
+  display.drawTile(0, 4, 1, TILE_CLOCK);
+  display.setCursor(2, 4);
+#endif
 #if defined(DATE_LAYOUT_ISO)
   write_year(time);
-  oled.print('-');
+  display.print('-');
   write_month(time);
-  oled.print('-');
+  display.print('-');
   write_day(time);
 #elif defined(DATE_LAYOUT_US)
   write_month(time);
-  oled.print('-');
+  display.print('-');
   write_day(time);
-  oled.print('-');
+  display.print('-');
   write_year(time);
 #elif defined(DATE_LAYOUT_EU)
   write_day(time);
-  oled.print('-');
+  display.print('-');
   write_month(time);
-  oled.print('-');
+  display.print('-');
   write_year(time);
 #endif
-  oled.setCursor(2, 5);
-  oled.print(time.hour / 10 % 10);
-  oled.print(time.hour % 10);
-  oled.print(':');
-  oled.print(time.minute / 10 % 10);
-  oled.print(time.minute % 10);
-  oled.print(':');
-  oled.print(time.second / 10 % 10);
-  oled.print(time.second % 10);
+#if defined(GPS_DISPLAY_LCD)
+  display.print(' ');
+#elif defined(GPS_DISPLAY_OLED)
+  display.setCursor(2, 5);
 #endif
+  display.print(time.hour / 10 % 10);
+  display.print(time.hour % 10);
+  display.print(':');
+  display.print(time.minute / 10 % 10);
+  display.print(time.minute % 10);
+  display.print(':');
+  display.print(time.second / 10 % 10);
+  display.print(time.second % 10);
 }
 
 void gps_display::write_year(const gps_time& time) {
-#if defined(GPS_DISPLAY_LCD)
-  lcd.print(time.year / 1000 % 10);
-  lcd.print(time.year / 100 % 10);
-  lcd.print(time.year / 10 % 10);
-  lcd.print(time.year % 10);
-#elif defined(GPS_DISPLAY_OLED)
-  oled.print(time.year / 1000 % 10);
-  oled.print(time.year / 100 % 10);
-  oled.print(time.year / 10 % 10);
-  oled.print(time.year % 10);
-#endif
+  display.print(time.year / 1000 % 10);
+  display.print(time.year / 100 % 10);
+  display.print(time.year / 10 % 10);
+  display.print(time.year % 10);
 }
 
 void gps_display::write_month(const gps_time& time) {
-#if defined(GPS_DISPLAY_LCD)
-  lcd.print(time.month / 10 % 10);
-  lcd.print(time.month % 10);
-#elif defined(GPS_DISPLAY_OLED)
-  oled.print(time.month / 10 % 10);
-  oled.print(time.month % 10);
-#endif
+  display.print(time.month / 10 % 10);
+  display.print(time.month % 10);
 }
 
 void gps_display::write_day(const gps_time& time) {
-#if defined(GPS_DISPLAY_LCD)
-  lcd.print(time.day / 10 % 10);
-  lcd.print(time.day % 10);
-#elif defined(GPS_DISPLAY_OLED)
-  oled.print(time.day / 10 % 10);
-  oled.print(time.day % 10);
-#endif
+  display.print(time.day / 10 % 10);
+  display.print(time.day % 10);
 }
 
 void gps_display::write_tz(const tz_info* tz, bool pending) {
 #if defined(GPS_DISPLAY_LCD)
-  lcd.setCursor(0, 3);
-  lcd.print(pending ? F("? ") : F("> "));
-  size_t n = lcd.print(tz->name);
-  while (n++ < 16)
-    lcd.print(' ');
+  display.setCursor(0, 3);
+  display.print(pending ? F("? ") : F("> "));
+  size_t n = 2 + display.print(tz->name);
+  clear_row(3, n);
 #elif defined(GPS_DISPLAY_OLED)
-  oled.drawTile(0, 6, 1, TILE_TIMEZONE);
-  oled.setCursor(1, 6);
-  oled.print(pending ? '?' : ' ');
-  size_t n = oled.print(tz->name);
-  // TODO: clear to EOL
+  display.drawTile(0, 6, 1, TILE_TIMEZONE);
+  display.setCursor(1, 6);
+  display.print(pending ? '?' : ' ');
+  size_t n = 2 + display.print(tz->name);
+  clear_row(6, n);
 #endif
 }
 
 void gps_display::clear_gps() {
-  clear_row(0);
-  clear_row(1);
-  clear_row(2);
-#if defined(GPS_DISPLAY_OLED)
-  clear_row(3);
-  clear_row(4);
+#if defined(GPS_DISPLAY_LCD)
+  // On LCD 20x4 display, last row is not cleared since this contains selected
+  // timezone.
+  for (uint8_t row = 0; row < DISPLAY_ROWS - 1; ++row)
+    clear_row(row);
+#elif defined(GPS_DISPLAY_OLED)
+  // On OLED 16x8 display, last two rows are not cleared, as next to last shows
+  // selected timezone and last shows timezone being selected, if active.
+  for (uint8_t row = 0; row < DISPLAY_ROWS - 2; ++row)
+    clear_row(row);
 #endif
 }
 
-void gps_display::clear_row(uint8_t row) {
-#if defined(GPS_DISPLAY_LCD)
-  lcd.setCursor(0, row);
-  for (int i = 0; i < LCD_COLS; ++i)
-    lcd.print(' ');
-#elif defined(GPS_DISPLAY_OLED)
-  oled.clearLine(row);
+void gps_display::clear_row(uint8_t row, uint8_t col) {
+#if defined(GPS_DISPLAY_OLED)
+  if (col == 0)
+    display.clearLine(row);
+  else {
+#endif
+    display.setCursor(0, row);
+    for (; col < DISPLAY_COLS; ++col)
+      display.print(' ');
+#if defined(GPS_DISPLAY_OLED)
+  }
 #endif
 }

@@ -37,9 +37,9 @@ public:
 
 private:
 #if defined(GPS_DISPLAY_LCD)
-  LCD_CLASS lcd;
+  LCD_CLASS display;
 #elif defined(GPS_DISPLAY_OLED)
-  OLED_CLASS oled;
+  OLED_CLASS display;
 #endif
   bool searching;
 
@@ -53,7 +53,7 @@ private:
   void write_day(const gps_time& time);
   void write_tz(const tz_info* tz, bool pending);
   void clear_gps();
-  void clear_row(uint8_t row);
+  void clear_row(uint8_t row, uint8_t col = 0);
 };
 
 #endif
