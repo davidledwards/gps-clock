@@ -136,6 +136,9 @@ CONFIG_GPS_BAUD_RATE ?= 9600
 # Configuration for automatically disabling LCD backlight.
 CONFIG_AUTO_OFF_MS ?= 30000
 
+# System of measurement.
+CONFIG_MEASUREMENT_SYSTEM ?= STANDARD
+
 help :
 	@echo "useful targets:"
 	@echo "  install  install library and core dependencies"
@@ -212,6 +215,7 @@ endif
 	@echo "CONFIG_GPS_TX_PIN=$(CONFIG_GPS_TX_PIN)"
 	@echo "CONFIG_GPS_BAUD_RATE=$(CONFIG_GPS_BAUD_RATE)"
 	@echo "CONFIG_AUTO_OFF_MS=$(CONFIG_AUTO_OFF_MS)"
+	@echo "CONFIG_MEASUREMENT_SYSTEM=$(CONFIG_MEASUREMENT_SYSTEM)"
 
 config :
 	@echo "generating config.h"
@@ -279,5 +283,8 @@ endif
 	@echo "" >> config.h
 	@echo "// Configuration for automatically disabling LCD backlight." >> config.h
 	@echo "#define AUTO_OFF_MS static_cast<uint32_t>($(CONFIG_AUTO_OFF_MS))" >> config.h
+	@echo "" >> config.h
+	@echo "// Configuration of measurement system." >> config.h
+	@echo "#define MEASUREMENT_SYSTEM_$(CONFIG_MEASUREMENT_SYSTEM)" >> config.h
 	@echo "" >> config.h
 	@echo "#endif" >> config.h

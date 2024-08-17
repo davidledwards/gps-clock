@@ -148,6 +148,19 @@ static uint8_t TILE_TIMEZONE[] = {
 };
 #endif
 
+// Unit of measure when showing altitude.
+//
+// GPS reports altitude in meters, hence need for corresponding divisor.
+#if defined(GPS_DISPLAY_OLED)
+#if defined(MEASUREMENT_SYSTEM_STANDARD)
+#define ALTITUDE_UNIT F("ft")
+static const float ALTITUDE_UNIT_DIVISOR = 2.54;
+#elif defined(MEASUREMENT_SYSTEM_METRIC)
+#define ALTITUDE_UNIT F("m")
+static const float ALTITUDE_UNIT_DIVISOR = 1.0;
+#endif
+#endif
+
 // Library-specific constructor and initialization code for LCD displays.
 #if defined(GPS_DISPLAY_LCD)
 #if defined(LCD_GENERIC)
@@ -282,8 +295,9 @@ void gps_display::write_altitude(const gps_info& info) {
 #elif defined(GPS_DISPLAY_OLED)
   display.drawTile(0, 2, 1, TILE_ALTITUDE);
   display.setCursor(2, 2);
-  size_t n = 2 + display.print(static_cast<uint32_t>(info.altitude));
-  n += display.print(F(" m"));
+  float alt = info.altitude / ALTITUDE_UNIT_DIVISOR;
+  size_t n = 2 + display.print(static_cast<uint32_t>(alt));
+  n += display.print(ALTITUDE_UNIT);
   clear_row(2, n);
 #endif
 }
