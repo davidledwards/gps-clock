@@ -60,6 +60,9 @@ SRCS = $(wildcard *.ino *.h *.cpp)
 # Configuration for date layout.
 CONFIG_DATE_LAYOUT ?= ISO
 
+# System of measurement.
+CONFIG_MEASUREMENT_SYSTEM ?= IMPERIAL
+
 # Configuration for LED displays that show date and time.
 CONFIG_LED_LAYOUT ?= NORMAL
 
@@ -136,9 +139,6 @@ CONFIG_GPS_BAUD_RATE ?= 9600
 # Configuration for automatically disabling LCD backlight.
 CONFIG_AUTO_OFF_MS ?= 30000
 
-# System of measurement.
-CONFIG_MEASUREMENT_SYSTEM ?= STANDARD
-
 help :
 	@echo "useful targets:"
 	@echo "  install  install library and core dependencies"
@@ -182,6 +182,7 @@ print :
 	@echo "BOARD=$(BOARD)"
 	@echo "PORT=$(PORT)"
 	@echo "CONFIG_DATE_LAYOUT=$(CONFIG_DATE_LAYOUT)"
+	@echo "CONFIG_MEASUREMENT_SYSTEM=$(CONFIG_MEASUREMENT_SYSTEM)"
 	@echo "CONFIG_LED_LAYOUT=$(CONFIG_LED_LAYOUT)"
 	@echo "CONFIG_USE_SECONDS=$(CONFIG_USE_SECONDS)"
 	@echo "CONFIG_USE_DOTS=$(CONFIG_USE_DOTS)"
@@ -215,7 +216,6 @@ endif
 	@echo "CONFIG_GPS_TX_PIN=$(CONFIG_GPS_TX_PIN)"
 	@echo "CONFIG_GPS_BAUD_RATE=$(CONFIG_GPS_BAUD_RATE)"
 	@echo "CONFIG_AUTO_OFF_MS=$(CONFIG_AUTO_OFF_MS)"
-	@echo "CONFIG_MEASUREMENT_SYSTEM=$(CONFIG_MEASUREMENT_SYSTEM)"
 
 config :
 	@echo "generating config.h"
@@ -227,6 +227,9 @@ config :
 	@echo "" >> config.h
 	@echo "// Configuration for date layout." >> config.h
 	@echo "#define DATE_LAYOUT_$(CONFIG_DATE_LAYOUT)" >> config.h
+	@echo "" >> config.h
+	@echo "// Configuration of measurement system." >> config.h
+	@echo "#define MEASUREMENT_SYSTEM_$(CONFIG_MEASUREMENT_SYSTEM)" >> config.h
 	@echo "" >> config.h
 	@echo "// Configuration for LED displays that show date and time." >> config.h
 	@echo "#define LED_LAYOUT_$(CONFIG_LED_LAYOUT)" >> config.h
@@ -283,8 +286,5 @@ endif
 	@echo "" >> config.h
 	@echo "// Configuration for automatically disabling LCD backlight." >> config.h
 	@echo "#define AUTO_OFF_MS static_cast<uint32_t>($(CONFIG_AUTO_OFF_MS))" >> config.h
-	@echo "" >> config.h
-	@echo "// Configuration of measurement system." >> config.h
-	@echo "#define MEASUREMENT_SYSTEM_$(CONFIG_MEASUREMENT_SYSTEM)" >> config.h
 	@echo "" >> config.h
 	@echo "#endif" >> config.h

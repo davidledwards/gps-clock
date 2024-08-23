@@ -152,7 +152,7 @@ static uint8_t TILE_TIMEZONE[] = {
 //
 // GPS reports altitude in meters, hence need for corresponding divisor.
 #if defined(GPS_DISPLAY_OLED)
-#if defined(MEASUREMENT_SYSTEM_STANDARD)
+#if defined(MEASUREMENT_SYSTEM_IMPERIAL)
 #define ALTITUDE_UNIT F("ft")
 static const float ALTITUDE_UNIT_DIVISOR = 2.54;
 #elif defined(MEASUREMENT_SYSTEM_METRIC)

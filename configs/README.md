@@ -7,7 +7,6 @@ To use a prebuilt configuation, copy the corresponding file to the root director
 Example:
 
 ```sh
-cp avr-nano-iso-normal.config ../.config
-cd ..
+cp configs/avr-nano-iso-metric-normal.config .config
 make config
 ```
