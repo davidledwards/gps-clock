@@ -8,6 +8,7 @@ A GPS-synchronized digital clock based on the open-source [Arduino](https://ardu
   * [Generation 2](#hardware-generation-2)
   * [Generation 3](#hardware-generation-3)
   * [Generation 4](#hardware-generation-4)
+  * [Generation 5](#hardware-generation-5)
 * [Assembly](#assembly)
   * [Circuit Diagram](#circuit-diagram)
   * [LED Displays](#led-displays)
@@ -19,6 +20,7 @@ A GPS-synchronized digital clock based on the open-source [Arduino](https://ardu
   * [Generation 2](#clock-generation-2)
   * [Generation 3](#clock-generation-3)
   * [Generation 4](#clock-generation-4)
+  * [Generation 5](#clock-generation-5)
   * [Other Clocks](#other-clocks)
 * [Software](#software)
 * [Contributing](#contributing)
@@ -40,7 +42,7 @@ https://github.com/davidledwards/gps-clock/tree/1.4
 
 These are the components of the original clock design.
 
-* [Elegoo Uno R3](https://www.amazon.com/gp/product/B01EWOE0UU) (1)
+* [Arduino Uno R3](https://docs.arduino.cc/hardware/uno-rev3/) (1)
 * [Adafruit Ultimate GPS Logger Shield](https://www.amazon.com/gp/product/B00E4WEX76) (1)
 * [Adafruit 0.56" 4-Digit 7-Segment Display with I2C Backpack](https://www.amazon.com/gp/product/B00XW2L6SS) (3)
 * [Adafruit Standard LCD 20x4](https://www.amazon.com/gp/product/B00SK69BZ6) (1)
@@ -61,7 +63,7 @@ I decided to experiment with a photoresistor that is used to detect the ambient 
 
 The mini PCB from generation 1 was eliminated since the rotary encoder was mounted directly on the GPS logger shield. There was also ample space on the GPS board to solder the photoresistor and pulldown resistor.
 
-* [Elegoo Uno R3](https://www.amazon.com/gp/product/B01EWOE0UU) (1)
+* [Arduino Uno R3](https://docs.arduino.cc/hardware/uno-rev3/) (1)
 * [Adafruit Ultimate GPS Logger Shield](https://www.amazon.com/gp/product/B00E4WEX76) (1)
 * [Adafruit 0.56" 4-Digit 7-Segment Display with I2C Backpack (white)](https://www.adafruit.com/product/1002) (2)
 * [Adafruit 0.56" 4-Digit 7-Segment Display with I2C Backpack (green)](https://www.adafruit.com/product/880) (1)
@@ -80,7 +82,7 @@ This generation adds a push button to toggle between 12- and 24-hour formats. In
 
 The format is also stored in EEPROM, which means the clock will remember the last choice should it lose power.
 
-* [Elegoo Uno R3](https://www.amazon.com/gp/product/B01EWOE0UU) (1)
+* [Arduino Uno R3](https://docs.arduino.cc/hardware/uno-rev3/) (1)
 * [Adafruit Ultimate GPS Logger Shield](https://www.amazon.com/gp/product/B00E4WEX76) (1)
 * [Adafruit 0.56" 4-Digit 7-Segment Display with I2C Backpack (green)](https://www.adafruit.com/product/880) (2)
 * [Adafruit 0.56" 4-Digit 7-Segment Display with I2C Backpack (blue)](https://www.adafruit.com/product/881) (1)
@@ -94,7 +96,7 @@ The format is also stored in EEPROM, which means the clock will remember the las
 
 #### Generation 3 Software Update
 
-I decided to move away from UTC offsets when selecting the timezone using the rotary encoder. Instead, the encoder now moves through a list of predefined timezones with daylight savings rules incorporated. The tradeoff is that given the constrained amount of RAM on the Uno board (2K), only a handful of timezones can be defined. Plans are in place to support the [Arduino Mega](https://www.elegoo.com/products/elegoo-mega-2560-r3-board) board which comes with 8K of RAM, thus allowing a larger set of timezones.
+I decided to move away from UTC offsets when selecting the timezone using the rotary encoder. Instead, the encoder now moves through a list of predefined timezones with daylight savings rules incorporated. The tradeoff is that given the constrained amount of RAM on the Uno board (2K), only a handful of timezones can be defined. Plans are in place to support the [Arduino Mega](https://docs.arduino.cc/hardware/mega-2560/) board which comes with 8K of RAM, thus allowing a larger set of timezones.
 
 If you decide to clone the repository and modify the selectable timezones, be cautious when adding new entries. Use of too much RAM for global variables reduces the amount of available stack space. Overflowing stack space can result in all kinds of wonky behavior. Once support for the Mega board is announced, there should be plenty of space to define the most popular timezones around the globe.
 
@@ -117,9 +119,9 @@ The expensive Adafruit GPS shield was also replaced with a much more affordable 
 
 Another 4-digit LED display was introduced to show the current time with *seconds*. Both time-oriented LED displays were also upgraded from 0.56 inches to 1.2 inches.
 
-[Arduino Mega](https://www.elegoo.com/products/elegoo-mega-2560-r3-board) is officially supported. Since the RAM (8K) is substantially larger than the Uno/Nano (2K), the number of timezones has been increased when Mega is the compilation target.
+[Arduino Mega](https://docs.arduino.cc/hardware/mega-2560/) is officially supported. Since the RAM (8K) is substantially larger than the Uno/Nano (2K), the number of timezones has been increased when Mega is the compilation target.
 
-* [Elegoo Nano](https://www.amazon.com/gp/product/B0713XK923) (1)
+* [Arduino Nano](https://docs.arduino.cc/hardware/nano/) (1)
 * [NEO-6M GPS Receiver](https://www.amazon.com/gp/product/B07P8YMVNT) (1)
 * [Adafruit 0.56" 4-Digit 7-Segment Display with I2C Backpack (white)](https://www.adafruit.com/product/1002) (2)
 * [Adafruit 1.2" 4-Digit 7-Segment Display with I2C Backpack (Red)](https://www.adafruit.com/product/1270) (2)
@@ -136,6 +138,38 @@ Another 4-digit LED display was introduced to show the current time with *second
 
 The GPS library dependency was updated as a result of testing the use of a newer GPS module, [NEO-M8](https://www.u-blox.com/en/product/neo-m8-series), which is capable of locking on many more satellites. It turns out that this module emits sentences not recognized by [TinyGPS](https://github.com/mikalhart/TinyGPS). Fortunately, a newer library from the same developer, [TinyGPS++](https://github.com/mikalhart/TinyGPSPlus), is capable of parsing sentences from both NEO-M8 and NEO-6M modules. The impact on program storage space only increased by a few hundred bytes, which is still well below the `32K` limit on the Nano board.
 
+### Hardware Generation 5
+
+Insert GitHub tag link
+
+This generation notably adds an OLED display as an alternative to the original LCD. Both _large_ (128x64) and _small_ (128x32) OLED displays are supported. The larger display adds more screen real estate, allowing more detailed GPS information to be shown. On the contrary, the smaller display has less screen real estate than the LCD, forcing some of the GPS information to be removed.
+
+Note that the Arduino Uno and Arduino Nano boards do not work properly when the OLED configuration is used. Since both of these boards only espouse 2KB of SRAM, the combination of additional code and libraries will cause the stack to overflow and clobber the execution.
+
+[Arduino Nano 33 IoT](https://docs.arduino.cc/hardware/nano-33-iot/) is now supported. The OLED configuration works nicely with this board.
+
+New components:
+
+* [OLED 2.42" 128x64 Display](https://www.amazon.com/HiLetgo-SSD1309-128x64-Display-Optional/dp/B0CFF3XNX4/?th=1)
+* [OLED 0.91" 128x32 Display](https://www.amazon.com/gp/product/B08L7QW7SR/)
+* [Arduino Nano 33 IoT](https://docs.arduino.cc/hardware/nano-33-iot/)
+
+#### Generation 5 Software Update
+
+Several configuration additions and changes have been introduced, primarily to support the OLED display. See the section on [software](#software) for details.
+
+* `BOARD_ARCH` is now used to specify the board architecture instead of assuming `avr`.
+* `CONFIG_GPS_DISPLAY` specifies whether the LCD or OLED display is used.
+* `CONFIG_MEASUREMENT_SYSTEM` specifies whether _imperial_ or _metric_ applies to the display of units.
+* `CONFIG_USE_DOTS` will use _dots_ instead of _colons_ in the LED display.
+* `CONFIG_OLED_DRIVER` and `CONFIG_OLED_I2C_ADDR` are used to configure the OLED display.
+* `CONFIG_LCD_DRIVER` replaces `CONFIG_LCD_EXPANDER`, but is identical in function.
+* `CONFIG_I2C_CLOCK_PIN` and `CONFIG_I2C_DATA_PIN` can be used to specify alternative pins for I2C.
+
+The LCD layout has been modernized to use glyphs that align with those shown on the OLED. Doing so opened up a bit of screen real estate, so altitude information is now displayed.
+
+A new collection of predefined configurations has been created in the `configs/` folder. The naming convention is intuitive. These can be used as starting points for your own unique configuration of the clock.
+
 ## Assembly
 
 ### Circuit Diagram
@@ -147,6 +181,10 @@ The GPS library dependency was updated as a result of testing the use of a newer
 #### Assembly Generation 4
 
 <img src="images/gps-clock-gen-4.png" style="zoom:25%;" />
+
+#### Assembly Generation 5
+
+<img src="/Users/dedwards/projects/gps-clock/images/gps-clock-gen-5.png" style="zoom:25%;" />
 
 ### LED Displays
 
@@ -350,6 +388,20 @@ Below is the unit with power attached. Notice the seconds in this new generation
 
 <img src="images/final-4-running.jpg" style="zoom:25%;" />
 
+### Clock Generation 5
+
+The layout of the new large OLED display is shown below. Notably, the precision of _latitude_ and _longitude_ has improved because of additional screen real estate. Newly introduced glyphs, which should be intuitive, are shown on the left side of the display to identify the type of information. Also, _alitude_ is shown in either imperial or metric units depending on how the build was configured.
+
+<img src="/Users/dedwards/projects/gps-clock/images/oled-display-large.jpg" style="zoom:25%;" />
+
+The following clock was configured to use _dots_ instead of _colons_ to separate hours, minutes, and seconds. The was necessary because smaller LED displays do not have left-most colons.
+
+<img src="/Users/dedwards/projects/gps-clock/images/led-with-dots.jpg" style="zoom:25%;" />
+
+This photo shows the modernized LCD display using glyphs. Since the use of glyphs made additional screen real estate available, _altitude_ is now shown.
+
+<img src="/Users/dedwards/projects/gps-clock/images/lcd-modern.jpg" style="zoom:25%;" />
+
 ### Other Clocks
 
 The clocks that follow were built by others inspired by this project. Proper attribution has been given unless the author requested anonymity.
@@ -360,7 +412,7 @@ This person hails from [Moldova](https://goo.gl/maps/MhutEfQtRmN5artQ9) but chos
 
 <img src="images/roman-clock-internal-front.jpg" style="zoom:25%;" />
 
-![](images/roman-clock-internal-back.jpg)
+<img src="/Users/dedwards/projects/gps-clock/images/roman-clock-internal-back.jpg" style="zoom:25%;" />
 
 <img src="images/roman-clock-front.jpg" style="zoom:25%;" />
 
@@ -427,7 +479,11 @@ Several environment variables affect the compilation process. Each of them have 
 Supported board architectures:
 
 * `avr`
+  * Boards: `nano`, `uno`, `mega2560`
+
 * `samd`
+  * Boards: `nano_33_iot`
+
 
 Default is `avr`.
 
@@ -438,6 +494,7 @@ Supported board types:
 * `nano`
 * `uno`
 * `mega2560`
+* `nano_33_iot`
 
 Default is `nano`.
 
@@ -456,13 +513,15 @@ If access to the command line or use of `make` is not desired, create the `confi
 Example `.config` file.
 
 ```makefile
-CONFIG_DATE_FORMAT=EU
-CONFIG_USE_SECONDS=1
-CONFIG_GPS_DISPLAY=LCD
-CONFIG_LCD_DRIVER=MCP23008
-CONFIG_MODE_PIN=8
-CONFIG_GPS_RX_PIN=3
-CONFIG_GPS_TX_PIN=2
+BOARD_ARCH = avr
+BOARD = nano
+CONFIG_DATE_FORMAT = EU
+CONFIG_USE_SECONDS = 1
+CONFIG_GPS_DISPLAY = LCD
+CONFIG_LCD_DRIVER = MCP23008
+CONFIG_MODE_PIN = 8
+CONFIG_GPS_RX_PIN = 3
+CONFIG_GPS_TX_PIN = 2
 ```
 
 #### CONFIG_DATE_LAYOUT
@@ -629,19 +688,25 @@ Error correction delay in milliseconds for timezone rotary encoder. Default is `
 
 #### CONFIG_GPS_RX_PIN
 
-Digital pin connected to RX lead of GPS module. The default value depends on `BOARD`:
+Digital pin connected to RX lead of GPS module. Note that the RX pin of the GPS connects to the TX pin on the MCU.
+
+The default value depends on `BOARD`:
 
 * uno = `7`
 * nano = `7`
 * mega = `50`
+* nano_33_iot = `0`  (changing this value is ignored)
 
 #### CONFIG_GPS_TX_PIN
 
-Digital pin connected to TX lead of GPS module. The default value depends on `BOARD`:
+Digital pin connected to TX lead of GPS module. Note that the TX pin of the GPS connects to the RX pin on the MCU.
+
+The default value depends on `BOARD`:
 
 * uno = `8`
 * nano = `8`
 * mega = `51`
+* nano_33_iot = `1`  (changing this value is ignored)
 
 #### CONFIG_GPS_BAUD_RATE
 
