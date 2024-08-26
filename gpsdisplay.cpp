@@ -35,29 +35,97 @@ static const uint8_t DISPLAY_ROWS = 8;
 #if defined(GPS_DISPLAY_LCD)
 // DEGREE bitmap
 //
-// ....xx..
-// ...x..x.
-// ...x..x.
-// ....xx..
-// ........
-// ........
-// ........
-// ........
+// .xx..
+// x..x.
+// x..x.
+// .xx..
+// .....
+// .....
+// .....
+// .....
 //
-static const uint8_t DEGREE_CHAR = 0;
-static const uint8_t DEGREE_BITMAP[] = {
-  0b00001100,
-  0b00010010,
-  0b00010010,
-  0b00001100,
-  0b00000000,
-  0b00000000,
-  0b00000000,
-  0b00000000
+static uint8_t BITMAP_DEGREE[] = {
+  0b01100,
+  0b10010,
+  0b10010,
+  0b01100,
+  0b00000,
+  0b00000,
+  0b00000,
+  0b00000
 };
-#elif defined(GPS_DISPLAY_OLED)
+static const uint8_t CHAR_DEGREE = 0;
 
-// GPS icon:
+// ALTITUDE bitmap
+//
+// ..x..
+// .xxx.
+// xxxxx
+// ..x..
+// ..x..
+// xxxxx
+// .xxx.
+// ..x..
+//
+static uint8_t BITMAP_ALTITUDE[] = {
+  0b00100,
+  0b01110,
+  0b11111,
+  0b00100,
+  0b00100,
+  0b11111,
+  0b01110,
+  0b00100
+};
+static const uint8_t CHAR_ALTITUDE = 1;
+
+// SATELLITE bitmap
+//
+// .xxx.
+// x...x
+// ..x..
+// .x.x.
+// .....
+// ..x..
+// ..x..
+// ..x..
+//
+static uint8_t BITMAP_SATELLITE[] = {
+  0b01110,
+  0b10001,
+  0b00100,
+  0b01010,
+  0b00000,
+  0b00100,
+  0b00100,
+  0b00100
+};
+static const uint8_t CHAR_SATELLITE = 2;
+
+// TIMEZONE bitmap
+//
+// xxxxx
+// xxxxx
+// x.x.x
+// xxxxx
+// x.x.x
+// xxxxx
+// x.x.x
+// xxxxx
+//
+static uint8_t BITMAP_TIMEZONE[] = {
+  0b11111,
+  0b11111,
+  0b10101,
+  0b11111,
+  0b10101,
+  0b11111,
+  0b10101,
+  0b11111
+};
+static const uint8_t CHAR_TIMEZONE = 3;
+#elif defined(GPS_DISPLAY_OLED)
+// GPS icon
 //
 // ..xxx...
 // .x...x..
@@ -151,14 +219,12 @@ static uint8_t TILE_TIMEZONE[] = {
 // Unit of measure when showing altitude.
 //
 // GPS reports altitude in meters, hence need for corresponding divisor.
-#if defined(GPS_DISPLAY_OLED)
 #if defined(MEASUREMENT_SYSTEM_IMPERIAL)
-#define ALTITUDE_UNIT F("ft")
-static const float ALTITUDE_UNIT_DIVISOR = 2.54;
+#define ALTITUDE_UNIT F(" ft")
+static const float ALTITUDE_UNIT_DIVISOR = 0.3048;
 #elif defined(MEASUREMENT_SYSTEM_METRIC)
-#define ALTITUDE_UNIT F("m")
+#define ALTITUDE_UNIT F(" m")
 static const float ALTITUDE_UNIT_DIVISOR = 1.0;
-#endif
 #endif
 
 // Library-specific constructor and initialization code for LCD displays.
@@ -183,7 +249,10 @@ gps_display::gps_display()
   LCD_INIT(display);
   display.clear();
   display.setBacklight(HIGH);
-  display.createChar(DEGREE_CHAR, DEGREE_BITMAP);
+  display.createChar(CHAR_DEGREE, BITMAP_DEGREE);
+  display.createChar(CHAR_ALTITUDE, BITMAP_ALTITUDE);
+  display.createChar(CHAR_SATELLITE, BITMAP_SATELLITE);
+  display.createChar(CHAR_TIMEZONE, BITMAP_TIMEZONE);
 #elif defined(GPS_DISPLAY_OLED)
   display.setI2CAddress(OLED_I2C_ADDR);
   display.begin();
@@ -208,12 +277,15 @@ void gps_display::show_info(const gps_info& info, const gps_time& time) {
 void gps_display::show_searching() {
   if (!searching) {
     clear_gps();
+
 #if defined(GPS_DISPLAY_LCD)
     display.setCursor(0, 0);
+    display.write(CHAR_SATELLITE);
 #elif defined(GPS_DISPLAY_OLED)
-    display.drawTile(0, 3, 1, TILE_SATELLITE);
-    display.setCursor(2, 3);
+    display.drawTile(0, 0, 1, TILE_SATELLITE);
 #endif
+
+    display.setCursor(2, 0);
     display.print(F("searching..."));
     searching = true;
   }
@@ -231,6 +303,13 @@ void gps_display::show_backlight(bool on) {
 #endif
 }
 
+// Row number where latitude information is displayed.
+#if defined(GPS_DISPLAY_LCD)
+#define ROW_LATITUDE 0
+#elif defined(GPS_DISPLAY_OLED)
+#define ROW_LATITUDE 0
+#endif
+
 void gps_display::write_lat(const gps_info& info) {
   float lat;
   char lat_dir;
@@ -242,24 +321,31 @@ void gps_display::write_lat(const gps_info& info) {
     lat = info.lat;
     lat_dir = 'N';
   }
+
 #if defined(GPS_DISPLAY_LCD)
-  display.setCursor(0, 0);
-  display.print(lat, 4);
-  display.write(DEGREE_CHAR);
+  display.setCursor(0, ROW_LATITUDE);
+  size_t n = display.print(lat, 4);
+  display.write(CHAR_DEGREE);
   display.print(lat_dir);
-  if (lat < 10.0)
+  for (n += 2; n < 10; ++n)
     display.print(' ');
-  display.print(' ');
 #elif defined(GPS_DISPLAY_OLED)
-  display.drawTile(0, 0, 1, TILE_GPS);
-  display.setCursor(2, 0);
+  display.drawTile(0, ROW_LATITUDE, 1, TILE_GPS);
+  display.setCursor(2, ROW_LATITUDE);
   size_t n = display.print(lat, 6);
-  display.drawTile(n + 2, 0, 1, TILE_DEGREE);
-  display.setCursor(n + 3, 0);
-  n += 3 + display.print(lat_dir);
-  clear_row(0, n);
+  display.drawTile(n + 2, ROW_LATITUDE, 1, TILE_DEGREE);
+  display.setCursor(n + 3, ROW_LATITUDE);
+  display.print(lat_dir);
+  clear_row(ROW_LATITUDE, n + 4);
 #endif
 }
+
+// Row number where longitude information is displayed.
+#if defined(GPS_DISPLAY_LCD)
+#define ROW_LONGITUDE 0
+#elif defined(GPS_DISPLAY_OLED)
+#define ROW_LONGITUDE 1
+#endif
 
 void gps_display::write_lon(const gps_info& info) {
   float lon;
@@ -272,57 +358,91 @@ void gps_display::write_lon(const gps_info& info) {
     lon = info.lon;
     lon_dir = 'E';
   }
+
 #if defined(GPS_DISPLAY_LCD)
-  display.setCursor(10, 0);
+  display.setCursor(10, ROW_LONGITUDE);
   if (lon < 100.0)
     display.print(' ');
   display.print(lon, 4);
-  display.write(DEGREE_CHAR);
+  display.write(CHAR_DEGREE);
   display.print(lon_dir);
 #elif defined(GPS_DISPLAY_OLED)
-  display.setCursor(2, 1);
+  display.setCursor(2, ROW_LONGITUDE);
   size_t n = display.print(lon, 6);
-  display.drawTile(n + 2, 1, 1, TILE_DEGREE);
-  display.setCursor(n + 3, 1);
-  n += 3 + display.print(lon_dir);
-  clear_row(1, n);
+  display.drawTile(n + 2, ROW_LONGITUDE, 1, TILE_DEGREE);
+  display.setCursor(n + 3, ROW_LONGITUDE);
+  display.print(lon_dir);
+  clear_row(ROW_LONGITUDE, n + 4);
 #endif
 }
 
-void gps_display::write_altitude(const gps_info& info) {
+// Row number where altitude information is displayed.
 #if defined(GPS_DISPLAY_LCD)
-// Not supported on LCD displays.
+#define ROW_ALTITUDE 1
 #elif defined(GPS_DISPLAY_OLED)
-  display.drawTile(0, 2, 1, TILE_ALTITUDE);
-  display.setCursor(2, 2);
+#define ROW_ALTITUDE 2
+#endif
+
+void gps_display::write_altitude(const gps_info& info) {
   float alt = info.altitude / ALTITUDE_UNIT_DIVISOR;
+
+#if defined(GPS_DISPLAY_LCD)
+  display.setCursor(0, ROW_ALTITUDE);
+  display.write(CHAR_ALTITUDE);
+#elif defined(GPS_DISPLAY_OLED)
+  display.drawTile(0, ROW_ALTITUDE, 1, TILE_ALTITUDE);
+#endif
+
+  display.setCursor(2, ROW_ALTITUDE);
   size_t n = 2 + display.print(static_cast<uint32_t>(alt));
   n += display.print(ALTITUDE_UNIT);
-  clear_row(2, n);
+
+#if defined(GPS_DISPLAY_LCD)
+  for (; n < 10; ++n)
+    display.print(' ');
+#elif defined(GPS_DISPLAY_OLED)
+  clear_row(ROW_ALTITUDE, n);
 #endif
 }
+
+// Row number where satellite information is displayed.
+#if defined(GPS_DISPLAY_LCD)
+#define ROW_SATELLITE 1
+#elif defined(GPS_DISPLAY_OLED)
+#define ROW_SATELLITE 3
+#endif
 
 void gps_display::write_satellites(const gps_info& info) {
 #if defined(GPS_DISPLAY_LCD)
-  display.setCursor(0, 1);
-  size_t n = display.print(F("satellites: "));
-  n += display.print(info.satellites);
-  clear_row(1, n);
+  display.setCursor(13, ROW_SATELLITE);
+  display.write(CHAR_SATELLITE);
+  display.setCursor(15, ROW_SATELLITE);
+  size_t n = 15;
 #elif defined(GPS_DISPLAY_OLED)
-  display.drawTile(0, 3, 1, TILE_SATELLITE);
-  display.setCursor(2, 3);
-  size_t n = 2 + display.print(info.satellites);
-  clear_row(3, n);
+  display.drawTile(0, ROW_SATELLITE, 1, TILE_SATELLITE);
+  display.setCursor(2, ROW_SATELLITE);
+  size_t n = 2;
 #endif
+
+  n += display.print(info.satellites);
+  clear_row(ROW_SATELLITE, n);
 }
+
+// Row number where UTC time information is displayed.
+#if defined(GPS_DISPLAY_LCD)
+#define ROW_UTC 2
+#elif defined(GPS_DISPLAY_OLED)
+#define ROW_UTC 4
+#endif
 
 void gps_display::write_utc(const gps_time& time) {
 #if defined(GPS_DISPLAY_LCD)
-  display.setCursor(0, 2);
+  display.setCursor(0, ROW_UTC);
 #elif defined(GPS_DISPLAY_OLED)
-  display.drawTile(0, 4, 1, TILE_CLOCK);
-  display.setCursor(2, 4);
+  display.drawTile(0, ROW_UTC, 1, TILE_CLOCK);
+  display.setCursor(2, ROW_UTC);
 #endif
+
 #if defined(DATE_LAYOUT_ISO)
   write_year(time);
   display.print('-');
@@ -342,11 +462,13 @@ void gps_display::write_utc(const gps_time& time) {
   display.print('-');
   write_year(time);
 #endif
+
 #if defined(GPS_DISPLAY_LCD)
   display.print(' ');
 #elif defined(GPS_DISPLAY_OLED)
-  display.setCursor(2, 5);
+  display.setCursor(2, ROW_UTC + 1);
 #endif
+
   display.print(time.hour / 10 % 10);
   display.print(time.hour % 10);
   display.print(':');
@@ -374,19 +496,25 @@ void gps_display::write_day(const gps_time& time) {
   display.print(time.day % 10);
 }
 
+// Row number where timezone information is displayed.
+#if defined(GPS_DISPLAY_LCD)
+#define ROW_TZ 3
+#elif defined(GPS_DISPLAY_OLED)
+#define ROW_TZ 6
+#endif
+
 void gps_display::write_tz(const tz_info* tz, bool pending) {
 #if defined(GPS_DISPLAY_LCD)
-  display.setCursor(0, 3);
-  display.print(pending ? F("? ") : F("> "));
-  size_t n = 2 + display.print(tz->name);
-  clear_row(3, n);
+  display.setCursor(0, ROW_TZ);
+  display.write(CHAR_TIMEZONE);
 #elif defined(GPS_DISPLAY_OLED)
-  display.drawTile(0, 6, 1, TILE_TIMEZONE);
-  display.setCursor(1, 6);
+  display.drawTile(0, ROW_TZ, 1, TILE_TIMEZONE);
+  display.setCursor(1, ROW_TZ);
+#endif
+
   display.print(pending ? '?' : ' ');
   size_t n = 2 + display.print(tz->name);
-  clear_row(6, n);
-#endif
+  clear_row(ROW_TZ, n);
 }
 
 void gps_display::clear_gps() {
@@ -409,7 +537,7 @@ void gps_display::clear_row(uint8_t row, uint8_t col) {
     display.clearLine(row);
   else {
 #endif
-    display.setCursor(0, row);
+    display.setCursor(col, row);
     for (; col < DISPLAY_COLS; ++col)
       display.print(' ');
 #if defined(GPS_DISPLAY_OLED)
