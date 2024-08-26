@@ -140,7 +140,8 @@ The GPS library dependency was updated as a result of testing the use of a newer
 
 ### Hardware Generation 5
 
-Insert GitHub tag link
+https://github.com/davidledwards/gps-clock/tree/5.0
+
 
 This generation notably adds an OLED display as an alternative to the original LCD. Both _large_ (128x64) and _small_ (128x32) OLED displays are supported. The larger display adds more screen real estate, allowing more detailed GPS information to be shown. On the contrary, the smaller display has less screen real estate than the LCD, forcing some of the GPS information to be removed.
 
