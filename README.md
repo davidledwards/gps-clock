@@ -184,7 +184,7 @@ A new collection of predefined configurations has been created in the `configs/`
 
 #### Assembly Generation 5
 
-<img src="/Users/dedwards/projects/gps-clock/images/gps-clock-gen-5.png" style="zoom:25%;" />
+<img src="images/gps-clock-gen-5.png" style="zoom:25%;" />
 
 ### LED Displays
 
@@ -392,15 +392,15 @@ Below is the unit with power attached. Notice the seconds in this new generation
 
 The layout of the new large OLED display is shown below. Notably, the precision of _latitude_ and _longitude_ has improved because of additional screen real estate. Newly introduced glyphs, which should be intuitive, are shown on the left side of the display to identify the type of information. Also, _alitude_ is shown in either imperial or metric units depending on how the build was configured.
 
-<img src="/Users/dedwards/projects/gps-clock/images/oled-display-large.jpg" style="zoom:25%;" />
+<img src="images/oled-display-large.jpg" style="zoom:25%;" />
 
 The following clock was configured to use _dots_ instead of _colons_ to separate hours, minutes, and seconds. The was necessary because smaller LED displays do not have left-most colons.
 
-<img src="/Users/dedwards/projects/gps-clock/images/led-with-dots.jpg" style="zoom:25%;" />
+<img src="images/led-with-dots.jpg" style="zoom:25%;" />
 
 This photo shows the modernized LCD display using glyphs. Since the use of glyphs made additional screen real estate available, _altitude_ is now shown.
 
-<img src="/Users/dedwards/projects/gps-clock/images/lcd-modern.jpg" style="zoom:25%;" />
+<img src="images/lcd-modern.jpg" style="zoom:25%;" />
 
 ### Other Clocks
 
@@ -412,7 +412,7 @@ This person hails from [Moldova](https://goo.gl/maps/MhutEfQtRmN5artQ9) but chos
 
 <img src="images/roman-clock-internal-front.jpg" style="zoom:25%;" />
 
-<img src="/Users/dedwards/projects/gps-clock/images/roman-clock-internal-back.jpg" style="zoom:25%;" />
+<img src="images/roman-clock-internal-back.jpg" style="zoom:25%;" />
 
 <img src="images/roman-clock-front.jpg" style="zoom:25%;" />
 
