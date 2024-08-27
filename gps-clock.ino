@@ -28,7 +28,7 @@
 static local_storage* storage;
 static gps_unit* gps;
 static tz_database* tz_db;
-static local_clock* clock;
+static local_clock* lcl_clock;
 static tz_selector* tz_sel;
 static mode_selector* mode_sel;
 static gps_display* gps_disp;
@@ -51,7 +51,7 @@ void setup() {
   const tz_info* tz = tz_db->find(state.tz_name);
 
   // Initialize local clock with persisted timezone.
-  clock = new local_clock(tz);
+  lcl_clock = new local_clock(tz);
 
   // Initialize timezone selector componnent.
   tz_sel = new tz_selector(tz_db, tz);
@@ -98,7 +98,7 @@ void loop() {
 
   // Possibly update timezone.
   if (action != tz_idle)
-    clock->set_tz(tz);
+    lcl_clock->set_tz(tz);
   if (action == tz_confirm)
     storage->write_tz(tz->name);
 
@@ -106,7 +106,7 @@ void loop() {
   // immediate refresh of the display so as not to wait until the next tick.
   if (mode_sel->toggled()) {
     clock_mode mode = clock_disp->toggle_mode();
-    clock_disp->show_now(clock->now());
+    clock_disp->show_now(lcl_clock->now());
     storage->write_mode(mode);
   }
 
@@ -120,7 +120,7 @@ void loop() {
       // Under normal circumstances in which a fix has been established, this only happens roughly
       // every GPS_SYNC_MILLIS. This is a good time to synchronize the clock.
       gps_disp->show_info(info, time);
-      clock->sync(time);
+      lcl_clock->sync(time);
       break;
     case gps_searching:
       // Indicates that a satellite fix has not been established by the GPS module.
@@ -136,8 +136,8 @@ void loop() {
 
   // If the local clock has changed since the last tick or a timezone was changed, then update
   // the display.
-  if (clock->is_sync() && (clock->tick() || action != tz_idle))
-    clock_disp->show_now(clock->now());
+  if (lcl_clock->is_sync() && (lcl_clock->tick() || action != tz_idle))
+    clock_disp->show_now(lcl_clock->now());
 
   // Change brightness level of the clock. In most cases, this results in a no-op since the light
   // monitor samples on a periodic basis and the clock will only adjust brightness if the level

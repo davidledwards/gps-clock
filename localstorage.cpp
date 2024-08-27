@@ -17,7 +17,11 @@
 #include "board.h"
 
 #if defined(USE_EEPROM_EMULATION)
+#if defined(ARDUINO_SAMD_NANO_33_IOT)
 #include <FlashStorage.h>
+#elif defined(ARDUINO_ARDUINO_NANO33BLE)
+#include <NanoBLEFlashPrefs.h>
+#endif
 #else
 #include <EEPROM.h>
 #endif
@@ -34,7 +38,11 @@ struct clock_state {
 #pragma pack()
 
 #if defined(USE_EEPROM_EMULATION)
-FlashStorage(clock_storage, clock_state);
+#if defined(ARDUINO_SAMD_NANO_33_IOT)
+FlashStorage(flash_storage, clock_state);
+#elif defined(ARDUINO_ARDUINO_NANO33BLE)
+static NanoBLEFlashPrefs flash_storage;
+#endif
 #endif
 
 // Signature expected at head of storage.
@@ -87,7 +95,11 @@ void local_storage::write_mode(clock_mode mode) {
 
 void local_storage::read_state(clock_state& state) {
 #if defined(USE_EEPROM_EMULATION)
-  state = clock_storage.read();
+#if defined(ARDUINO_SAMD_NANO_33_IOT)
+  state = flash_storage.read();
+#elif defined(ARDUINO_ARDUINO_NANO33BLE)
+  flash_storage.readPrefs(&state, sizeof(state));
+#endif
 #else
   EEPROM.get(0, state);
 #endif
@@ -95,7 +107,11 @@ void local_storage::read_state(clock_state& state) {
 
 void local_storage::write_state(const clock_state& state) {
 #if defined(USE_EEPROM_EMULATION)
-  clock_storage.write(state);
+#if defined(ARDUINO_SAMD_NANO_33_IOT)
+  flash_storage.write(state);
+#elif defined(ARDUINO_ARDUINO_NANO33BLE)
+  flash_storage.writePrefs(const_cast<clock_state*>(&state), sizeof(state));
+#endif
 #else
   EEPROM.put(0, state);
 #endif

@@ -46,7 +46,8 @@ LIBS = \
 	"Time"@1.6.1 \
 	"Timezone"@1.2.4 \
 	"ezButton"@1.0.6 \
-	"FlashStorage"@1.0.0
+	"FlashStorage"@1.0.0 \
+	"NanoBLEFlashPrefs"@1.2.0
 
 # Name of the image that gets uploaded to the board.
 PROG = $(BUILD_FILES_PREFIX).hex
@@ -127,15 +128,21 @@ CONFIG_TZ_DEBOUNCE_MS ?= 5
 CONFIG_TZ_ERROR_MS ?= 20
 
 # Configuration for GPS module.
-ifeq ($(BOARD), mega)
-CONFIG_GPS_RX_PIN_DEFAULT = 50
-CONFIG_GPS_TX_PIN_DEFAULT = 51
+ifeq ($(BOARD), uno)
+CONFIG_GPS_RX_PIN_DEFAULT = 7
+CONFIG_GPS_TX_PIN_DEFAULT = 8
+else ifeq ($(BOARD), nano)
+CONFIG_GPS_RX_PIN_DEFAULT = 7
+CONFIG_GPS_TX_PIN_DEFAULT = 8
 else ifeq ($(BOARD), nano_33_iot)
 CONFIG_GPS_RX_PIN_DEFAULT = 0
 CONFIG_GPS_TX_PIN_DEFAULT = 1
-else
-CONFIG_GPS_RX_PIN_DEFAULT = 7
-CONFIG_GPS_TX_PIN_DEFAULT = 8
+else ifeq ($(BOARD), nano33ble)
+CONFIG_GPS_RX_PIN_DEFAULT = 0
+CONFIG_GPS_TX_PIN_DEFAULT = 1
+else ifeq ($(BOARD), mega)
+CONFIG_GPS_RX_PIN_DEFAULT = 50
+CONFIG_GPS_TX_PIN_DEFAULT = 51
 endif
 
 CONFIG_GPS_RX_PIN ?= $(CONFIG_GPS_RX_PIN_DEFAULT)

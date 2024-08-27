@@ -30,7 +30,11 @@
 // USE_EEPROM_EMULATION
 //   If EEPROM is native or emulated.
 
-#if defined(ARDUINO_AVR_UNO) || defined(ARDUINO_AVR_NANO)
+#if defined(ARDUINO_AVR_UNO)
+#define RAM_SIZE 2
+#define USE_SOFTWARE_SERIAL
+#undef USE_EEPROM_EMULATION
+#elif defined(ARDUINO_AVR_NANO)
 #define RAM_SIZE 2
 #define USE_SOFTWARE_SERIAL
 #undef USE_EEPROM_EMULATION
@@ -40,6 +44,10 @@
 #undef USE_EEPROM_EMULATION
 #elif defined(ARDUINO_SAMD_NANO_33_IOT)
 #define RAM_SIZE 32
+#undef USE_SOFTWARE_SERIAL
+#define USE_EEPROM_EMULATION
+#elif defined(ARDUINO_ARDUINO_NANO33BLE)
+#define RAM_SIZE 256
 #undef USE_SOFTWARE_SERIAL
 #define USE_EEPROM_EMULATION
 #else
