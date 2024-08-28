@@ -20,7 +20,12 @@
 
 #if defined(OLED_DRIVER_SSD1309)
 #include <U8x8lib.h>
+
+#if defined(OLED_SIZE_LARGE)
 #define OLED_CLASS U8X8_SSD1309_128X64_NONAME0_SW_I2C
+#elif defined(OLED_SIZE_SMALL)
+#define OLED_CLASS U8X8_SSD1306_128X32_UNIVISION_SW_I2C
+#endif
 #endif
 
 #endif

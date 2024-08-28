@@ -95,7 +95,7 @@ CONFIG_LCD_I2C_ADDR ?= 0x73
 CONFIG_LCD_TYPE ?= ADAFRUIT
 endif
 else ifeq ($(CONFIG_GPS_DISPLAY), OLED)
-# Configuration for OLED 16x8 display.
+# Configuration for OLED display.
 CONFIG_OLED_DRIVER ?= SSD1309
 
 ifeq ($(CONFIG_OLED_DRIVER), SSD1309)
@@ -103,6 +103,9 @@ CONFIG_OLED_I2C_ADDR_DEFAULT = 0x78
 endif
 
 CONFIG_OLED_I2C_ADDR ?= $(CONFIG_OLED_I2C_ADDR_DEFAULT)
+
+# Configuration for OLED display size.
+CONFIG_OLED_SIZE ?= LARGE
 endif
 
 # Configuratoin for I2C bus.
@@ -204,6 +207,7 @@ ifeq ($(CONFIG_GPS_DISPLAY), LCD)
 else ifeq ($(CONFIG_GPS_DISPLAY), OLED)
 	@echo "CONFIG_OLED_DRIVER=$(CONFIG_OLED_DRIVER)"
 	@echo "CONFIG_OLED_I2C_ADDR=$(CONFIG_OLED_I2C_ADDR)"
+	@echo "CONFIG_OLED_SIZE=$(CONFIG_OLED_SIZE)"
 endif
 	@echo "CONFIG_I2C_CLOCK_PIN=$(CONFIG_I2C_CLOCK_PIN)"
 	@echo "CONFIG_I2C_DATA_PIN=$(CONFIG_I2C_DATA_PIN)"
@@ -262,6 +266,7 @@ else ifeq ($(CONFIG_GPS_DISPLAY), OLED)
 	@echo "#define GPS_DISPLAY_OLED" >> config.h
 	@echo "#define OLED_DRIVER_$(CONFIG_OLED_DRIVER)" >> config.h
 	@echo "#define OLED_I2C_ADDR static_cast<uint8_t>($(CONFIG_OLED_I2C_ADDR))" >> config.h
+	@echo "#define OLED_SIZE_$(CONFIG_OLED_SIZE)" >> config.h
 endif
 	@echo "" >> config.h
 	@echo "// Configuration for I2C pins." >> config.h
