@@ -164,6 +164,7 @@ Several configuration additions and changes have been introduced, primarily to s
 * `CONFIG_MEASUREMENT_SYSTEM` specifies whether _imperial_ or _metric_ applies to the display of units.
 * `CONFIG_USE_DOTS` will use _dots_ instead of _colons_ in the LED display.
 * `CONFIG_OLED_DRIVER` and `CONFIG_OLED_I2C_ADDR` are used to configure the OLED display.
+* `CONFIG_OLED_SIZE` specifies whether the OLED display is _large_ or _small_.
 * `CONFIG_LCD_DRIVER` replaces `CONFIG_LCD_EXPANDER`, but is identical in function.
 * `CONFIG_I2C_CLOCK_PIN` and `CONFIG_I2C_DATA_PIN` can be used to specify alternative pins for I2C.
 
@@ -646,6 +647,15 @@ Default is `SSD1309`.
 I2C address of the OLED display. The default value depends on `CONFIG_OLED_DRIVER`:
 
 * SSD1309 = `0x78`
+
+#### CONFIG_OLED_SIZE
+
+Specifies the size of the OLED display. Recognized options include:
+
+* `LARGE`
+* `SMALL`
+
+`LARGE` displays are 128x64, whereas `SMALL` are 128x32. Default is `LARGE`.
 
 #### CONFIG_I2C_CLOCK_PIN
 
