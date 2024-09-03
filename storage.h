@@ -13,25 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef __LIGHTMONITOR_H
-#define __LIGHTMONITOR_H
+#ifndef __STORAGE_H
+#define __STORAGE_H
 
 #include <Arduino.h>
+#include "clockdisplay.h"
+#include "timezones.h"
 
-class light_monitor {
+struct clock_state;
+
+class local_state {
 public:
-  light_monitor();
-  uint8_t get_brightness();
+  const char tz_name[TZ_NAME_SIZE + 1];
+  clock_mode mode;
 
 private:
-  uint8_t pin;
-  uint16_t cur_reading;
-  uint8_t cur_brightness;
-  uint32_t last_reading_time;
-  uint16_t last_reading;
-  uint32_t waiting_start;
+  local_state(const clock_state& state);
+  friend class local_storage;
+};
 
-  static uint8_t to_brightness(uint16_t reading);
+class local_storage {
+public:
+  local_storage();
+  local_state read();
+  void write_tz(const char* tz_name);
+  void write_mode(clock_mode mode);
+
+private:
+  void read_state(clock_state& state);
+  void write_state(const clock_state& state);
 };
 
 #endif

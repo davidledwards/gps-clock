@@ -147,13 +147,15 @@ This generation notably adds an OLED display as an alternative to the original L
 
 Note that the Arduino Uno and Arduino Nano boards do not work properly when the OLED configuration is used. Since both of these boards only espouse 2KB of SRAM, the combination of additional code and libraries will cause the stack to overflow and clobber the execution.
 
-[Arduino Nano 33 IoT](https://docs.arduino.cc/hardware/nano-33-iot/) is now supported. The OLED configuration works nicely with this board.
+Several new Arduino Nano-series boards are now suppported. These include [Arduino Nano 33 IoT](https://docs.arduino.cc/hardware/nano-33-iot/), [Arduino Nano 33 BLE](https://docs.arduino.cc/hardware/nano-33-ble/), and [Arduino Nano Every](https://docs.arduino.cc/hardware/nano-every/). The OLED configuration works nicely with all of them.
 
 New components:
 
 * [OLED 2.42" 128x64 Display](https://www.amazon.com/HiLetgo-SSD1309-128x64-Display-Optional/dp/B0CFF3XNX4/?th=1)
 * [OLED 0.91" 128x32 Display](https://www.amazon.com/gp/product/B08L7QW7SR/)
 * [Arduino Nano 33 IoT](https://docs.arduino.cc/hardware/nano-33-iot/)
+* [Arduino Nano 33 BLE](https://docs.arduino.cc/hardware/nano-33-ble/)
+* [Arduino Nano Every](https://docs.arduino.cc/hardware/nano-every/)
 
 #### Generation 5 Software Update
 
@@ -482,10 +484,12 @@ Supported board architectures:
 
 * `avr`
   * Boards: `nano`, `uno`, `mega2560`
-
 * `samd`
   * Boards: `nano_33_iot`
-
+* `mbed_nano`
+  * Boards: `nano33ble`
+* `megaavr`
+  * Boards: `nona4809`
 
 Default is `avr`.
 
@@ -493,10 +497,12 @@ Default is `avr`.
 
 Supported board types:
 
-* `nano`
-* `uno`
-* `mega2560`
-* `nano_33_iot`
+* `nano`  ← Arduino Nano
+* `uno`  ← Arduino Uno R3
+* `mega2560`  ← Arduino Mega 2560
+* `nano_33_iot`  ← Arduino Nano 33 IoT
+* `nano33ble`  ← Arduino Nano 33 BLE
+* `nona4809`  ← Arduino Nano Every
 
 Default is `nano`.
 
@@ -706,7 +712,9 @@ The default value depends on `BOARD`:
 * uno = `7`
 * nano = `7`
 * mega = `50`
-* nano_33_iot = `0`  (changing this value is ignored)
+* nano_33_iot = `0`
+* nano33ble = `0`
+* nona4809 = `0`
 
 #### CONFIG_GPS_TX_PIN
 
@@ -717,7 +725,9 @@ The default value depends on `BOARD`:
 * uno = `8`
 * nano = `8`
 * mega = `51`
-* nano_33_iot = `1`  (changing this value is ignored)
+* nano_33_iot = `1`
+* nano33ble = `1`
+* nona4809 = `1`
 
 #### CONFIG_GPS_BAUD_RATE
 

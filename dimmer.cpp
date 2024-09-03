@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "lightmonitor.h"
+#include "dimmer.h"
 #include "config.h"
 
 // Length of time before taking next photoresistor reading.

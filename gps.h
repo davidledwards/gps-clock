@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef __GPSUNIT_H
-#define __GPSUNIT_H
+#ifndef __GPS_H
+#define __GPS_H
 
 #include <Arduino.h>
 #include <TinyGPSPlus.h>

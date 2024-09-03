@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "localstorage.h"
+#include "storage.h"
 #include "board.h"
 
 #if defined(USE_EEPROM_EMULATION)

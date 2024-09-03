@@ -13,26 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef __TZDATABASE_H
-#define __TZDATABASE_H
+#ifndef __MODE_H
+#define __MODE_H
 
 #include <Arduino.h>
-#include <Timezone.h>
+#include <ezButton.h>
 
-static const size_t TZ_NAME_SIZE = 15;
-
-struct tz_info {
-  const char* const name;
-  Timezone tz;
-};
-
-class tz_database {
+class mode_selector {
 public:
-  tz_database();
-  size_t size() const;
-  const tz_info* const find(const char* name) const;
-  size_t find_index(const char* name) const;
-  const tz_info* const get(size_t index) const;
+  mode_selector();
+  bool toggled();
+
+private:
+  ezButton button;
 };
 
 #endif

@@ -18,8 +18,8 @@
 
 #include <Arduino.h>
 #include <Adafruit_LEDBackpack.h>
-#include "gpsunit.h"
-#include "localclock.h"
+#include "gps.h"
+#include "clock.h"
 #include "config.h"
 
 enum clock_mode {

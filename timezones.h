@@ -13,35 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef __LOCALSTORAGE_H
-#define __LOCALSTORAGE_H
+#ifndef __TIMEZONES_H
+#define __TIMEZONES_H
 
 #include <Arduino.h>
-#include "clockdisplay.h"
-#include "tzdatabase.h"
+#include <Timezone.h>
 
-struct clock_state;
+static const size_t TZ_NAME_SIZE = 15;
 
-class local_state {
-public:
-  const char tz_name[TZ_NAME_SIZE + 1];
-  clock_mode mode;
-
-private:
-  local_state(const clock_state& state);
-  friend class local_storage;
+struct tz_info {
+  const char* const name;
+  Timezone tz;
 };
 
-class local_storage {
+class tz_database {
 public:
-  local_storage();
-  local_state read();
-  void write_tz(const char* tz_name);
-  void write_mode(clock_mode mode);
-
-private:
-  void read_state(clock_state& state);
-  void write_state(const clock_state& state);
+  tz_database();
+  size_t size() const;
+  const tz_info* const find(const char* name) const;
+  size_t find_index(const char* name) const;
+  const tz_info* const get(size_t index) const;
 };
 
 #endif

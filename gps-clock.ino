@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 #include <Arduino.h>
-#include "gpsunit.h"
+#include "gps.h"
 #include "gpsdisplay.h"
-#include "localclock.h"
+#include "clock.h"
 #include "clockdisplay.h"
-#include "tzdatabase.h"
-#include "tzselector.h"
-#include "modeselector.h"
-#include "localstorage.h"
-#include "lightmonitor.h"
+#include "timezones.h"
+#include "selector.h"
+#include "mode.h"
+#include "storage.h"
+#include "dimmer.h"
 #include "config.h"
 
 static local_storage* storage;

@@ -13,33 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef __TZSELECTOR_H
-#define __TZSELECTOR_H
+#ifndef __CLOCK_H
+#define __CLOCK_H
 
 #include <Arduino.h>
-#include <SimpleRotary.h>
-#include "tzdatabase.h"
+#include <TimeLib.h>
+#include "gps.h"
+#include "timezones.h"
 
-enum tz_action {
-  tz_idle,
-  tz_propose,
-  tz_confirm,
-  tz_reset
+struct local_time {
+  uint16_t year;
+  uint8_t month;
+  uint8_t day;
+  uint8_t hour;
+  uint8_t minute;
+  uint8_t second;
 };
 
-class tz_selector {
+class local_clock {
 public:
-  tz_selector(const tz_database* tz_db, const tz_info* tz);
-  tz_action read();
-  void reset();
-  const tz_info* const get_tz();
+  local_clock(const tz_info* tz);
+  bool tick();
+  local_time now();
+  void set_tz(const tz_info* tz);
+  void sync(const gps_time& time);
+  bool is_sync();
 
 private:
-  SimpleRotary encoder;
-  const tz_database* tz_db;
-  size_t tz_confirmed;
-  size_t tz_proposed;
-  uint32_t last_action;
+  time_t last_time;
+  const tz_info* tz;
 };
 
 #endif

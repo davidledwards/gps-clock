@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "localclock.h"
+#include "clock.h"
 
 local_clock::local_clock(const tz_info* tz)
   : tz(tz),

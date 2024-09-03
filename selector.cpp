@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "tzselector.h"
+#include "selector.h"
 #include "config.h"
 
 // Proposed timezone not selected within given time frame is reverted to the previously confirmed

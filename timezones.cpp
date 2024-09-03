@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "tzdatabase.h"
+#include "timezones.h"
 #include "board.h"
 
 // Array of predefined timezones where first entry must always be "UTC", thus array size is

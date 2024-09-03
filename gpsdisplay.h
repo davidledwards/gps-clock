@@ -18,8 +18,8 @@
 
 #include <Arduino.h>
 #include "config.h"
-#include "gpsunit.h"
-#include "tzdatabase.h"
+#include "gps.h"
+#include "timezones.h"
 
 #if defined(GPS_DISPLAY_LCD)
 #include "lcd.h"

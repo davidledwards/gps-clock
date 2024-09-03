@@ -13,19 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef __MODESELECTOR_H
-#define __MODESELECTOR_H
+#ifndef __SELECTOR_H
+#define __SELECTOR_H
 
 #include <Arduino.h>
-#include <ezButton.h>
+#include <SimpleRotary.h>
+#include "timezones.h"
 
-class mode_selector {
+enum tz_action {
+  tz_idle,
+  tz_propose,
+  tz_confirm,
+  tz_reset
+};
+
+class tz_selector {
 public:
-  mode_selector();
-  bool toggled();
+  tz_selector(const tz_database* tz_db, const tz_info* tz);
+  tz_action read();
+  void reset();
+  const tz_info* const get_tz();
 
 private:
-  ezButton button;
+  SimpleRotary encoder;
+  const tz_database* tz_db;
+  size_t tz_confirmed;
+  size_t tz_proposed;
+  uint32_t last_action;
 };
 
 #endif

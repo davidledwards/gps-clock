@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "gpsunit.h"
+#include "gps.h"
 #include "config.h"
 
 // Number of milliseconds that must elapse before returning new GPS information.

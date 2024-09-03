@@ -50,6 +50,10 @@
 #define RAM_SIZE 256
 #undef USE_SOFTWARE_SERIAL
 #define USE_EEPROM_EMULATION
+#elif defined(ARDUINO_AVR_NANO_EVERY)
+#define RAM_SIZE 6
+#undef USE_SOFTWARE_SERIAL
+#undef USE_EEPROM_EMULATION
 #else
 #error "ARDUINO_?: board type not supported"
 #endif

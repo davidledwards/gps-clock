@@ -13,16 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "modeselector.h"
-#include "config.h"
+#ifndef __DIMMER_H
+#define __DIMMER_H
 
-mode_selector::mode_selector()
-  : button(MODE_PIN) {
-  pinMode(MODE_PIN, INPUT_PULLUP);
-  button.setDebounceTime(MODE_DEBOUNCE_MS);
-}
+#include <Arduino.h>
 
-bool mode_selector::toggled() {
-  button.loop();
-  return button.isPressed();
-}
+class light_monitor {
+public:
+  light_monitor();
+  uint8_t get_brightness();
+
+private:
+  uint8_t pin;
+  uint16_t cur_reading;
+  uint8_t cur_brightness;
+  uint32_t last_reading_time;
+  uint16_t last_reading;
+  uint32_t waiting_start;
+
+  static uint8_t to_brightness(uint16_t reading);
+};
+
+#endif

@@ -13,35 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef __LOCALCLOCK_H
-#define __LOCALCLOCK_H
+#include "mode.h"
+#include "config.h"
 
-#include <Arduino.h>
-#include <TimeLib.h>
-#include "gpsunit.h"
-#include "tzdatabase.h"
+mode_selector::mode_selector()
+  : button(MODE_PIN) {
+  pinMode(MODE_PIN, INPUT_PULLUP);
+  button.setDebounceTime(MODE_DEBOUNCE_MS);
+}
 
-struct local_time {
-  uint16_t year;
-  uint8_t month;
-  uint8_t day;
-  uint8_t hour;
-  uint8_t minute;
-  uint8_t second;
-};
-
-class local_clock {
-public:
-  local_clock(const tz_info* tz);
-  bool tick();
-  local_time now();
-  void set_tz(const tz_info* tz);
-  void sync(const gps_time& time);
-  bool is_sync();
-
-private:
-  time_t last_time;
-  const tz_info* tz;
-};
-
-#endif
+bool mode_selector::toggled() {
+  button.loop();
+  return button.isPressed();
+}
