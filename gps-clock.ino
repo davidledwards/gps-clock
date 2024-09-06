@@ -83,13 +83,13 @@ void loop() {
   // Intelligently turn LCD backlight on/off.
   if (action == tz_idle) {
     if (last_movement > 0 && millis() - last_movement > AUTO_OFF_MS) {
-      gps_disp->show_backlight(false);
+      gps_disp->show_display(false);
       last_movement = 0;
     }
   } else if (action != tz_reset) {
     if (last_movement == 0) {
       // When backlight is turned on due to some kind of selector movement, the event is quietly ignored.
-      gps_disp->show_backlight(true);
+      gps_disp->show_display(true);
       tz_sel->reset();
       action = tz_idle;
     }

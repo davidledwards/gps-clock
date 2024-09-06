@@ -20,36 +20,51 @@
 static const uint8_t DISPLAY_COLS = 20;
 static const uint8_t DISPLAY_ROWS = 4;
 #elif defined(GPS_DISPLAY_OLED)
-static const uint8_t DISPLAY_COLS = 16;
+static const uint8_t DISPLAY_COLS = 21;
+static const uint8_t DISPLAY_WIDTH = 128;
+
 #if defined(OLED_SIZE_LARGE)
 static const uint8_t DISPLAY_ROWS = 8;
+static const uint8_t DISPLAY_HEIGHT = 64;
 #elif defined(OLED_SIZE_SMALL)
 static const uint8_t DISPLAY_ROWS = 4;
+static const uint8_t DISPLAY_HEIGHT = 32;
 #endif
+
+// Pixel multipliers for logical col/row indexing.
+static const uint8_t COL_PIXELS = 6;
+static const uint8_t ROW_PIXELS = 8;
 #endif
 
 // Various bitmaps (LCD) and tiles (OLED) used for single-character icons.
 //
-// See following link for explanation of bit layout.
-// https://github.com/olikraus/u8g2/wiki/u8x8reference#drawtile
+// LCD bitmaps employ hack that uses first byte as character code, which is
+// necessary for registratation with LCD libraries. This allows draw_bitmap()
+// method to be used for both LCD and OLED displays.
 //
-// Bitmaps on LCD are 8x8 bit arrays oriented left-to-right and top-to-bottom.
+// Bitmaps are oriented left-to-right and top-to-bottom.
+// - LCD bitmaps are 5x8.
+// - OLED bitmaps are 8x8.
 //
-// Tiles on OLED are 8x8 bit arrays oriented top-to-bottom and left-to-right.
-#if defined(GPS_DISPLAY_LCD)
+// Visual of following bitmaps show OLED (8x8) version, not LCD (5x8) version,
+// though reading bits in initializer code should give some indication as to
+// layout.
+
 // DEGREE bitmap
 //
-// .xx..
-// x..x.
-// x..x.
-// .xx..
-// .....
-// .....
-// .....
-// .....
+// ........
+// ...xx...
+// ..x..x..
+// ..x..x..
+// ...xx...
+// ........
+// ........
+// ........
 //
 static uint8_t BITMAP_DEGREE[] = {
-  0b01100,
+#if defined(GPS_DISPLAY_LCD)
+  0,       // <-- character code
+  0b01100, // <-- start of bitmap
   0b10010,
   0b10010,
   0b01100,
@@ -57,22 +72,33 @@ static uint8_t BITMAP_DEGREE[] = {
   0b00000,
   0b00000,
   0b00000
+#elif defined(GPS_DISPLAY_OLED)
+  0b00000000,
+  0b00110000,
+  0b01001000,
+  0b01001000,
+  0b00110000,
+  0b00000000,
+  0b00000000,
+  0b00000000
+#endif
 };
-static const uint8_t CHAR_DEGREE = 0;
 
 // ALTITUDE bitmap
 //
-// ..x..
-// .xxx.
-// xxxxx
-// ..x..
-// ..x..
-// xxxxx
-// .xxx.
-// ..x..
+// ...x....
+// ..xxx...
+// .xxxxx..
+// ...x....
+// ...x....
+// .xxxxx..
+// ..xxx...
+// ...x....
 //
 static uint8_t BITMAP_ALTITUDE[] = {
-  0b00100,
+#if defined(GPS_DISPLAY_LCD)
+  1,       // <-- character code
+  0b00100, // <-- start of bitmap
   0b01110,
   0b11111,
   0b00100,
@@ -80,101 +106,19 @@ static uint8_t BITMAP_ALTITUDE[] = {
   0b11111,
   0b01110,
   0b00100
+#elif defined(GPS_DISPLAY_OLED)
+  0b00010000,
+  0b00111000,
+  0b01111100,
+  0b00010000,
+  0b00010000,
+  0b01111100,
+  0b00111000,
+  0b00010000
+#endif
 };
-static const uint8_t CHAR_ALTITUDE = 1;
 
 // SATELLITE bitmap
-//
-// .xxx.
-// x...x
-// ..x..
-// .x.x.
-// .....
-// ..x..
-// ..x..
-// ..x..
-//
-static uint8_t BITMAP_SATELLITE[] = {
-  0b01110,
-  0b10001,
-  0b00100,
-  0b01010,
-  0b00000,
-  0b00100,
-  0b00100,
-  0b00100
-};
-static const uint8_t CHAR_SATELLITE = 2;
-
-// TIMEZONE bitmap
-//
-// xxxxx
-// xxxxx
-// x.x.x
-// xxxxx
-// x.x.x
-// xxxxx
-// x.x.x
-// xxxxx
-//
-static uint8_t BITMAP_TIMEZONE[] = {
-  0b11111,
-  0b11111,
-  0b10101,
-  0b11111,
-  0b10101,
-  0b11111,
-  0b10101,
-  0b11111
-};
-static const uint8_t CHAR_TIMEZONE = 3;
-#elif defined(GPS_DISPLAY_OLED)
-// GPS icon
-//
-// ..xxx...
-// .x...x..
-// x.....x.
-// x.....x.
-// xx...xx.
-// .xxxxx..
-// ..xxx...
-// ...x....
-//
-static uint8_t TILE_GPS[] = {
-    0x1c, 0x32, 0x61, 0xe1, 0x61, 0x32, 0x1c, 0x00
-};
-
-// DEGREE icon
-//
-// ........
-// ...xx...
-// ..x..x..
-// ..x..x..
-// ...xx...
-// ........
-// ........
-// ........
-//
-static uint8_t TILE_DEGREE[] = {
-    0x00, 0x00, 0x0c, 0x12, 0x12, 0x0c, 0x00, 0x00
-};
-
-// ALTITUDE icon
-//
-// ...x....
-// ..xxx...
-// .xxxxx..
-// ...x....
-// ...x....
-// .xxxxx..
-// ..xxx...
-// ...x....
-//
-static uint8_t TILE_ALTITUDE[] = {
-    0x00, 0x24, 0x66, 0xff, 0x66, 0x24, 0x00, 0x00
-};
-
-// SATELLITE icon
 //
 // ........
 // ..xxxx..
@@ -185,11 +129,87 @@ static uint8_t TILE_ALTITUDE[] = {
 // ...xx...
 // ...xx...
 //
-static uint8_t TILE_SATELLITE[] = {
-    0x08, 0x24, 0x12, 0xca, 0xca, 0x12, 0x24, 0x08
+static uint8_t BITMAP_SATELLITE[] = {
+#if defined(GPS_DISPLAY_LCD)
+  2,       // <-- character code
+  0b01110, // <-- start of bitmap
+  0b10001,
+  0b00100,
+  0b01010,
+  0b00000,
+  0b00100,
+  0b00100,
+  0b00100
+#elif defined(GPS_DISPLAY_OLED)
+  0b00000000,
+  0b00111100,
+  0b01000010,
+  0b10011001,
+  0b00100100,
+  0b01000010,
+  0b00011000,
+  0b00011000
+#endif
 };
 
-// CLOCK icon
+// TIMEZONE bitmap
+//
+// xxxxxxx.
+// xxxxxxx.
+// x.x.x.x.
+// xxxxxxx.
+// x.x.x.x.
+// xxxxxxx.
+// x.x.x.x.
+// xxxxxxx.
+//
+static uint8_t BITMAP_TIMEZONE[] = {
+#if defined(GPS_DISPLAY_LCD)
+  3,       // <-- character code
+  0b11111, // <-- start of bitmap
+  0b11111,
+  0b10101,
+  0b11111,
+  0b10101,
+  0b11111,
+  0b10101,
+  0b11111
+#elif defined(GPS_DISPLAY_OLED)
+  0b11111110,
+  0b11111110,
+  0b10101010,
+  0b11111110,
+  0b10101010,
+  0b11111110,
+  0b10101010,
+  0b11111110
+#endif
+};
+
+#if defined(GPS_DISPLAY_OLED)
+// GPS bitmap
+//
+// ..xxx...
+// .x...x..
+// x.....x.
+// x.....x.
+// xx...xx.
+// .xxxxx..
+// ..xxx...
+// ...x....
+//
+static uint8_t BITMAP_GPS[] = {
+  0b00111000,
+  0b01000100,
+  0b10000010,
+  0b10000010,
+  0b11000110,
+  0b01111100,
+  0b00111000,
+  0b00010000
+};
+
+// CLOCK bitmap
 //
 // ........
 // ..xxx...
@@ -200,23 +220,15 @@ static uint8_t TILE_SATELLITE[] = {
 // .x...x..
 // ..xxx...
 //
-static uint8_t TILE_CLOCK[] = {
-    0x38, 0x44, 0x82, 0x9a, 0x92, 0x44, 0x38, 0x00
-};
-
-// TIMEZONE icon
-//
-// xxxxxxx.
-// xxxxxxx.
-// x.x.x.x.
-// xxxxxxx.
-// x.x.x.x.
-// xxxxxxx.
-// x.x.x.x.
-// xxxxxxx.
-//
-static uint8_t TILE_TIMEZONE[] = {
-    0xff, 0xab, 0xff, 0xab, 0xff, 0xab, 0xff, 0x00
+static uint8_t BITMAP_CLOCK[] = {
+  0b00000000,
+  0b00111000,
+  0b01000100,
+  0b10010010,
+  0b10011010,
+  0b10000010,
+  0b01000100,
+  0b00111000
 };
 #endif
 
@@ -262,7 +274,6 @@ static const uint8_t ROW_ALTITUDE = 2;
 static const uint8_t COL_ALTITUDE = 0;
 static const uint8_t ROW_SATELLITE = 2;
 static const uint8_t COL_SATELLITE = 12;
-static const uint8_t ROW_UTC = 4;
 static const uint8_t ROW_TZ = 3;
 static const uint8_t COL_TZ = 0;
 static const uint8_t KEEP_ROWS = 1;
@@ -287,79 +298,82 @@ static const float ALTITUDE_UNIT_DIVISOR = 0.3048;
 static const float ALTITUDE_UNIT_DIVISOR = 1.0;
 #endif
 
-// Library-specific constructor and initialization code for LCD displays.
-#if defined(GPS_DISPLAY_LCD)
-#if defined(LCD_GENERIC)
-#define LCD_CTOR(display) display(LCD_I2C_ADDR, DISPLAY_COLS, DISPLAY_ROWS)
-#define LCD_INIT(display) display.init()
-#elif defined(LCD_ADAFRUIT)
-#define LCD_CTOR(display) display(LCD_I2C_ADDR - 0x70)
-#define LCD_INIT(display) display.begin(DISPLAY_COLS, DISPLAY_ROWS)
-#endif
-#endif
-
 gps_display::gps_display()
 #if defined(GPS_DISPLAY_LCD)
-  : LCD_CTOR(display),
-#elif defined(GPS_DISPLAY_OLED)
-  : display(I2C_CLOCK_PIN, I2C_DATA_PIN),
+#if defined(LCD_GENERIC)
+  : display(LCD_I2C_ADDR),
+#elif defined(LCD_ADAFRUIT)
+  : display(LCD_I2C_ADDR - 0x70),
 #endif
-    searching(false) {
+#elif defined(GPS_DISPLAY_OLED)
+  : display(DISPLAY_WIDTH, DISPLAY_HEIGHT),
+#endif
+    searching(false),
+    displaying(true) {
 #if defined(GPS_DISPLAY_LCD)
-  LCD_INIT(display);
+  display.begin(DISPLAY_COLS, DISPLAY_ROWS);
   display.clear();
+  display.createChar(BITMAP_DEGREE[0], &BITMAP_DEGREE[1]);
+  display.createChar(BITMAP_ALTITUDE[0], &BITMAP_ALTITUDE[1]);
+  display.createChar(BITMAP_SATELLITE[0], &BITMAP_SATELLITE[1]);
+  display.createChar(BITMAP_TIMEZONE[0], &BITMAP_TIMEZONE[1]);
   display.setBacklight(HIGH);
-  display.createChar(CHAR_DEGREE, BITMAP_DEGREE);
-  display.createChar(CHAR_ALTITUDE, BITMAP_ALTITUDE);
-  display.createChar(CHAR_SATELLITE, BITMAP_SATELLITE);
-  display.createChar(CHAR_TIMEZONE, BITMAP_TIMEZONE);
 #elif defined(GPS_DISPLAY_OLED)
-  display.setI2CAddress(OLED_I2C_ADDR);
-  display.begin();
-  display.setPowerSave(0);
+  display.begin(SSD1306_SWITCHCAPVCC, OLED_I2C_ADDR);
   display.clearDisplay();
-  display.setFont(u8x8_font_chroma48medium8_r);
+  display.setTextSize(1);
+  display.setTextColor(WHITE, BLACK);
 #endif
+  display.display();
 }
 
 void gps_display::show_info(const gps_info& info, const gps_time& time) {
-  if (searching) {
-    clear_gps();
-    searching = false;
+  if (displaying) {
+    if (searching) {
+      clear_gps();
+      searching = false;
+    }
+    write_lat(info);
+    write_lon(info);
+    write_altitude(info);
+    write_satellites(info);
+    write_utc(time);
+    display.display();
   }
-  write_lat(info);
-  write_lon(info);
-  write_altitude(info);
-  write_satellites(info);
-  write_utc(time);
 }
 
 void gps_display::show_searching() {
-  if (!searching) {
-    clear_gps();
-
-#if defined(GPS_DISPLAY_LCD)
-    display.setCursor(0, 0);
-    display.write(CHAR_SATELLITE);
-#elif defined(GPS_DISPLAY_OLED)
-    display.drawTile(0, 0, 1, TILE_SATELLITE);
-#endif
-
-    display.setCursor(2, 0);
-    display.print(F("searching..."));
-    searching = true;
+  if (displaying) {
+    if (!searching) {
+      clear_gps();
+      draw_bitmap(0, 0, BITMAP_SATELLITE);
+      set_cursor(2, 0);
+      display.print(F("searching..."));
+      display.display();
+      searching = true;
+    }
   }
 }
 
 void gps_display::show_tz(const tz_info* tz, bool pending) {
-  write_tz(tz, pending);
+  if (displaying) {
+    write_tz(tz, pending);
+    display.display();
+  }
 }
 
-void gps_display::show_backlight(bool on) {
+void gps_display::show_display(bool on) {
+  displaying = on;
 #if defined(GPS_DISPLAY_LCD)
-  display.setBacklight(on ? HIGH : LOW);
+  if (displaying) {
+    display.setBacklight(HIGH);
+    display.display();
+  } else {
+    display.setBacklight(LOW);
+    display.noDisplay();
+  }
 #elif defined(GPS_DISPLAY_OLED)
-  display.setPowerSave(on ? 0 : 1);
+  display.ssd1306_command(displaying ? SSD1306_DISPLAYON : SSD1306_DISPLAYOFF);
 #endif
 }
 
@@ -376,18 +390,19 @@ void gps_display::write_lat(const gps_info& info) {
   }
 
 #if defined(GPS_DISPLAY_LCD)
-  display.setCursor(COL_LATITUDE, ROW_LATITUDE);
+  set_cursor(COL_LATITUDE, ROW_LATITUDE);
   size_t n = COL_LATITUDE + display.print(lat, 4);
-  display.write(CHAR_DEGREE);
+  draw_bitmap(n, ROW_LATITUDE, BITMAP_DEGREE);
+  set_cursor(n + 1, ROW_LATITUDE);
   display.print(lat_dir);
   for (n += 2; n < 10; ++n)
     display.print(' ');
 #elif defined(GPS_DISPLAY_OLED)
-  display.drawTile(COL_LATITUDE, ROW_LATITUDE, 1, TILE_GPS);
-  display.setCursor(COL_LATITUDE + 2, ROW_LATITUDE);
+  draw_bitmap(COL_LATITUDE, ROW_LATITUDE, BITMAP_GPS);
+  set_cursor(COL_LATITUDE + 2, ROW_LATITUDE);
   size_t n = COL_LATITUDE + 2 + display.print(lat, 6);
-  display.drawTile(n, ROW_LATITUDE, 1, TILE_DEGREE);
-  display.setCursor(n + 1, ROW_LATITUDE);
+  draw_bitmap(n, ROW_LATITUDE, BITMAP_DEGREE);
+  set_cursor(n + 1, ROW_LATITUDE);
   display.print(lat_dir);
   clear_row(ROW_LATITUDE, n + 2);
 #endif
@@ -406,17 +421,21 @@ void gps_display::write_lon(const gps_info& info) {
   }
 
 #if defined(GPS_DISPLAY_LCD)
-  display.setCursor(COL_LONGITUDE, ROW_LONGITUDE);
-  if (lon < 100.0)
+  set_cursor(COL_LONGITUDE, ROW_LONGITUDE);
+  size_t n = COL_LONGITUDE;
+  if (lon < 100.0) {
     display.print(' ');
-  display.print(lon, 4);
-  display.write(CHAR_DEGREE);
+    n += 1;
+  }
+  n += display.print(lon, 4);
+  draw_bitmap(n, ROW_LONGITUDE, BITMAP_DEGREE);
+  set_cursor(n + 1, ROW_LONGITUDE);
   display.print(lon_dir);
 #elif defined(GPS_DISPLAY_OLED)
-  display.setCursor(COL_LONGITUDE, ROW_LONGITUDE);
+  set_cursor(COL_LONGITUDE, ROW_LONGITUDE);
   size_t n = COL_LONGITUDE + display.print(lon, 6);
-  display.drawTile(n, ROW_LONGITUDE, 1, TILE_DEGREE);
-  display.setCursor(n + 1, ROW_LONGITUDE);
+  draw_bitmap(n, ROW_LONGITUDE, BITMAP_DEGREE);
+  set_cursor(n + 1, ROW_LONGITUDE);
   display.print(lon_dir);
   clear_row(ROW_LONGITUDE, n + 2);
 #endif
@@ -425,14 +444,8 @@ void gps_display::write_lon(const gps_info& info) {
 void gps_display::write_altitude(const gps_info& info) {
   float alt = info.altitude / ALTITUDE_UNIT_DIVISOR;
 
-#if defined(GPS_DISPLAY_LCD)
-  display.setCursor(COL_ALTITUDE, ROW_ALTITUDE);
-  display.write(CHAR_ALTITUDE);
-#elif defined(GPS_DISPLAY_OLED)
-  display.drawTile(COL_ALTITUDE, ROW_ALTITUDE, 1, TILE_ALTITUDE);
-#endif
-
-  display.setCursor(COL_ALTITUDE + 2, ROW_ALTITUDE);
+  draw_bitmap(COL_ALTITUDE, ROW_ALTITUDE, BITMAP_ALTITUDE);
+  set_cursor(COL_ALTITUDE + 2, ROW_ALTITUDE);
   size_t n = COL_ALTITUDE + 2 + display.print(static_cast<uint32_t>(alt));
   n += display.print(ALTITUDE_UNIT);
 
@@ -445,14 +458,8 @@ void gps_display::write_altitude(const gps_info& info) {
 }
 
 void gps_display::write_satellites(const gps_info& info) {
-#if defined(GPS_DISPLAY_LCD)
-  display.setCursor(COL_SATELLITE, ROW_SATELLITE);
-  display.write(CHAR_SATELLITE);
-#elif defined(GPS_DISPLAY_OLED)
-  display.drawTile(COL_SATELLITE, ROW_SATELLITE, 1, TILE_SATELLITE);
-#endif
-
-  display.setCursor(COL_SATELLITE + 2, ROW_SATELLITE);
+  draw_bitmap(COL_SATELLITE, ROW_SATELLITE, BITMAP_SATELLITE);
+  set_cursor(COL_SATELLITE + 2, ROW_SATELLITE);
   size_t n = COL_SATELLITE + 2 + display.print(info.satellites);
   clear_row(ROW_SATELLITE, n);
 }
@@ -460,10 +467,10 @@ void gps_display::write_satellites(const gps_info& info) {
 void gps_display::write_utc(const gps_time& time) {
 #if defined(SHOW_UTC)
 #if defined(GPS_DISPLAY_LCD)
-  display.setCursor(COL_UTC, ROW_UTC);
+  set_cursor(COL_UTC, ROW_UTC);
 #elif defined(GPS_DISPLAY_OLED)
-  display.drawTile(COL_UTC, ROW_UTC, 1, TILE_CLOCK);
-  display.setCursor(COL_UTC + 2, ROW_UTC);
+  draw_bitmap(COL_UTC, ROW_UTC, BITMAP_CLOCK);
+  set_cursor(COL_UTC + 2, ROW_UTC);
 #endif
 
 #if defined(DATE_LAYOUT_ISO)
@@ -489,7 +496,7 @@ void gps_display::write_utc(const gps_time& time) {
 #if defined(GPS_DISPLAY_LCD)
   display.print(' ');
 #elif defined(GPS_DISPLAY_OLED)
-  display.setCursor(COL_UTC + 2, ROW_UTC + 1);
+  set_cursor(COL_UTC + 2, ROW_UTC + 1);
 #endif
 
   display.print(time.hour / 10 % 10);
@@ -521,17 +528,11 @@ void gps_display::write_day(const gps_time& time) {
 }
 
 void gps_display::write_tz(const tz_info* tz, bool pending) {
-#if defined(GPS_DISPLAY_LCD)
-  display.setCursor(COL_TZ, ROW_TZ);
-  display.write(CHAR_TIMEZONE);
-#elif defined(GPS_DISPLAY_OLED)
-  display.drawTile(COL_TZ, ROW_TZ, 1, TILE_TIMEZONE);
-  display.setCursor(COL_TZ + 1, ROW_TZ);
-#endif
-
-  display.print(pending ? '?' : ' ');
+  draw_bitmap(COL_TZ, ROW_TZ, BITMAP_TIMEZONE);
+  set_cursor(COL_TZ + 2, ROW_TZ);
   size_t n = COL_TZ + 2 + display.print(tz->name);
-  clear_row(ROW_TZ, n);
+  display.print(pending ? '?' : ' ');
+  clear_row(ROW_TZ, n + 1);
 }
 
 void gps_display::clear_gps() {
@@ -540,15 +541,25 @@ void gps_display::clear_gps() {
 }
 
 void gps_display::clear_row(uint8_t row, uint8_t col) {
-#if defined(GPS_DISPLAY_OLED)
-  if (col == 0)
-    display.clearLine(row);
-  else {
-#endif
-    display.setCursor(col, row);
+    set_cursor(col, row);
     for (; col < DISPLAY_COLS; ++col)
       display.print(' ');
-#if defined(GPS_DISPLAY_OLED)
-  }
+}
+
+void gps_display::set_cursor(uint8_t col, uint8_t row) {
+#if defined(GPS_DISPLAY_LCD)
+  display.setCursor(col, row);
+#elif defined(GPS_DISPLAY_OLED)
+  display.setCursor(col * COL_PIXELS, row * ROW_PIXELS);
+#endif
+}
+
+void gps_display::draw_bitmap(uint8_t col, uint8_t row, uint8_t* bitmap) {
+#if defined(GPS_DISPLAY_LCD)
+  display.setCursor(col, row);
+  // Character code in first byte of bitmap is used as character.
+  display.write(bitmap[0]);
+#elif defined(GPS_DISPLAY_OLED)
+  display.drawBitmap(col * COL_PIXELS, row * ROW_PIXELS, bitmap, 8, 8, WHITE);
 #endif
 }

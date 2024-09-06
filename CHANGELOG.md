@@ -4,6 +4,21 @@ This file contains relevant information for each release. Please refer to the co
 
 Some of the tags are not included in this changelog due to their redundant nature. This redundacy was due to an historical decision to manage multiple generational release streams. Beginning with version `4.0`, only a single releaase stream is being managed. The software is backward-compatible with all prior generations assuming proper configuration.
 
+## [5.2](https://github.com/davidledwards/gps-clock/tree/5.2) - `???`
+
+### Added
+
+- Add support for [Arduino Nano 33 BLE](https://docs.arduino.cc/hardware/nano-33-ble/)
+- Add support for [Arduino Nano Every](https://docs.arduino.cc/hardware/nano-every/)
+- Add predefined configurations for new boards
+
+### Changed
+
+- Change default I2C address for OLEDs from `0x78` to `0x3C`
+- Remove `CONFIG_OLED_DRIVER` configuration since no longer needed
+- Remove `CONFIG_I2C_CLOCK_PIN` and `CONFIG_I2C_DATA_PIN` configuration since no longer needed
+- Refactor LCD and OLED code to use new libraries
+
 ## [5.1](https://github.com/davidledwards/gps-clock/tree/5.1) - `2024-08-28`
 
 ### Added

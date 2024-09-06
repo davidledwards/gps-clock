@@ -165,10 +165,9 @@ Several configuration additions and changes have been introduced, primarily to s
 * `CONFIG_GPS_DISPLAY` specifies whether the LCD or OLED display is used.
 * `CONFIG_MEASUREMENT_SYSTEM` specifies whether _imperial_ or _metric_ applies to the display of units.
 * `CONFIG_USE_DOTS` will use _dots_ instead of _colons_ in the LED display.
-* `CONFIG_OLED_DRIVER` and `CONFIG_OLED_I2C_ADDR` are used to configure the OLED display.
+* `CONFIG_OLED_I2C_ADDR` is used to configure the OLED display.
 * `CONFIG_OLED_SIZE` specifies whether the OLED display is _large_ or _small_.
 * `CONFIG_LCD_DRIVER` replaces `CONFIG_LCD_EXPANDER`, but is identical in function.
-* `CONFIG_I2C_CLOCK_PIN` and `CONFIG_I2C_DATA_PIN` can be used to specify alternative pins for I2C.
 
 The LCD layout has been modernized to use glyphs that align with those shown on the OLED. Doing so opened up a bit of screen real estate, so altitude information is now displayed.
 
@@ -640,19 +639,9 @@ Type of LCD display. The default value depends on `CONFIG_LCD_DRIVER`:
 * PCF8574A = `GENERIC`
 * MCP23008 = `ADAFRUIT`
 
-#### CONFIG_OLED_DRIVER
-
-Specifies the type of driver attached to the OLED display. Recognized options include:
-
-* SSD1309
-
-Default is `SSD1309`.
-
 #### CONFIG_OLED_I2C_ADDR
 
-I2C address of the OLED display. The default value depends on `CONFIG_OLED_DRIVER`:
-
-* SSD1309 = `0x78`
+I2C address of the OLED display. Default is `0x3C`.
 
 #### CONFIG_OLED_SIZE
 
@@ -662,14 +651,6 @@ Specifies the size of the OLED display. Recognized options include:
 * `SMALL`
 
 `LARGE` displays are 128x64, whereas `SMALL` are 128x32. Default is `LARGE`.
-
-#### CONFIG_I2C_CLOCK_PIN
-
-Digital pin of I2C clock. Default is `19`.
-
-#### CONFIG_I2C_DATA_PIN
-
-Digital pin of I2C data. Default is `18`.
 
 #### CONFIG_DIMMER_PIN
 

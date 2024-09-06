@@ -22,9 +22,13 @@
 #include "timezones.h"
 
 #if defined(GPS_DISPLAY_LCD)
-#include "lcd.h"
+#if defined(LCD_GENERIC)
+#include <LiquidCrystal_PCF8574.h>
+#elif defined(LCD_ADAFRUIT)
+#include <Adafruit_LiquidCrystal.h>
+#endif
 #elif defined(GPS_DISPLAY_OLED)
-#include "oled.h"
+#include <Adafruit_SSD1306.h>
 #endif
 
 class gps_display {
@@ -33,15 +37,21 @@ public:
   void show_info(const gps_info& info, const gps_time& time);
   void show_searching();
   void show_tz(const tz_info* tz, bool pending);
-  void show_backlight(bool on);
+  void show_display(bool on);
 
 private:
 #if defined(GPS_DISPLAY_LCD)
-  LCD_CLASS display;
-#elif defined(GPS_DISPLAY_OLED)
-  OLED_CLASS display;
+#if defined(LCD_GENERIC)
+  LiquidCrystal_PCF8574 display;
+#elif defined(LCD_ADAFRUIT)
+  Adafruit_LiquidCrystal display;
 #endif
+#elif defined(GPS_DISPLAY_OLED)
+  Adafruit_SSD1306 display;
+#endif
+
   bool searching;
+  bool displaying;
 
   void write_lat(const gps_info& info);
   void write_lon(const gps_info& info);
@@ -54,6 +64,8 @@ private:
   void write_tz(const tz_info* tz, bool pending);
   void clear_gps();
   void clear_row(uint8_t row, uint8_t col = 0);
+  void set_cursor(uint8_t col, uint8_t row);
+  void draw_bitmap(uint8_t col, uint8_t row, uint8_t* bitmap);
 };
 
 #endif

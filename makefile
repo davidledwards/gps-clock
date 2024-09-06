@@ -38,9 +38,9 @@ BUILD_FILES_PREFIX = $(SKETCH).$(subst :,.,$(BOARD_NAME))
 # Library dependencies.
 LIBS = \
 	"Adafruit LED Backpack Library"@1.5.1 \
-	"LiquidCrystal I2C"@1.1.2 \
 	"Adafruit LiquidCrystal"@2.0.4 \
-	"U8g2"@2.34.22 \
+	"LiquidCrystal_PCF8574@2.2.0" \
+	"Adafruit SSD1306"@2.5.11 \
 	"TinyGPSPlus"@1.0.3 \
 	"SimpleRotary"@1.1.3 \
 	"Time"@1.6.1 \
@@ -97,21 +97,12 @@ CONFIG_LCD_TYPE ?= ADAFRUIT
 endif
 else ifeq ($(CONFIG_GPS_DISPLAY), OLED)
 # Configuration for OLED display.
-CONFIG_OLED_DRIVER ?= SSD1309
-
-ifeq ($(CONFIG_OLED_DRIVER), SSD1309)
-CONFIG_OLED_I2C_ADDR_DEFAULT = 0x78
-endif
-
+CONFIG_OLED_I2C_ADDR_DEFAULT = 0x3C
 CONFIG_OLED_I2C_ADDR ?= $(CONFIG_OLED_I2C_ADDR_DEFAULT)
 
 # Configuration for OLED display size.
 CONFIG_OLED_SIZE ?= LARGE
 endif
-
-# Configuratoin for I2C bus.
-CONFIG_I2C_CLOCK_PIN ?= 19
-CONFIG_I2C_DATA_PIN ?= 18
 
 # Configuration for light monitor that automatically sets brightness level.
 CONFIG_DIMMER_PIN ?= 0
@@ -215,12 +206,9 @@ ifeq ($(CONFIG_GPS_DISPLAY), LCD)
 	@echo "CONFIG_LCD_I2C_ADDR=$(CONFIG_LCD_I2C_ADDR)"
 	@echo "CONFIG_LCD_TYPE=$(CONFIG_LCD_TYPE)"
 else ifeq ($(CONFIG_GPS_DISPLAY), OLED)
-	@echo "CONFIG_OLED_DRIVER=$(CONFIG_OLED_DRIVER)"
 	@echo "CONFIG_OLED_I2C_ADDR=$(CONFIG_OLED_I2C_ADDR)"
 	@echo "CONFIG_OLED_SIZE=$(CONFIG_OLED_SIZE)"
 endif
-	@echo "CONFIG_I2C_CLOCK_PIN=$(CONFIG_I2C_CLOCK_PIN)"
-	@echo "CONFIG_I2C_DATA_PIN=$(CONFIG_I2C_DATA_PIN)"
 	@echo "CONFIG_DIMMER_PIN=$(CONFIG_DIMMER_PIN)"
 	@echo "CONFIG_MODE_PIN=$(CONFIG_MODE_PIN)"
 	@echo "CONFIG_MODE_DEBOUNCE_MS=$(CONFIG_MODE_DEBOUNCE_MS)"
@@ -274,14 +262,9 @@ ifeq ($(CONFIG_GPS_DISPLAY), LCD)
 else ifeq ($(CONFIG_GPS_DISPLAY), OLED)
 	@echo "// Configuration for OLED display that shows GPS information." >> config.h
 	@echo "#define GPS_DISPLAY_OLED" >> config.h
-	@echo "#define OLED_DRIVER_$(CONFIG_OLED_DRIVER)" >> config.h
 	@echo "#define OLED_I2C_ADDR static_cast<uint8_t>($(CONFIG_OLED_I2C_ADDR))" >> config.h
 	@echo "#define OLED_SIZE_$(CONFIG_OLED_SIZE)" >> config.h
 endif
-	@echo "" >> config.h
-	@echo "// Configuration for I2C pins." >> config.h
-	@echo "#define I2C_CLOCK_PIN static_cast<uint8_t>($(CONFIG_I2C_CLOCK_PIN))" >> config.h
-	@echo "#define I2C_DATA_PIN static_cast<uint8_t>($(CONFIG_I2C_DATA_PIN))" >> config.h
 	@echo "" >> config.h
 	@echo "// Configuration for light monitor that automatically sets brightness level." >> config.h
 	@echo "#define DIMMER_PIN static_cast<uint8_t>($(CONFIG_DIMMER_PIN))" >> config.h
