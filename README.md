@@ -140,14 +140,15 @@ The GPS library dependency was updated as a result of testing the use of a newer
 
 ### Hardware Generation 5
 
-https://github.com/davidledwards/gps-clock/tree/5.1
-
+https://github.com/davidledwards/gps-clock/tree/5.2
 
 This generation notably adds an OLED display as an alternative to the original LCD. Both _large_ (128x64) and _small_ (128x32) OLED displays are supported. The larger display adds more screen real estate, allowing more detailed GPS information to be shown. On the contrary, the smaller display has less screen real estate than the LCD, forcing some of the GPS information to be removed.
 
 Note that the Arduino Uno and Arduino Nano boards do not work properly when the OLED configuration is used. Since both of these boards only espouse 2KB of SRAM, the combination of additional code and libraries will cause the stack to overflow and clobber the execution.
 
 Several new Arduino Nano-series boards are now suppported. These include [Arduino Nano 33 IoT](https://docs.arduino.cc/hardware/nano-33-iot/), [Arduino Nano 33 BLE](https://docs.arduino.cc/hardware/nano-33-ble/), and [Arduino Nano Every](https://docs.arduino.cc/hardware/nano-every/). The OLED configuration works nicely with all of them.
+
+The Arduino Nano 33 BLE board operates strictly at 3.3V, so the _photoresistor_ and _rotary encoder_ sensors must be attached to 3.3V (not 5V as depicted in the schematics). It turns out that the supported _GPS modules_ also operate correctly with 3.3V, though continued use of 5V appears to be safe.
 
 New components:
 

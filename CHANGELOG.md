@@ -4,7 +4,7 @@ This file contains relevant information for each release. Please refer to the co
 
 Some of the tags are not included in this changelog due to their redundant nature. This redundacy was due to an historical decision to manage multiple generational release streams. Beginning with version `4.0`, only a single releaase stream is being managed. The software is backward-compatible with all prior generations assuming proper configuration.
 
-## [5.2](https://github.com/davidledwards/gps-clock/tree/5.2) - `???`
+## [5.2](https://github.com/davidledwards/gps-clock/tree/5.2) - `2024-09-06`
 
 ### Added
 
