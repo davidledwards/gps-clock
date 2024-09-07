@@ -6,3 +6,4 @@ build/
 /.env
 /.config
 /config.h
+/.config-*

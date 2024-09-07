@@ -178,17 +178,7 @@ A new collection of predefined configurations has been created in the `configs/`
 
 ### Circuit Diagram
 
-#### Assembly Generation 1
-
-<img src="images/gps-clock.png" style="zoom:25%;" />
-
-#### Assembly Generation 4
-
-<img src="images/gps-clock-gen-4.png" style="zoom:25%;" />
-
-#### Assembly Generation 5
-
-<img src="images/gps-clock-gen-5.png" style="zoom:25%;" />
+<img src="images/gps-clock-schematic.png" style="zoom:25%;" />
 
 ### LED Displays
 
