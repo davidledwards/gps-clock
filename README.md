@@ -400,9 +400,9 @@ This photo shows the modernized LCD display using glyphs. Since the use of glyph
 
 The clocks that follow were built by others inspired by this project. Proper attribution has been given unless the author requested anonymity.
 
-#### Moldova
+#### Europe
 
-This person hails from [Moldova](https://goo.gl/maps/MhutEfQtRmN5artQ9) but chose to remain anonymous. Some of the features in [generation 4](#hardware-generation-4), including support for additional hardware components, were inspired by ideas that emerged during our exchange.
+This was a collaboration from someone in Europe that discovered the clock on GitHub in 2022. Some of the features in [generation 4](#hardware-generation-4), including support for additional hardware components, were inspired by ideas that emerged during our exchange. As seen below, much of the clock hardware was built from scratch.
 
 <img src="images/roman-clock-internal-front.jpg" style="zoom:25%;" />
 
@@ -419,6 +419,20 @@ This person hails from [Moldova](https://goo.gl/maps/MhutEfQtRmN5artQ9) but chos
 <img src="images/roman-clock-2-antenna.jpg" style="zoom:25%;" />
 
 <img src="images/roman-clock-circuit.jpg" style="zoom:25%;" />
+
+This is a version of the clock above using a custom PCB that was sent by the collaborator in Europe. Much appreciated for his token of appreciation.
+
+The following photos capture the front and back of the bare PCB.
+
+<img src="images/pcb-clock-front-bare.jpg" style="zoom:25%;" />
+
+<img src="images/pcb-clock-back-bare.jpg" style="zoom:25%;" />
+
+These photos show the fully constructed and operational clock.
+
+<img src="images/pcb-clock-front.jpg" style="zoom:20%;" />
+
+<img src="images/pcb-clock-back.jpg" style="zoom:25%;" />
 
 ## Software
 
