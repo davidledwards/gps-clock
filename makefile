@@ -39,8 +39,8 @@ BUILD_FILES_PREFIX = $(SKETCH).$(subst :,.,$(BOARD_NAME))
 LIBS = \
 	"Adafruit LED Backpack Library"@1.5.1 \
 	"Adafruit LiquidCrystal"@2.0.4 \
-	"LiquidCrystal_PCF8574@2.2.0" \
-	"Adafruit SSD1306"@2.5.11 \
+	"LiquidCrystal_PCF8574"@2.2.0 \
+	"Adafruit SSD1306"@2.5.13 \
 	"TinyGPSPlus"@1.0.3 \
 	"SimpleRotary"@1.1.3 \
 	"Time"@1.6.1 \
