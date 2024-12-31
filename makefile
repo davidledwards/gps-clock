@@ -159,7 +159,6 @@ $(PROG) : $(SRCS)
 	@echo "building..."
 	arduino-cli compile \
 		--build-path $(BUILD_PATH) \
-		--build-cache-path $(BUILD_PATH) \
 		-b $(BOARD_NAME)
 
 build : $(PROG)
