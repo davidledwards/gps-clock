@@ -46,12 +46,15 @@ private:
   Adafruit_7segment year_led;
   uint8_t cur_brightness;
   clock_mode mode;
+  uint8_t am_pin;
+  uint8_t pm_pin;
 
   void init_led(Adafruit_7segment& led, uint8_t i2c_addr);
   void show_dashes(Adafruit_7segment& led);
   void show_year(const local_time& time);
   void show_mday(const local_time& time);
   void show_time(const local_time& time);
+  void show_indicator(const local_time& time);
 };
 
 #endif

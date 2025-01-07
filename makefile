@@ -78,6 +78,10 @@ CONFIG_LED_MDAY_I2C_ADDR ?= 0x71
 CONFIG_LED_YEAR_I2C_ADDR ?= 0x72
 endif
 
+# Configuration for AM/PM pins.
+CONFIG_AM_PIN ?= 4
+CONFIG_PM_PIN ?= 5
+
 # Configuration for GPS display that shows GPS information.
 CONFIG_GPS_DISPLAY ?= LCD
 
@@ -200,6 +204,8 @@ else
 endif
 	@echo "CONFIG_LED_MDAY_I2C_ADDR=$(CONFIG_LED_MDAY_I2C_ADDR)"
 	@echo "CONFIG_LED_YEAR_I2C_ADDR=$(CONFIG_LED_YEAR_I2C_ADDR)"
+	@echo "CONFIG_AM_PIN=$(CONFIG_AM_PIN)"
+	@echo "CONFIG_PM_PIN=$(CONFIG_PM_PIN)"
 ifeq ($(CONFIG_GPS_DISPLAY), LCD)
 	@echo "CONFIG_LCD_DRIVER=$(CONFIG_LCD_DRIVER)"
 	@echo "CONFIG_LCD_I2C_ADDR=$(CONFIG_LCD_I2C_ADDR)"
@@ -251,6 +257,10 @@ else
 endif
 	@echo "#define LED_MDAY_I2C_ADDR static_cast<uint8_t>($(CONFIG_LED_MDAY_I2C_ADDR))" >> config.h
 	@echo "#define LED_YEAR_I2C_ADDR static_cast<uint8_t>($(CONFIG_LED_YEAR_I2C_ADDR))" >> config.h
+	@echo "" >> config.h
+	@echo "// Configuration for AM/PM pins" >> config.h
+	@echo "#define AM_PIN static_cast<uint8_t>($(CONFIG_AM_PIN))" >> config.h
+	@echo "#define PM_PIN static_cast<uint8_t>($(CONFIG_PM_PIN))" >> config.h
 	@echo "" >> config.h
 ifeq ($(CONFIG_GPS_DISPLAY), LCD)
 	@echo "// Configuration for LCD display that shows GPS information." >> config.h

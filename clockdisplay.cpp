@@ -15,6 +15,7 @@
  */
 #include "clockdisplay.h"
 
+// Use dash on LED when time has not yet been synchronized with GPS.
 static const uint8_t DASH_BITMASK = 0b01000000;
 
 // Assigns relative position of digits on LED displays.
@@ -57,6 +58,12 @@ clock_display::clock_display(uint8_t brightness, clock_mode mode)
 #endif
   init_led(mday_led, LED_MDAY_I2C_ADDR);
   init_led(year_led, LED_YEAR_I2C_ADDR);
+
+  // Turn off AM/PM until clock is synchronized.
+  pinMode(am_pin, OUTPUT);
+  pinMode(pm_pin, OUTPUT);
+  digitalWrite(am_pin, LOW);
+  digitalWrite(pm_pin, LOW);
 }
 
 void clock_display::show_unset() {
@@ -68,12 +75,16 @@ void clock_display::show_unset() {
 #endif
   show_dashes(mday_led);
   show_dashes(year_led);
+
+  digitalWrite(am_pin, LOW);
+  digitalWrite(pm_pin, LOW);
 }
 
 void clock_display::show_now(const local_time& time) {
   show_year(time);
   show_mday(time);
   show_time(time);
+  show_indicator(time);
 }
 
 void clock_display::set_brightness(uint8_t brightness) {
@@ -247,4 +258,14 @@ void clock_display::show_time(const local_time& time) {
   time_led.writeDigitNum(DIGIT_3, time.minute % 10, mode == clock_12 && time.hour >= 12);
   time_led.writeDisplay();
 #endif
+}
+
+void clock_display::show_indicator(const local_time& time) {
+  if (mode == clock_12) {
+    digitalWrite(am_pin, time.hour < 12 ? HIGH : LOW);
+    digitalWrite(pm_pin, time.hour < 12 ? LOW : HIGH);
+  } else {
+    digitalWrite(am_pin, LOW);
+    digitalWrite(pm_pin, LOW);
+  }
 }

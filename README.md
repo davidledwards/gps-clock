@@ -609,6 +609,14 @@ I2C address of the month/day LED. If `CONFIG_USE_SECONDS` is enabled, default is
 
 I2C address of the year LED. If `CONFIG_USE_SECONDS` is enabled, default is `0x73` else `0x72`.
 
+#### CONFIG_AM_PIN
+
+Digital pin connected to `AM` indicator. Default is `4`.
+
+#### CONFIG_PM_PIN
+
+Digital pin connected to `PM` indicator. Default is `5`.
+
 #### CONFIG_GPS_DISPLAY
 
 Specifies the type of display used for GPS information. Recognized options include:
