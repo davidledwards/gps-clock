@@ -52,7 +52,15 @@ LIBS = \
 # Name of the image that gets uploaded to the board.
 PROG = $(BUILD_FILES_PREFIX).hex
 
+# Sources for compilation.
 SRCS = $(wildcard *.ino *.h *.cpp)
+
+# Configuration sources and targets
+#
+# Any file matching ".config*" will have a corresponding "config*.h" file
+# generated when the `make config` is executed.
+CONFIG_SRCS = $(wildcard .config*)
+CONFIG_TARGETS = $(patsubst .%,%.h,$(CONFIG_SRCS))
 
 # This section defines configuration variables which are used to generate
 # configuration header files. In most cases, variables are assigned default
@@ -150,36 +158,38 @@ CONFIG_GPS_BAUD_RATE ?= 9600
 # Configuration for automatically disabling LCD backlight.
 CONFIG_AUTO_OFF_MS ?= 30000
 
-help :
+.PHONY: help install build upload clean config print
+
+help:
 	@echo "useful targets:"
 	@echo "  install  install library and core dependencies"
 	@echo "  build    build sketch"
 	@echo "  upload   upload program to board"
 	@echo "  clean    remove all transient build files"
-	@echo "  config   generate configuration file"
+	@echo "  config   generate configuration files"
 	@echo "  print    print configuration variables"
 
-$(PROG) : $(SRCS)
+$(PROG): $(SRCS)
 	@echo "building..."
 	arduino-cli compile \
 		--build-path $(BUILD_PATH) \
 		-b $(BOARD_NAME)
 
-build : $(PROG)
+build: $(PROG)
 
-upload : build
+upload: build
 	@echo "uploading to ${PORT}..."
 	arduino-cli upload \
 	  --input-dir $(BUILD_PATH) \
 		-b $(BOARD_NAME) \
 		-p $(PORT)
 
-clean :
+clean:
 	@echo "cleaning..."
 	rm -rf $(BUILD_PATH)
 	rm -f $(CURDIR)/$(BUILD_FILES_PREFIX).*
 
-install :
+install:
 	@echo "installing libraries..."
 	arduino-cli lib update-index
 	arduino-cli lib install $(LIBS)
@@ -187,7 +197,7 @@ install :
 	arduino-cli core update-index
 	arduino-cli core install $(BOARD_CORE)
 
-print :
+print:
 	@echo "BOARD_ARCH=$(BOARD_ARCH)"
 	@echo "BOARD=$(BOARD)"
 	@echo "PORT=$(PORT)"
@@ -227,74 +237,78 @@ endif
 	@echo "CONFIG_GPS_BAUD_RATE=$(CONFIG_GPS_BAUD_RATE)"
 	@echo "CONFIG_AUTO_OFF_MS=$(CONFIG_AUTO_OFF_MS)"
 
-config :
-	@echo "generating config.h"
-	@echo "/*" > config.h
-	@echo " * This file was automatically generated on $(shell date -R)" >> config.h
-	@echo " */" >> config.h
-	@echo "#ifndef __CONFIG_H" >> config.h
-	@echo "#define __CONFIG_H" >> config.h
-	@echo "" >> config.h
-	@echo "// Configuration for date layout." >> config.h
-	@echo "#define DATE_LAYOUT_$(CONFIG_DATE_LAYOUT)" >> config.h
-	@echo "" >> config.h
-	@echo "// Configuration of measurement system." >> config.h
-	@echo "#define MEASUREMENT_SYSTEM_$(CONFIG_MEASUREMENT_SYSTEM)" >> config.h
-	@echo "" >> config.h
-	@echo "// Configuration for LED displays that show date and time." >> config.h
-	@echo "#define LED_LAYOUT_$(CONFIG_LED_LAYOUT)" >> config.h
+config: $(CONFIG_TARGETS)
+
+.PHONY: FORCE
+
+%.h: .% FORCE
+	@echo "$< --> $@"
+	@echo "/*" > $@
+	@echo " * This file was automatically generated on $(shell date -R)" >> $@
+	@echo " */" >> $@
+	@echo "#ifndef __CONFIG_H" >> $@
+	@echo "#define __CONFIG_H" >> $@
+	@echo "" >> $@
+	@echo "// Configuration for date layout." >> $@
+	@echo "#define DATE_LAYOUT_$(CONFIG_DATE_LAYOUT)" >> $@
+	@echo "" >> $@
+	@echo "// Configuration of measurement system." >> $@
+	@echo "#define MEASUREMENT_SYSTEM_$(CONFIG_MEASUREMENT_SYSTEM)" >> $@
+	@echo "" >> $@
+	@echo "// Configuration for LED displays that show date and time." >> $@
+	@echo "#define LED_LAYOUT_$(CONFIG_LED_LAYOUT)" >> $@
 ifdef CONFIG_USE_SECONDS
-	@echo "#define USE_SECONDS" >> config.h
+	@echo "#define USE_SECONDS" >> $@
 endif
 ifdef CONFIG_USE_DOTS
-	@echo "#define USE_DOTS" >> config.h
+	@echo "#define USE_DOTS" >> $@
 endif
 ifdef CONFIG_USE_SECONDS
-	@echo "#define LED_TIME_LOWER_I2C_ADDR static_cast<uint8_t>($(CONFIG_LED_TIME_LOWER_I2C_ADDR))" >> config.h
-	@echo "#define LED_TIME_UPPER_I2C_ADDR static_cast<uint8_t>($(CONFIG_LED_TIME_UPPER_I2C_ADDR))" >> config.h
+	@echo "#define LED_TIME_LOWER_I2C_ADDR static_cast<uint8_t>($(CONFIG_LED_TIME_LOWER_I2C_ADDR))" >> $@
+	@echo "#define LED_TIME_UPPER_I2C_ADDR static_cast<uint8_t>($(CONFIG_LED_TIME_UPPER_I2C_ADDR))" >> $@
 else
-	@echo "#define LED_TIME_I2C_ADDR static_cast<uint8_t>($(CONFIG_LED_TIME_I2C_ADDR))" >> config.h
+	@echo "#define LED_TIME_I2C_ADDR static_cast<uint8_t>($(CONFIG_LED_TIME_I2C_ADDR))" >> $@
 endif
-	@echo "#define LED_MDAY_I2C_ADDR static_cast<uint8_t>($(CONFIG_LED_MDAY_I2C_ADDR))" >> config.h
-	@echo "#define LED_YEAR_I2C_ADDR static_cast<uint8_t>($(CONFIG_LED_YEAR_I2C_ADDR))" >> config.h
-	@echo "" >> config.h
-	@echo "// Configuration for AM/PM pins" >> config.h
-	@echo "#define AM_PIN static_cast<uint8_t>($(CONFIG_AM_PIN))" >> config.h
-	@echo "#define PM_PIN static_cast<uint8_t>($(CONFIG_PM_PIN))" >> config.h
-	@echo "" >> config.h
+	@echo "#define LED_MDAY_I2C_ADDR static_cast<uint8_t>($(CONFIG_LED_MDAY_I2C_ADDR))" >> $@
+	@echo "#define LED_YEAR_I2C_ADDR static_cast<uint8_t>($(CONFIG_LED_YEAR_I2C_ADDR))" >> $@
+	@echo "" >> $@
+	@echo "// Configuration for AM/PM pins" >> $@
+	@echo "#define AM_PIN static_cast<uint8_t>($(CONFIG_AM_PIN))" >> $@
+	@echo "#define PM_PIN static_cast<uint8_t>($(CONFIG_PM_PIN))" >> $@
+	@echo "" >> $@
 ifeq ($(CONFIG_GPS_DISPLAY), LCD)
-	@echo "// Configuration for LCD display that shows GPS information." >> config.h
-	@echo "#define GPS_DISPLAY_LCD" >> config.h
-	@echo "#define LCD_DRIVER_$(CONFIG_LCD_DRIVER)" >> config.h
-	@echo "#define LCD_I2C_ADDR static_cast<uint8_t>($(CONFIG_LCD_I2C_ADDR))" >> config.h
-	@echo "#define LCD_$(CONFIG_LCD_TYPE)" >> config.h
+	@echo "// Configuration for LCD display that shows GPS information." >> $@
+	@echo "#define GPS_DISPLAY_LCD" >> $@
+	@echo "#define LCD_DRIVER_$(CONFIG_LCD_DRIVER)" >> $@
+	@echo "#define LCD_I2C_ADDR static_cast<uint8_t>($(CONFIG_LCD_I2C_ADDR))" >> $@
+	@echo "#define LCD_$(CONFIG_LCD_TYPE)" >> $@
 else ifeq ($(CONFIG_GPS_DISPLAY), OLED)
-	@echo "// Configuration for OLED display that shows GPS information." >> config.h
-	@echo "#define GPS_DISPLAY_OLED" >> config.h
-	@echo "#define OLED_I2C_ADDR static_cast<uint8_t>($(CONFIG_OLED_I2C_ADDR))" >> config.h
-	@echo "#define OLED_SIZE_$(CONFIG_OLED_SIZE)" >> config.h
+	@echo "// Configuration for OLED display that shows GPS information." >> $@
+	@echo "#define GPS_DISPLAY_OLED" >> $@
+	@echo "#define OLED_I2C_ADDR static_cast<uint8_t>($(CONFIG_OLED_I2C_ADDR))" >> $@
+	@echo "#define OLED_SIZE_$(CONFIG_OLED_SIZE)" >> $@
 endif
-	@echo "" >> config.h
-	@echo "// Configuration for light monitor that automatically sets brightness level." >> config.h
-	@echo "#define DIMMER_PIN static_cast<uint8_t>($(CONFIG_DIMMER_PIN))" >> config.h
-	@echo "" >> config.h
-	@echo "// Configuration for 12/24-hour mode selector." >> config.h
-	@echo "#define MODE_PIN static_cast<uint8_t>($(CONFIG_MODE_PIN))" >> config.h
-	@echo "#define MODE_DEBOUNCE_MS static_cast<uint32_t>($(CONFIG_MODE_DEBOUNCE_MS))" >> config.h
-	@echo "" >> config.h
-	@echo "// Configuration for timezone selector." >> config.h
-	@echo "#define TZ_A_PIN static_cast<uint8_t>($(CONFIG_TZ_A_PIN))" >> config.h
-	@echo "#define TZ_B_PIN static_cast<uint8_t>($(CONFIG_TZ_B_PIN))" >> config.h
-	@echo "#define TZ_BUTTON_PIN static_cast<uint8_t>($(CONFIG_TZ_BUTTON_PIN))" >> config.h
-	@echo "#define TZ_DEBOUNCE_MS static_cast<uint32_t>($(CONFIG_TZ_DEBOUNCE_MS))" >> config.h
-	@echo "#define TZ_ERROR_MS static_cast<uint32_t>($(CONFIG_TZ_ERROR_MS))" >> config.h
-	@echo "" >> config.h
-	@echo "// Configuration for GPS module." >> config.h
-	@echo "#define GPS_RX_PIN static_cast<uint8_t>($(CONFIG_GPS_RX_PIN))" >> config.h
-	@echo "#define GPS_TX_PIN static_cast<uint8_t>($(CONFIG_GPS_TX_PIN))" >> config.h
-	@echo "#define GPS_BAUD_RATE static_cast<long>($(CONFIG_GPS_BAUD_RATE))" >> config.h
-	@echo "" >> config.h
-	@echo "// Configuration for automatically disabling LCD backlight." >> config.h
-	@echo "#define AUTO_OFF_MS static_cast<uint32_t>($(CONFIG_AUTO_OFF_MS))" >> config.h
-	@echo "" >> config.h
-	@echo "#endif" >> config.h
+	@echo "" >> $@
+	@echo "// Configuration for light monitor that automatically sets brightness level." >> $@
+	@echo "#define DIMMER_PIN static_cast<uint8_t>($(CONFIG_DIMMER_PIN))" >> $@
+	@echo "" >> $@
+	@echo "// Configuration for 12/24-hour mode selector." >> $@
+	@echo "#define MODE_PIN static_cast<uint8_t>($(CONFIG_MODE_PIN))" >> $@
+	@echo "#define MODE_DEBOUNCE_MS static_cast<uint32_t>($(CONFIG_MODE_DEBOUNCE_MS))" >> $@
+	@echo "" >> $@
+	@echo "// Configuration for timezone selector." >> $@
+	@echo "#define TZ_A_PIN static_cast<uint8_t>($(CONFIG_TZ_A_PIN))" >> $@
+	@echo "#define TZ_B_PIN static_cast<uint8_t>($(CONFIG_TZ_B_PIN))" >> $@
+	@echo "#define TZ_BUTTON_PIN static_cast<uint8_t>($(CONFIG_TZ_BUTTON_PIN))" >> $@
+	@echo "#define TZ_DEBOUNCE_MS static_cast<uint32_t>($(CONFIG_TZ_DEBOUNCE_MS))" >> $@
+	@echo "#define TZ_ERROR_MS static_cast<uint32_t>($(CONFIG_TZ_ERROR_MS))" >> $@
+	@echo "" >> $@
+	@echo "// Configuration for GPS module." >> $@
+	@echo "#define GPS_RX_PIN static_cast<uint8_t>($(CONFIG_GPS_RX_PIN))" >> $@
+	@echo "#define GPS_TX_PIN static_cast<uint8_t>($(CONFIG_GPS_TX_PIN))" >> $@
+	@echo "#define GPS_BAUD_RATE static_cast<long>($(CONFIG_GPS_BAUD_RATE))" >> $@
+	@echo "" >> $@
+	@echo "// Configuration for automatically disabling LCD backlight." >> $@
+	@echo "#define AUTO_OFF_MS static_cast<uint32_t>($(CONFIG_AUTO_OFF_MS))" >> $@
+	@echo "" >> $@
+	@echo "#endif" >> $@
