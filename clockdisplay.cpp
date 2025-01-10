@@ -49,7 +49,9 @@ static const uint8_t COLON_BITMASK = 0x02 | 0x04 | 0x08;
 
 clock_display::clock_display(uint8_t brightness, clock_mode mode)
   : cur_brightness(brightness),
-    mode(mode) {
+    mode(mode),
+    am_pin(AM_PIN),
+    pm_pin(PM_PIN) {
 #if defined(USE_SECONDS)
   init_led(time_lower_led, LED_TIME_LOWER_I2C_ADDR);
   init_led(time_upper_led, LED_TIME_UPPER_I2C_ADDR);
