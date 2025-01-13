@@ -169,6 +169,7 @@ Several configuration additions and changes have been introduced, primarily to s
 * `CONFIG_OLED_I2C_ADDR` is used to configure the OLED display.
 * `CONFIG_OLED_SIZE` specifies whether the OLED display is _large_ or _small_.
 * `CONFIG_LCD_DRIVER` replaces `CONFIG_LCD_EXPANDER`, but is identical in function.
+* `CONFIG_AM_PIN` and `CONFIG_PM_PIN` set exclusively high or low in 12-hour mode.
 
 The LCD layout has been modernized to use glyphs that align with those shown on the OLED. Doing so opened up a bit of screen real estate, so altitude information is now displayed.
 
@@ -611,11 +612,15 @@ I2C address of the year LED. If `CONFIG_USE_SECONDS` is enabled, default is `0x7
 
 #### CONFIG_AM_PIN
 
-Digital pin connected to `AM` indicator. Default is `4`.
+Digital pin connected to `AM` indicator. This pin is set `HIGH` when the clock mode is 12-hour and the local time falls between 12:00 AM and 11:59 AM. Otherwise, the pin is set `LOW`.
+
+Default is `4`.
 
 #### CONFIG_PM_PIN
 
-Digital pin connected to `PM` indicator. Default is `5`.
+Digital pin connected to `PM` indicator. This pin is set `HIGH` when the clock mode is 12-hour and the local time falls between 12:00 PM and 11:59 PM. Otherwise, the pin is set `LOW`.
+
+Default is `5`.
 
 #### CONFIG_GPS_DISPLAY
 
