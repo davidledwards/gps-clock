@@ -150,6 +150,8 @@ Several new Arduino Nano-series boards are now suppported. These include [Arduin
 
 The Arduino Nano 33 BLE board operates strictly at 3.3V, so the _photoresistor_ and _rotary encoder_ sensors must be attached to 3.3V (not 5V as depicted in the schematics). It turns out that the supported _GPS modules_ also operate correctly with 3.3V, though continued use of 5V appears to be safe.
 
+AM and PM indicators were also introduced by way of default pins `4` and `5`, respectively. These pins are exclusively set `HIGH` and `LOW` if the clock is operating in 12-hour mode and the local time is AM and PM as one would expect. These presumably drive LEDs as illustrated in the schematic below.
+
 New components:
 
 * [OLED 2.42" 128x64 Display](https://www.amazon.com/HiLetgo-SSD1309-128x64-Display-Optional/dp/B0CFF3XNX4/?th=1)
