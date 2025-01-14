@@ -469,10 +469,11 @@ Removes transient build files.
 make clean
 ```
 
-Generates predefined configuration files in the `configs/` subdirectory. The `config.h` file in the base directory is always generated from `.config` when `make build` is executed. All configuration variables have default values if undefined. Refer to the [configuration section](#configuration) for a description of variables evaluated during the process of generating `config.h`.
+Generates predefined configuration files in the `configs/` subdirectory. The `config.h` file in the base directory is always generated from `.config` as a byproduct of executing `make build` is executed. However, it may also be generated directly by running `make config.h`. All configuration variables have default values if undefined. Refer to the [configuration section](#configuration) for a description of variables evaluated during the process of generating `config.h`.
 
 ```shell
-make config
+make config    # generates all configuration files in configs/
+make config.h  # generates config.h from .config
 ```
 
 Prints all configuration variables as detected by the execution environment. These variables are used to generate the configuration files when executing `make config` and `make build`. Please note that the configuration variables echoed by this command do not necessarily reflect what is contained in `config.h` unless `make build` has been executed.
