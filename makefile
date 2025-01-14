@@ -58,9 +58,9 @@ SRCS = $(wildcard *.ino *.h *.cpp)
 # Configuration sources and targets
 #
 # Any file matching ".config*" will have a corresponding "config*.h" file
-# generated when the `make config` is executed.
-CONFIG_SRCS = $(wildcard .config*)
-CONFIG_TARGETS = $(patsubst .%,%.h,$(CONFIG_SRCS))
+# generated when `make config` is executed.
+CONFIG_SRCS = $(wildcard configs/.config*)
+CONFIG_TARGETS = $(patsubst configs/.%,configs/%.h,$(CONFIG_SRCS))
 
 # This section defines configuration variables which are used to generate
 # configuration header files. In most cases, variables are assigned default
@@ -162,12 +162,12 @@ CONFIG_AUTO_OFF_MS ?= 30000
 
 help:
 	@echo "useful targets:"
-	@echo "  install  install library and core dependencies"
-	@echo "  build    build sketch"
-	@echo "  upload   upload program to board"
-	@echo "  clean    remove all transient build files"
-	@echo "  config   generate configuration files"
-	@echo "  print    print configuration variables"
+	@echo "  install   install library and core dependencies"
+	@echo "  build     build sketch"
+	@echo "  upload    upload program to board"
+	@echo "  clean     remove all transient build files"
+	@echo "  config    generate predefined configuration files"
+	@echo "  print     print configuration variables"
 
 $(PROG): $(SRCS)
 	@echo "building..."
@@ -242,7 +242,7 @@ config: $(CONFIG_TARGETS)
 .PHONY: FORCE
 
 %.h: .% FORCE
-	@echo "$< --> $@"
+	@echo "generating $@"
 	@echo "/*" > $@
 	@echo " * This file was automatically generated on $(shell date -R)" >> $@
 	@echo " */" >> $@
