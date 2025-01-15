@@ -447,7 +447,7 @@ Installs the Arduino core and dependent external libraries. This is an idempoten
 make install
 ```
 
-Builds the sketch and its associated C++ files. The output directory of the build cannot be a subdirectory of the project, a restriction imposed by the Arduino compilation process, so it is placed under `TMPDIR`. However, the final program artifacts are written to the project directory.
+Builds the sketch and its associated C++ files. All build artifacts are placed under `build/<board>/` where _board_ is derived from the fully-qualified board name.
 
 ```sh
 make build
@@ -463,7 +463,7 @@ make upload
 make upload PORT=/dev/tty.usbmodem14401
 ```
 
-Removes transient build files.
+Removes all build artifacts under the `build/` subdirectory.
 
 ```sh
 make clean
