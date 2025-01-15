@@ -29,11 +29,17 @@ BOARD_NAME = $(BOARD_CORE):$(BOARD)
 # the environment, otherwise the value defaults to /dev/null.
 PORT ?= /dev/null
 
-# A convenient technique for deterministically placing the build directoy somewhere other than the
-# project directory since this is not allowed.
-BUILD_ROOT = $(abspath $(TMPDIR)/build)
-BUILD_PATH = $(abspath $(BUILD_ROOT)/$(subst /,_,$(CURDIR)))
-BUILD_FILES_PREFIX = $(SKETCH).$(subst :,.,$(BOARD_NAME))
+# Board combinations get their own build directory.
+BUILD_ROOT = $(CURDIR)/build
+BUILD_PATH = $(BUILD_ROOT)/$(subst :,.,$(BOARD_NAME))
+
+# Binary that gets uploaded to the board.
+PROG = $(BUILD_PATH)/$(SKETCH).ino.hex
+
+foo:
+	@echo "BUILD_ROOT = $(BUILD_ROOT)"
+	@echo "BUILD_PATH = $(BUILD_PATH)"
+	@echo "PROG = $(PROG)"
 
 # Library dependencies.
 LIBS = \
@@ -49,8 +55,6 @@ LIBS = \
 	"FlashStorage"@1.0.0 \
 	"NanoBLEFlashPrefs"@1.2.0
 
-# Name of the image that gets uploaded to the board.
-PROG = $(BUILD_FILES_PREFIX).hex
 
 # Sources for compilation.
 SRCS = $(wildcard *.ino *.h *.cpp)
@@ -180,14 +184,13 @@ build: $(PROG)
 upload: build
 	@echo "uploading to ${PORT}..."
 	arduino-cli upload \
-	  --input-dir $(BUILD_PATH) \
+	--input-dir $(BUILD_PATH) \
 		-b $(BOARD_NAME) \
 		-p $(PORT)
 
 clean:
 	@echo "cleaning..."
-	rm -rf $(BUILD_PATH)
-	rm -f $(CURDIR)/$(BUILD_FILES_PREFIX).*
+	rm -rf $(BUILD_ROOT)
 
 install:
 	@echo "installing libraries..."
