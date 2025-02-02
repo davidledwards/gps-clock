@@ -29,17 +29,12 @@ BOARD_NAME = $(BOARD_CORE):$(BOARD)
 # the environment, otherwise the value defaults to /dev/null.
 PORT ?= /dev/null
 
-# Board combinations get their own build directory.
-BUILD_ROOT = $(CURDIR)/build
-BUILD_PATH = $(BUILD_ROOT)/$(subst :,.,$(BOARD_NAME))
+# Board combinations get their own target directory for builds.
+TARGET_BASE = $(CURDIR)/target
+TARGET_DIR = $(TARGET_BASE)/$(subst :,.,$(BOARD_NAME))
 
 # Binary that gets uploaded to the board.
-PROG = $(BUILD_PATH)/$(SKETCH).ino.hex
-
-foo:
-	@echo "BUILD_ROOT = $(BUILD_ROOT)"
-	@echo "BUILD_PATH = $(BUILD_PATH)"
-	@echo "PROG = $(PROG)"
+PROG = $(TARGET_DIR)/$(SKETCH).ino.hex
 
 # Library dependencies.
 LIBS = \
@@ -176,7 +171,7 @@ help:
 $(PROG): $(SRCS)
 	@echo "building..."
 	arduino-cli compile \
-		--build-path $(BUILD_PATH) \
+		--build-path $(TARGET_DIR) \
 		-b $(BOARD_NAME)
 
 build: $(PROG)
@@ -184,13 +179,13 @@ build: $(PROG)
 upload: build
 	@echo "uploading to ${PORT}..."
 	arduino-cli upload \
-	--input-dir $(BUILD_PATH) \
+	--input-dir $(TARGET_DIR) \
 		-b $(BOARD_NAME) \
 		-p $(PORT)
 
 clean:
 	@echo "cleaning..."
-	rm -rf $(BUILD_ROOT)
+	rm -rf $(TARGET_BASE)
 
 install:
 	@echo "installing libraries..."

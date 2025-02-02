@@ -2,7 +2,7 @@
 *.elf
 *.hex
 .vscode/
-build/
+target/
 /.env
 /.config
 /config.h
