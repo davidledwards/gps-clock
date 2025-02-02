@@ -403,9 +403,11 @@ This photo shows the modernized LCD display using glyphs. Since the use of glyph
 
 The clocks that follow were built by others inspired by this project. Proper attribution has been given unless the author requested anonymity.
 
-#### Europe
+#### Eastern Europe
 
-This was a collaboration from someone in Europe that discovered the clock on GitHub in 2022. Some of the features in [generation 4](#hardware-generation-4), including support for additional hardware components, were inspired by ideas that emerged during our exchange. As seen below, much of the clock hardware was built from scratch.
+This was a collaboration from an anonymous individual in Eastern Europe that discovered the clock on GitHub in 2022. Some of the features in [generation 4](#hardware-generation-4), including support for additional hardware components, were inspired by ideas that emerged during our exchange. As seen below, much of the clock hardware was built from scratch.
+
+Original version using a generic PCB.
 
 <img src="images/roman-clock-internal-front.jpg" style="zoom:25%;" />
 
@@ -423,15 +425,13 @@ This was a collaboration from someone in Europe that discovered the clock on Git
 
 <img src="images/roman-clock-circuit.jpg" style="zoom:25%;" />
 
-This is a version of the clock above using a custom PCB that was sent by the collaborator in Europe. Much appreciated for his token of appreciation.
-
-The following photos capture the front and back of the bare PCB.
+Below is a version of the clock above using a custom PCB that was sent by the fellow collaborator. The following photos capture the front and back of the bare PCB.
 
 <img src="images/pcb-clock-front-bare.jpg" style="zoom:25%;" />
 
 <img src="images/pcb-clock-back-bare.jpg" style="zoom:25%;" />
 
-These photos show the fully constructed and operational clock.
+These photos show a fully constructed and operational clock.
 
 <img src="images/pcb-clock-front.jpg" style="zoom:20%;" />
 
@@ -447,7 +447,7 @@ Installs the Arduino core and dependent external libraries. This is an idempoten
 make install
 ```
 
-Builds the sketch and its associated C++ files. All build artifacts are placed under `build/<board>/` where _board_ is derived from the fully-qualified board name.
+Builds the sketch and its associated C++ files. All build artifacts are placed under `target/<board>/` where _board_ is derived from the fully-qualified board name.
 
 ```sh
 make build
@@ -463,7 +463,7 @@ make upload
 make upload PORT=/dev/tty.usbmodem14401
 ```
 
-Removes all build artifacts under the `build/` subdirectory.
+Removes all build artifacts under the `target/` subdirectory.
 
 ```sh
 make clean
